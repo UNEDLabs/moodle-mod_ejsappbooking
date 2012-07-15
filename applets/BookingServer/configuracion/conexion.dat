@@ -1,0 +1,2 @@
+driver=com.mysql.jdbc.Driver
+direccion=jdbc:mysql://

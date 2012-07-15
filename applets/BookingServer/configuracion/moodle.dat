@@ -1,0 +1,5 @@
+driver=com.mysql.jdbc.Driver
+direccion=jdbc:mysql://localhost:3306/moodle
+user=root
+password=
+prefijo=mdl_

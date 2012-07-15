@@ -1,0 +1,11 @@
+EJS webpage: http://www.um.es/fem/EjsWiki/
+
+ejsapp tutorial: http://www.um.es/fem/EjsWiki/Main/UsingEJSWithMoodle
+
+ejsapp Moodle forum discussion: http://moodle.org/mod/forum/discuss.php?d=205244#p895953
+
+ejsapp Moodle tracker: http://tracker.moodle.org/browse/CONTRIB-3733
+
+UNEDLabs webpage: http://unedlabs.dia.uned.es/
+
+UNEDLabs github repository: https://github.com/organizations/UNEDLabs

@@ -1,0 +1,24 @@
+12/07/2012 00:59:38 Encendido hilo actualización de accessList en plantas remotas
+12/07/2012 00:59:38 Encendido el servidor para los applets
+12/07/2012 00:59:38 Encendido hilo tareas limpieza/mantenimiento
+12/07/2012 00:59:39 Realizada limpieza de registros antiguos en accessListHistory
+12/07/2012 01:00:04 Comprobada existencia de admin
+12/07/2012 01:00:04 Leidos datos de admin
+12/07/2012 01:00:04 Enviada lista plantas del userID: 2
+12/07/2012 21:37:49 Encendido el servidor para los applets
+12/07/2012 21:37:49 Encendido hilo actualización de accessList en plantas remotas
+12/07/2012 21:37:49 Encendido hilo tareas limpieza/mantenimiento
+12/07/2012 21:37:50 Realizada limpieza de registros antiguos en accessListHistory
+12/07/2012 21:38:15 Comprobada existencia de admin
+12/07/2012 21:38:15 Leidos datos de admin
+12/07/2012 21:38:15 Enviada lista plantas del userID: 2
+12/07/2012 21:39:53 Comprobada existencia de admin
+12/07/2012 21:39:53 Leidos datos de admin
+12/07/2012 21:39:54 Enviada lista plantas del userID: 2
+12/07/2012 21:48:58 Comprobada existencia de admin
+12/07/2012 21:48:58 Leidos datos de admin
+12/07/2012 21:48:58 Enviada lista plantas del userID: 2
+12/07/2012 21:49:02 Calculada disponibilidad de planta id: 23, desde :2012-07-12 00:00:00, hasta: 2012-07-12 23:59:59
+12/07/2012 21:49:02 Calculados slots para user, id_planta, inicio, fin, desfase: admin, 23, 2012-07-12 00:00:00, 2012-07-12 23:59:59, 0
+12/07/2012 21:49:02 Error. Clase TablaAccessListPlanta, metodo estado(). Access denied for user: 'root@79.152.210.19' (Using password: YES)
+12/07/2012 21:49:02 Comprobado estado bbdd planta id: 23, Sistema heatflow - UAL

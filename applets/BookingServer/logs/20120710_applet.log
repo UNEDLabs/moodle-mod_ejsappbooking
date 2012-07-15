@@ -1,0 +1,27 @@
+10/07/2012 12:00:30 /127.0.0.1 conecta
+10/07/2012 12:00:30 /127.0.0.1 admin solicita acceso
+10/07/2012 12:00:31 /127.0.0.1 solicita lista plantas usuario 2
+10/07/2012 12:00:58 /127.0.0.1 conecta
+10/07/2012 12:00:58 /127.0.0.1 admin solicita acceso
+10/07/2012 12:00:58 /127.0.0.1 solicita lista plantas usuario 2
+10/07/2012 12:02:30 /127.0.0.1 conecta
+10/07/2012 12:02:30 /127.0.0.1 estudiante_1 solicita acceso
+10/07/2012 12:02:30 /127.0.0.1 solicita lista plantas usuario 3
+10/07/2012 12:07:20 /127.0.0.1 conecta
+10/07/2012 12:07:20 /127.0.0.1 admin solicita acceso
+10/07/2012 12:07:20 /127.0.0.1 solicita lista plantas usuario 2
+10/07/2012 12:08:10 /127.0.0.1 conecta
+10/07/2012 12:08:10 /127.0.0.1 admin solicita acceso
+10/07/2012 12:08:10 /127.0.0.1 solicita lista plantas usuario 2
+10/07/2012 12:54:10 /127.0.0.1 conecta
+10/07/2012 12:54:10 /127.0.0.1 admin solicita acceso
+10/07/2012 12:54:10 /127.0.0.1 solicita lista plantas usuario 2
+10/07/2012 12:54:57 /127.0.0.1 solicita lista reservas usuario: admin
+10/07/2012 12:55:07 /127.0.0.1 conecta
+10/07/2012 12:55:07 /127.0.0.1 consulta estado id_planta: 2
+10/07/2012 12:55:07 /127.0.0.1 solicita disponibilidad de id_planta:2 desde: 2012-07-10 00:00:00 hasta: 2012-07-10 23:59:59
+10/07/2012 12:55:07 /127.0.0.1 solicita slots de tiempo usuario: 2, id_planta: 2012-07-10 00:00:00, desde: 2012-07-10 23:59:59, hasta: 0
+10/07/2012 12:58:16 /127.0.0.1 desconecta
+10/07/2012 13:51:01 /127.0.0.1 conecta
+10/07/2012 13:51:01 /127.0.0.1 estudiante_1 solicita acceso
+10/07/2012 13:51:01 /127.0.0.1 solicita lista plantas usuario 3

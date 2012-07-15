@@ -1,0 +1,6 @@
+puerto=5555
+tiempoPropagacion=5
+diasMantenimiento=1
+diasVida=10
+diasVidaHistorial=60
+editor=notepad.exe

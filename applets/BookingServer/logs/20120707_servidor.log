@@ -1,0 +1,63 @@
+07/07/2012 21:59:24 Encendido hilo actualización de accessList en plantas remotas
+07/07/2012 21:59:24 Encendido hilo tareas limpieza/mantenimiento
+07/07/2012 21:59:24 Encendido el servidor para los applets
+07/07/2012 21:59:27 Error. Clase TablaAccessList, metodo seleccionar(WHERE (actualizado='0') OR (actualizado='2') OR (actualizado='3')). org.apache.commons.dbcp.SQLNestedException: Cannot create PoolableConnectionFactory (Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:284)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2569)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1485)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+	at org.apache.commons.dbcp.PoolableConnectionFactory.makeObject(PoolableConnectionFactory.java:294)
+	at org.apache.commons.dbcp.BasicDataSource.validateConnectionFactory(BasicDataSource.java:1247)
+	at org.apache.commons.dbcp.BasicDataSource.createDataSource(BasicDataSource.java:1221)
+	at org.apache.commons.dbcp.BasicDataSource.getConnection(BasicDataSource.java:880)
+	at com.javierpavon.proyecto.servidor_reservas.TablaAccessList.seleccionar(TablaAccessList.java:36)
+	at com.javierpavon.proyecto.servidor_reservas.ActualizaPlantas.run(ActualizaPlantas.java:140)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 31 ms ago.)
+07/07/2012 21:59:29 Error. Clase TablaAccessList, metodo seleccionar(WHERE starttime<='2012-06-27 21:59:24'). org.apache.commons.dbcp.SQLNestedException: Cannot create PoolableConnectionFactory (Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:284)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2569)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1485)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+	at org.apache.commons.dbcp.PoolableConnectionFactory.makeObject(PoolableConnectionFactory.java:294)
+	at org.apache.commons.dbcp.BasicDataSource.validateConnectionFactory(BasicDataSource.java:1247)
+	at org.apache.commons.dbcp.BasicDataSource.createDataSource(BasicDataSource.java:1221)
+	at org.apache.commons.dbcp.BasicDataSource.getConnection(BasicDataSource.java:880)
+	at com.javierpavon.proyecto.servidor_reservas.TablaAccessList.seleccionar(TablaAccessList.java:36)
+	at com.javierpavon.proyecto.servidor_reservas.MantenimientoAccessList.run(MantenimientoAccessList.java:91)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 0 ms ago.)
+07/07/2012 21:59:30 Detenido el servidor para los applets
+07/07/2012 21:59:30 Detenido hilo actualización accessList en plantas remotas

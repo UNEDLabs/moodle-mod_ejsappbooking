@@ -1,0 +1,11 @@
+08/07/2012 12:56:46 /127.0.0.1 conecta
+08/07/2012 12:56:46 /127.0.0.1 admin solicita acceso
+08/07/2012 12:56:46 /127.0.0.1 solicita lista plantas usuario 2
+08/07/2012 13:42:53 /127.0.0.1 conecta
+08/07/2012 13:42:53 /127.0.0.1 admin solicita acceso
+08/07/2012 13:42:53 /127.0.0.1 solicita lista plantas usuario 2
+08/07/2012 13:45:25 /127.0.0.1 conecta
+08/07/2012 13:45:25 /127.0.0.1 consulta estado id_planta: 1
+08/07/2012 13:45:25 /127.0.0.1 solicita disponibilidad de id_planta:1 desde: 2012-07-08 00:00:00 hasta: 2012-07-08 23:59:59
+08/07/2012 13:45:25 /127.0.0.1 solicita slots de tiempo usuario: 1, id_planta: 2012-07-08 00:00:00, desde: 2012-07-08 23:59:59, hasta: 0
+08/07/2012 13:45:25 /127.0.0.1 desconecta
