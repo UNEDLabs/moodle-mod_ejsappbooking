@@ -28,7 +28,7 @@ Moodle server. Use it to configure your remote laboratories.
 
 Both folders contain a "configuracion" folder for adding/editing languages presented in the 
 bookings applets GUIs.
-The "bookings_uned" folder has the sql data files you will need to install in your sql 
+The "bookings_table" folder has the sql data files you will need to install in your sql 
 server. They are used by the BookingServer applet.
 
 ######################################

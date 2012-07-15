@@ -1,0 +1,10 @@
+15/07/2012 14:01:26 Encendido el servidor para los applets
+15/07/2012 14:01:26 Encendido hilo tareas limpieza/mantenimiento
+15/07/2012 14:01:26 Encendido hilo actualización de accessList en plantas remotas
+15/07/2012 14:01:27 Realizada limpieza de registros antiguos en accessListHistory
+15/07/2012 14:01:31 Leidos datos Emersion
+15/07/2012 14:01:31 Leidos datos mySQL
+15/07/2012 14:01:31 Leidos valores servidor
+15/07/2012 14:01:33 Error. Clase Hilos, parar, try servidor:  java.lang.NullPointerException
+15/07/2012 14:01:33 Detenido hilo actualización accessList en plantas remotas
+15/07/2012 14:01:33 Detenido hilo tareas limpieza/mantenimiento
