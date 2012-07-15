@@ -1,14 +1,19 @@
 EJSAppBookings 1.0
 
 This is the first release of the ejsappbooking plugin.
-This plugin lets you add a booking system to handle the conecctions to the remote laboratories developed using EJS and added to your Moodle course using the ejsapp plugin.
+This plugin lets you add a booking system to handle the conecctions to the remote 
+laboratories developed using EJS and added to your Moodle course using the ejsapp plugin.
 
-This is a module plugin for Moodle so you should place the ejsappbooking folder in your /mod folder, inside you Moodle installation.
+This is a module plugin for Moodle so you should place the ejsappbooking folder in your /mod
+folder, inside you Moodle installation.
+This module has been tested in Moodle versions 2.0, 2.1, 2.2 and 2.3.
 
-This module needs the ejsapp module to be of any use.
-You can find and download at the plugins section in the Moodle.org webpage.
+This module needs the ejsapp module to be of any use. It works with version 1.0 of EJSApp.
+You can find and download it at the plugins section in the Moodle.org webpage or at
+https://github.com/UNEDLabs.
 
-An explanation of EJSApp is included in the folder "doc". You will also find a txt file with relevant links.
+An explanation of EJSApp is included in the folder "doc". There, you will also find a txt 
+file with relevant links.
 
 #####################################
 
@@ -16,11 +21,15 @@ CONFIGURING THE EJAPPBOOKINGS PLUGIN:
 
 The applets folder contains the following:
 
-BookingClient folder, with the booking client applet, embedded by EJSAppBookings when this resource is added to a Moodle course.
-BookingServer folder, with the booking server applet. This applet must be running on your Moodle server. Use it to configure your remote laboratories.
+BookingClient folder, with the booking client applet, embedded by EJSAppBookings when this 
+resource is added to a Moodle course.
+BookingServer folder, with the booking server applet. This applet must be running on your 
+Moodle server. Use it to configure your remote laboratories.
 
-Both folders contain a "configuracion" folder for adding/editing languages presented in the bookings applets GUIs.
-The "bookings_uned" folder has the sql data files you will need to install in your sql server. They are used by the BookingServer applet.
+Both folders contain a "configuracion" folder for adding/editing languages presented in the 
+bookings applets GUIs.
+The "bookings_uned" folder has the sql data files you will need to install in your sql 
+server. They are used by the BookingServer applet.
 
 ######################################
                                                       
