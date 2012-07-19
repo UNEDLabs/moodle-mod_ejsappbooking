@@ -28,16 +28,16 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Luis de la Torre, Ruben Heradio and Javier Pavón
+ * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2012071503;      // The current module version (Date: YYYYMMDDXX)
+$module->version   = 2012071900;      // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2010112400;      // Requires this Moodle version
 $module->cron      = 86000;           // Period for cron to check this module (secs)
 $module->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place
 $module->maturity = MATURITY_STABLE;
-$module->release = '1.1 (Build: 2012071503)';
+$module->release = '1.1 (Build: 2012071900)';
 $module->dependencies = array('mod_ejsapp' => 2012071507);

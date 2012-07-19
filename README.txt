@@ -1,14 +1,16 @@
-EJSAppBookings 1.0
+EJSAppBookings 1.1
 
-This is the first release of the ejsappbooking plugin.
 This plugin lets you add a booking system to handle the conecctions to the remote 
 laboratories developed using EJS and added to your Moodle course using the ejsapp plugin.
+
+If you downloaded this plugin from github, you will need to change the folder's name to
+ejsappbooking. If you downloaded it from Moodle.org, then you are fine.
 
 This is a module plugin for Moodle so you should place the ejsappbooking folder in your /mod
 folder, inside you Moodle installation.
 This module has been tested in Moodle versions 2.0, 2.1, 2.2 and 2.3.
 
-This module needs the ejsapp module to be of any use. It works with version 1.0 of EJSApp.
+This module needs the ejsapp module to be of any use. It works with version 1.1 of EJSApp.
 You can find and download it at the plugins section in the Moodle.org webpage or at
 https://github.com/UNEDLabs.
 

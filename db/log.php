@@ -29,7 +29,7 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

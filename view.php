@@ -29,12 +29,12 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Luis de la Torre and Ruben Heradio and Javier Pavón
+ * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');  
+require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // ejsappbooking instance ID - it should be named as the first character of the module
@@ -76,29 +76,32 @@ if ($ejsappbooking->intro) { // Conditions to show the intro can change to look 
 $dir = get_plugin_directory('mod','ejsappbooking');
 if ( is_file($dir . '/applets/BookingClient/BookingClient.jar') ) {
   global $USER, $CFG;
+  $host = substr($CFG->wwwroot,7);
   $code = '';
   $code .= '<script "text/javascript">';
   $code .= "var w = 740, h = 545;
   document.write('<applet code=\"com.booking_client.ClienteReservas.class\"');
-  document.write('codebase=\"/mod/ejsappbooking/applets/BookingClient/\"');
+  document.write('codebase=\"http://$host/mod/ejsappbooking/applets/BookingClient/\"');
   document.write('archive=\"BookingClient.jar\"');
   document.write('name=\"BookingClient\"');
   document.write('id=\"BookingClient\"');
   document.write('width=\"'+w+'\"');
-  document.write('height=\"'+h+'\">');";
+  document.write('height=\"'+h+'\"');";
   //Applet params
-  $ip = substr($CFG->wwwroot,7);                                         
-  $port = "5555"; //Este paramametro debería leerse directamente de /applets/BookingServer/configuracion/valores.dat
-  $language = current_language();   
-  $code .= "document.write('<param name=\"server_ip\" value=\"{$ip}\"/>');
-  document.write('<param name=\"port\" value=\"{$port}\"/>');
+  $port = "5555";//Este paramametro debería leerse directamente de /applets/BookingServer/configuracion/valores.dat
+  $language = current_language();
+  //$code .= document.write('<param name=\"courseid\" value=\"{$course->id}\"/>');
+  $code .= "
+  document.write('<param name=\"nullParam\" value=\"null\"/>');
   document.write('<param name=\"lang\" value=\"{$language}\"/>');
+  document.write('<param name=\"host\" value=\"{$host}\"/>');
+  document.write('<param name=\"port\" value=\"{$port}\"/>');
   document.write('<param name=\"user\" value=\"{$USER->username}\"/>');
   document.write('<param name=\"password\" value=\"{$USER->password}\"/>');
   document.write('</applet>');";
   $code .= '</script>';
 } else {
-  echo get_string('view_error', 'ejsappbooking');
+  $code = get_string('view_error', 'ejsappbooking');
   }
 
 echo $OUTPUT->heading($code);
