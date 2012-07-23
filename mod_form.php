@@ -75,13 +75,7 @@ class mod_ejsappbooking_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
         //-------------------------------------------------------------------------------
         // add standard buttons, common to all modules
-        $this->add_action_buttons();
-        
-      /*} else {
-          $mform->addElement('static', 'label1', 'ejsappbookingsetting1', 'Your ejsappbooking fields go here. Replace me!');  
-          $this->add_action_buttons(null,true,false);
-        } */
-        
-        
+        $this->add_action_buttons();       
     }
+    
 }
