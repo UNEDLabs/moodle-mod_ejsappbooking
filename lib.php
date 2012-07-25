@@ -250,7 +250,9 @@ function ejsappbooking_print_recent_mod_activity($activity, $courseid, $detail, 
 function ejsappbooking_cron () {
     global $DB;
     
-    //ADDING NEW USERS AND/OR EJSAPPS:
+    $ejsappbooking_usersaccess = new stdClass();
+    
+    //ADDING NEW USERS AND/OR REMOTE EJSAPPS LABS:
     $ejsappbooking_usersaccess->timecreated = time();
     $ejsappbooking_usersaccess->timemodified = time();
     
@@ -288,7 +290,7 @@ function ejsappbooking_cron () {
       }   
     }
     
-    //DELETING OLD USERS AND/OR EJSAPPS:
+    //DELETING OLD USERS AND/OR REMOTE EJSAPPS LABS:
     foreach ($ejsappbookings as $ejsappbooking) { 
       $bookingid = $ejsappbooking->id;
       //Get context of the course to which ejsappbooking belongs to.
@@ -296,7 +298,8 @@ function ejsappbooking_cron () {
       $users = get_enrolled_users($context);
       $ejsapps_usersaccess = $DB->get_records('ejsappbooking_usersaccess');
       foreach ($ejsapps_usersaccess as $ejsapp_usersaccess) {
-        if (!$ejsapp_exists = $DB->get_record('ejsapp', array('id' => $ejsapp_usersaccess->ejsappid))) {
+        $ejsapp = $DB->get_record('ejsapp', array('id' => $ejsapp_usersaccess->ejsappid));
+        if ((!$DB->get_record('ejsapp', array('id' => $ejsapp_usersaccess->ejsappid))) || ($ejsapp->is_rem_lab == 0)) {
           $DB->delete_records('ejsappbooking_usersaccess', array('ejsappid' => $ejsapp_usersaccess->ejsappid));
         }
         $user_exists = false;

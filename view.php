@@ -68,10 +68,6 @@ $PAGE->set_button(update_module_button($cm->id, $course->id, get_string('modulen
 // Output starts here
 echo $OUTPUT->header();
 
-if ($ejsappbooking->intro) { // Conditions to show the intro can change to look for own settings or whatever
-    echo $OUTPUT->box(format_module_intro('ejsappbooking', $ejsappbooking, $cm->id), 'generalbox mod_introbox', 'ejsappbookingintro');
-}
-
 // Embed the BookingClient applet into Moodle
 $dir = get_plugin_directory('mod','ejsappbooking');
 if ( is_file($dir . '/applets/BookingClient/BookingClient.jar') ) {
@@ -105,6 +101,10 @@ if ( is_file($dir . '/applets/BookingClient/BookingClient.jar') ) {
   }
 
 echo $OUTPUT->heading($code);
+
+if ($ejsappbooking->intro) { // If some text was written, show the intro
+  echo $OUTPUT->box(format_module_intro('ejsappbooking', $ejsappbooking, $cm->id), 'generalbox mod_introbox', 'ejsappbookingintro');
+}
 
 // Finish the page
 echo $OUTPUT->footer();
