@@ -21,7 +21,7 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="ejsappbooking_usersaccess" COMMENT="Specifies if a user has access to the booking system for a particular remote EJSApp" PREVIOUS="ejsappbooking">
+    <TABLE NAME="ejsappbooking_usersaccess" COMMENT="Specifies if a user has access to the booking system for a particular remote EJSApp" PREVIOUS="ejsappbooking" NEXT="ejsappbooking_remlab_access">
       <FIELDS>
       	<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="bookingid"/>
       	<FIELD NAME="bookingid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
@@ -34,6 +34,23 @@
       </KEYS>
       <INDEXES>
         <INDEX NAME="bookingid" UNIQUE="false" FIELDS="bookingid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="ejsappbooking_remlab_access" COMMENT="Records the bookings made by the users to the different remote EJSApp" PREVIOUS="ejsappbooking_usersaccess">
+      <FIELDS>
+      	<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="username"/>
+      	<FIELD NAME="username" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="ejsappid"/>
+        <FIELD NAME="ejsappid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The EJSApp id" PREVIOUS="username" NEXT="practiceid"/>
+        <FIELD NAME="practiceid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The practice id" PREVIOUS="ejsappid" NEXT="starttime"/>
+        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Date and time in which the booking starts" PREVIOUS="practiceid" NEXT="endtime"/>
+        <FIELD NAME="endtime" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Date and time in which the booking ends" PREVIOUS="starttime" NEXT="valid"/>
+        <FIELD NAME="valid" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the booking is still valid or not" PREVIOUS="endtime"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="username" UNIQUE="false" FIELDS="username"/>
       </INDEXES>
     </TABLE>
   </TABLES>
