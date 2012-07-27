@@ -10,7 +10,8 @@ This is a module plugin for Moodle so you should place the ejsappbooking folder 
 folder, inside you Moodle installation.
 This module has been tested in Moodle versions 2.0, 2.1, 2.2 and 2.3.
 
-This module needs the ejsapp module to be of any use. It works with version 1.1 of EJSApp.
+This module needs the ejsapp module to be of any use. It works with version 1.1 (or later) of 
+EJSApp. 
 You can find and download it at the plugins section in the Moodle.org webpage or at
 https://github.com/UNEDLabs.
 
