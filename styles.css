@@ -1,0 +1,15 @@
+/* 
+    Document   : style
+    Created on : Sept 22, 2012, 20:22:33 PM
+    Author     : Luis de la Torre and Ruben Heradio
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*body#page-mod-ejsappbooking-view {
+    min-width: 1000px;
+}*/
+
+.modtype_ejsappbooking .editing_duplicate {
+    display:none;
+}

@@ -1,0 +1,1249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project version="2.0.0a11" title="">
+  <file path="backup\moodle2\backup_ejsappbooking_activity_task.class.php" hash="218804cd88ce5323d43747da44b36e62" package="mod\ejsappbooking">
+    <docblock line="24">
+      <description>Tasks file to perform the EJSAppBooking backup</description>
+      <long-description>&lt;p&gt;Backup/Restore files in ejsappbooking just work with data in the ejsappbooking table.
+The data from ejsappbooking_remlab_access and ejsappbooking_useraccess is backup/restored
+by ejsapp&lt;/p&gt;</long-description>
+      <tag line="24" name="package" description="mod"/>
+      <tag line="24" name="subpackage" description="ejsappbooking"/>
+      <tag line="24" name="copyright" description="2012 Luis de la Torre and Ruben Heradio"/>
+      <tag line="24" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="39" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <class final="false" abstract="false" namespace="global" line="45" package="Default">
+      <extends>\backup_activity_task</extends>
+      <name>backup_ejsappbooking_activity_task</name>
+      <full_name>\backup_ejsappbooking_activity_task</full_name>
+      <docblock line="41">
+        <description>EJSAppBooking backup task that provides all the settings and steps to perform one
+complete backup of the activity</description>
+        <long-description/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="50" package="Default">
+        <name>define_my_settings</name>
+        <full_name>define_my_settings</full_name>
+        <docblock line="47">
+          <description>Define particular settings for this activity</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="57" package="Default">
+        <name>define_my_steps</name>
+        <full_name>define_my_steps</full_name>
+        <docblock line="54">
+          <description>Caller to define_structure-&gt;define_structure</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="67" package="Default">
+        <name>encode_content_links</name>
+        <full_name>encode_content_links</full_name>
+        <docblock line="61">
+          <description>Code the transformations to perform in the activity in
+ order to get transportable (encoded) links</description>
+          <long-description/>
+          <tag line="61" name="param" description="" type="string" variable="$content">
+            <type by_reference="false">string</type>
+          </tag>
+        </docblock>
+        <argument line="67">
+          <name>$content</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+    </class>
+  </file>
+  <file path="backup\moodle2\backup_ejsappbooking_stepslib.php" hash="864d6368424f6e2607b5adae6b141141" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>Steps file to perform the EJSAppBooking backup</description>
+      <long-description>&lt;p&gt;Backup/Restore files in ejsappbooking just work with data in the ejsappbooking table.
+The data from ejsappbooking_remlab_access and ejsappbooking_useraccess is backup/restored
+by ejsapp&lt;/p&gt;</long-description>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <class final="false" abstract="false" namespace="global" line="43" package="Default">
+      <extends>\backup_activity_structure_step</extends>
+      <name>backup_ejsappbooking_activity_structure_step</name>
+      <full_name>\backup_ejsappbooking_activity_structure_step</full_name>
+      <docblock line="40">
+        <description>Define the complete EJSApp-Booking structure for backup</description>
+        <long-description/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="49" package="Default">
+        <name>define_structure</name>
+        <full_name>define_structure</full_name>
+        <docblock line="46">
+          <description>Define the complete structure for backup, with file and id annotations</description>
+          <long-description/>
+        </docblock>
+      </method>
+    </class>
+  </file>
+  <file path="backup\moodle2\restore_ejsappbooking_activity_task.class.php" hash="efa2d6a600bfada9ff96f4a3a9fc6a8c" package="mod\ejsappbooking">
+    <docblock line="24">
+      <description>Tasks file to perform the EJSAppBooking restore</description>
+      <long-description/>
+      <tag line="24" name="package" description="mod"/>
+      <tag line="24" name="subpackage" description="ejsappbooking"/>
+      <tag line="24" name="copyright" description="2012 Luis de la Torre and Ruben Heradio"/>
+      <tag line="24" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="35" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <class final="false" abstract="false" namespace="global" line="41" package="Default">
+      <extends>\restore_activity_task</extends>
+      <name>restore_ejsappbooking_activity_task</name>
+      <full_name>\restore_ejsappbooking_activity_task</full_name>
+      <docblock line="37">
+        <description>ejsappbooking restore task that provides all the settings and steps to perform one
+complete restore of the activity</description>
+        <long-description/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="46" package="Default">
+        <name>define_my_settings</name>
+        <full_name>define_my_settings</full_name>
+        <docblock line="43">
+          <description>Define (add) particular settings this activity can have</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="53" package="Default">
+        <name>define_my_steps</name>
+        <full_name>define_my_steps</full_name>
+        <docblock line="50">
+          <description>Define (add) particular steps this activity can have</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="61" package="Default">
+        <name>define_decode_contents</name>
+        <full_name>define_decode_contents</full_name>
+        <docblock line="57">
+          <description>Define the contents in the activity that must be
+processed by the link decoder</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="73" package="Default">
+        <name>define_decode_rules</name>
+        <full_name>define_decode_rules</full_name>
+        <docblock line="69">
+          <description>Define the decoding rules for links belonging
+to the activity to be executed by the link decoder</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="88" package="Default">
+        <name>define_restore_log_rules</name>
+        <full_name>define_restore_log_rules</full_name>
+        <docblock line="82">
+          <description>Define the restore log rules that will be applied
+by the {@link restore_logs_processor} when restoring
+ejsappbooking logs.</description>
+          <long-description>&lt;p&gt;It must return one array
+of {@link restore_log_rule} objects&lt;/p&gt;</long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="global" line="112" package="Default">
+        <name>define_restore_log_rules_for_course</name>
+        <full_name>define_restore_log_rules_for_course</full_name>
+        <docblock line="102">
+          <description>Define the restore log rules that will be applied
+by the {@link restore_logs_processor} when restoring
+course logs.</description>
+          <long-description>&lt;p&gt;It must return one array
+of {@link restore_log_rule} objects&lt;/p&gt;
+
+&lt;p&gt;Note this rules are applied when restoring course logs
+by the restore final task, but are defined here at
+activity level. All them are rules not linked to any module instance (cmid = 0)&lt;/p&gt;</long-description>
+        </docblock>
+      </method>
+    </class>
+  </file>
+  <file path="backup\moodle2\restore_ejsappbooking_stepslib.php" hash="07d7136967fbe5d2612c43cf9ad7612a" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>Steps file to perform the EJSAppBooking restore</description>
+      <long-description/>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <class final="false" abstract="false" namespace="global" line="38" package="Default">
+      <extends>\restore_activity_structure_step</extends>
+      <name>restore_ejsappbooking_activity_structure_step</name>
+      <full_name>\restore_ejsappbooking_activity_structure_step</full_name>
+      <docblock line="35">
+        <description>Structure step to restore one EJSAppBooking activity</description>
+        <long-description/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="43" package="Default">
+        <name>define_structure</name>
+        <full_name>define_structure</full_name>
+        <docblock line="40">
+          <description>Define structure</description>
+          <long-description/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="55" package="Default">
+        <name>process_ejsappbooking</name>
+        <full_name>process_ejsappbooking</full_name>
+        <docblock line="51">
+          <description>Process table process_ejsappbooking</description>
+          <long-description/>
+          <tag line="51" name="param" description="" type="\stdClass" variable="$data">
+            <type by_reference="false">\stdClass</type>
+          </tag>
+        </docblock>
+        <argument line="55">
+          <name>$data</name>
+          <default/>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="global" line="78" package="Default">
+        <name>after_execute</name>
+        <full_name>after_execute</full_name>
+        <docblock line="75">
+          <description>Do nothing</description>
+          <long-description/>
+        </docblock>
+      </method>
+    </class>
+  </file>
+  <file path="db\access.php" hash="3546a2349dcb82c57ca3005892052cef" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>Capability definitions for the ejsappbooking module</description>
+      <long-description>&lt;p&gt;The variable name for the capability definitions array is $capabilities&lt;/p&gt;</long-description>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+  </file>
+  <file path="db\install.php" hash="200a3db4e843452abf96c717ba15b363" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>This file replaces the legacy STATEMENTS section in db/install.xml,
+lib.php/modulename_install() post installation hook and partially defaults.php</description>
+      <long-description/>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <function namespace="global" line="40" package="mod\ejsappbooking">
+      <name>xmldb_ejsappbooking_install</name>
+      <full_name>\xmldb_ejsappbooking_install</full_name>
+      <docblock line="35">
+        <description>Post installation procedure</description>
+        <long-description/>
+        <tag line="35" name="see" description="\global\upgrade_plugins_modules()" refers="\global\upgrade_plugins_modules()"/>
+      </docblock>
+    </function>
+    <function namespace="global" line="48" package="mod\ejsappbooking">
+      <name>xmldb_ejsappbooking_install_recovery</name>
+      <full_name>\xmldb_ejsappbooking_install_recovery</full_name>
+      <docblock line="43">
+        <description>Post installation recovery procedure</description>
+        <long-description/>
+        <tag line="43" name="see" description="\global\upgrade_plugins_modules()" refers="\global\upgrade_plugins_modules()"/>
+      </docblock>
+    </function>
+  </file>
+  <file path="db\log.php" hash="f36541ba54437eae113b4c28bfdc0f78" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>Definition of log events</description>
+      <long-description>&lt;p&gt;NOTE: this is an example how to insert log event during installation/update.&lt;/p&gt;</long-description>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+  </file>
+  <file path="db\uninstall.php" hash="be2e4eec317cc36b2d8e4ad709aa71d1" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>Uninstall file for the ejsapp module</description>
+      <long-description/>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <function namespace="global" line="39" package="mod\ejsappbooking">
+      <name>xmldb_ejsappbooking_uninstall</name>
+      <full_name>\xmldb_ejsappbooking_uninstall</full_name>
+      <docblock line="34">
+        <description>Custom uninstallation procedure</description>
+        <long-description>&lt;p&gt;Custom uninstallation procedure&lt;/p&gt;</long-description>
+      </docblock>
+    </function>
+  </file>
+  <file path="db\upgrade.php" hash="760ed7a16f4a1d588666bf7d0639f585" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>This file keeps track of upgrades to the ejsappbooking module</description>
+      <long-description>&lt;p&gt;Sometimes, changes between versions involve alterations to database
+structures and other major things that may break installations. The upgrade
+function in this file will attempt to perform all the necessary actions to
+upgrade your older installation to the current version. If there's something
+it cannot do itself, it will tell you what you need to do.  The commands in
+here will all be database-neutral, using the functions defined in DLL libraries.&lt;/p&gt;</long-description>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <function namespace="global" line="49" package="mod\ejsappbooking">
+      <name>xmldb_ejsappbooking_upgrade</name>
+      <full_name>\xmldb_ejsappbooking_upgrade</full_name>
+      <docblock line="43">
+        <description>Execute ejsappbooking upgrade from the given old version</description>
+        <long-description/>
+        <tag line="43" name="param" description="" type="int" variable="$oldversion">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="43" name="return" description="" type="bool">
+          <type by_reference="false">bool</type>
+        </tag>
+      </docblock>
+      <argument line="49">
+        <name>$oldversion</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+  </file>
+  <file path="index.php" hash="384c9e0f17d5384847314343e45f6d63" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>This page is used by Moodle when listing all the instances of your module that are in a
+particular course with the course id being passed to this script</description>
+      <long-description/>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="36" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <include line="37" type="Require Once" package="Default">
+      <name/>
+    </include>
+  </file>
+  <file path="lang\en\ejsappbooking.php" hash="9c4a298379ebc46055b7816b7396ca31" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>Spanish strings for ejsappbooking</description>
+      <long-description/>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+  </file>
+  <file path="lang\es\ejsappbooking.php" hash="4f55d3068a5ff0a17aedc045dec88346" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>English strings for ejsappbooking</description>
+      <long-description/>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+  </file>
+  <file path="lib.php" hash="5bb45266bca86f20225134ffbbc3fb2b" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>Library of interface functions and constants for module ejsappbooking</description>
+      <long-description>&lt;p&gt;All the core Moodle functions, neeeded to allow the module to work
+integrated in Moodle are here.&lt;/p&gt;</long-description>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="412" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <include line="435" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <function namespace="global" line="54" package="mod\ejsappbooking">
+      <name>ejsappbooking_supports</name>
+      <full_name>\ejsappbooking_supports</full_name>
+      <docblock line="47">
+        <description>Returns the information on whether the module supports a feature</description>
+        <long-description/>
+        <tag line="47" name="see" description="in lib/moodlelib.php" refers="\global\plugin_supports()"/>
+        <tag line="47" name="param" description="FEATURE_xx constant for requested feature" type="string" variable="$feature">
+          <type by_reference="false">string</type>
+        </tag>
+        <tag line="47" name="return" description="true if the feature is supported, null if unknown" type="mixed">
+          <type by_reference="false">mixed</type>
+        </tag>
+      </docblock>
+      <argument line="54">
+        <name>$feature</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="76" package="mod\ejsappbooking">
+      <name>ejsappbooking_add_instance</name>
+      <full_name>\ejsappbooking_add_instance</full_name>
+      <docblock line="65">
+        <description>Saves a new instance of the ejsappbooking into the database</description>
+        <long-description>&lt;p&gt;Given an object containing all the necessary data,
+(defined by the form in mod_form.php) this function
+will create a new instance and return the id number
+of the new instance.&lt;/p&gt;</long-description>
+        <tag line="65" name="param" description="An object from the form in mod_form.php" type="object" variable="$ejsappbooking">
+          <type by_reference="false">object</type>
+        </tag>
+        <tag line="65" name="return" description="The id of the newly inserted ejsappbooking record" type="int">
+          <type by_reference="false">int</type>
+        </tag>
+      </docblock>
+      <argument line="76">
+        <name>$ejsappbooking</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="135" package="mod\ejsappbooking">
+      <name>ejsappbooking_update_instance</name>
+      <full_name>\ejsappbooking_update_instance</full_name>
+      <docblock line="125">
+        <description>Updates an instance of the ejsappbooking in the database</description>
+        <long-description>&lt;p&gt;Given an object containing all the necessary data,
+(defined by the form in mod_form.php) this function
+will update an existing instance with new data.&lt;/p&gt;</long-description>
+        <tag line="125" name="param" description="An object from the form in mod_form.php" type="object" variable="$ejsappbooking">
+          <type by_reference="false">object</type>
+        </tag>
+        <tag line="125" name="return" description="Success/Fail" type="boolean">
+          <type by_reference="false">boolean</type>
+        </tag>
+      </docblock>
+      <argument line="135">
+        <name>$ejsappbooking</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="154" package="mod\ejsappbooking">
+      <name>ejsappbooking_delete_instance</name>
+      <full_name>\ejsappbooking_delete_instance</full_name>
+      <docblock line="144">
+        <description>Removes an instance of the ejsappbooking from the database</description>
+        <long-description>&lt;p&gt;Given an ID of an instance of this module,
+this function will permanently delete the instance
+and any data that depends on it.&lt;/p&gt;</long-description>
+        <tag line="144" name="param" description="Id of the module instance" type="int" variable="$id">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="144" name="return" description="Success/Failure" type="boolean">
+          <type by_reference="false">boolean</type>
+        </tag>
+      </docblock>
+      <argument line="154">
+        <name>$id</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="186" package="mod\ejsappbooking">
+      <name>ejsappbooking_user_outline</name>
+      <full_name>\ejsappbooking_user_outline</full_name>
+      <docblock line="173">
+        <description>Returns a small object with summary information about what a
+user has done with a given particular instance of this module
+Used for user activity reports.</description>
+        <long-description>&lt;p&gt;$return-&gt;time = the time they did it
+$return-&gt;info = a short text description&lt;/p&gt;</long-description>
+        <tag line="173" name="param" description="" type="int" variable="$course">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="173" name="param" description="" type="\global\" variable="$user"/>
+        <tag line="173" name="param" description="" type="\global\" variable="$mod"/>
+        <tag line="173" name="param" description="" type="\global\" variable="$ejsappbooking"/>
+        <tag line="173" name="return" description="" type="\stdClass|null">
+          <type by_reference="false">\stdClass</type>
+          <type by_reference="false">null</type>
+        </tag>
+      </docblock>
+      <argument line="186">
+        <name>$course</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="186">
+        <name>$user</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="186">
+        <name>$mod</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="186">
+        <name>$ejsappbooking</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="204" package="mod\ejsappbooking">
+      <name>ejsappbooking_user_complete</name>
+      <full_name>\ejsappbooking_user_complete</full_name>
+      <docblock line="194">
+        <description>Prints a detailed representation of what a user has done with
+a given particular instance of this module, for user activity reports.</description>
+        <long-description/>
+        <tag line="194" name="param" description="the current course record" type="\stdClass" variable="$course">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="194" name="param" description="the record of the user we are generating report for" type="\stdClass" variable="$user">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="194" name="param" description="course module info" type="\cm_info" variable="$mod">
+          <type by_reference="false">\cm_info</type>
+        </tag>
+        <tag line="194" name="param" description="the module instance record" type="\stdClass" variable="$ejsappbooking">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="194" name="return" description="is supposed to echp directly" type="\void,">
+          <type by_reference="false">\void,</type>
+        </tag>
+      </docblock>
+      <argument line="204">
+        <name>$course</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="204">
+        <name>$user</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="204">
+        <name>$mod</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="204">
+        <name>$ejsappbooking</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="217" package="mod\ejsappbooking">
+      <name>ejsappbooking_print_recent_activity</name>
+      <full_name>\ejsappbooking_print_recent_activity</full_name>
+      <docblock line="207">
+        <description>Given a course and a time, this module should find recent activity
+that has occurred in ejsappbooking activities and print it out.</description>
+        <long-description>&lt;p&gt;Return true if there was output, or false is there was none.&lt;/p&gt;</long-description>
+        <tag line="207" name="param" description="" type="\global\" variable="$course"/>
+        <tag line="207" name="param" description="" type="\global\" variable="$viewfullnames"/>
+        <tag line="207" name="param" description="" type="\global\" variable="$timestart"/>
+        <tag line="207" name="return" description="" type="boolean">
+          <type by_reference="false">boolean</type>
+        </tag>
+      </docblock>
+      <argument line="217">
+        <name>$course</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="217">
+        <name>$viewfullnames</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="217">
+        <name>$timestart</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="237" package="mod\ejsappbooking">
+      <name>ejsappbooking_get_recent_mod_activity</name>
+      <full_name>\ejsappbooking_get_recent_mod_activity</full_name>
+      <docblock line="221">
+        <description>Prepares the recent activity data</description>
+        <long-description>&lt;p&gt;This callback function is supposed to populate the passed array with
+custom activity records. These records are then rendered into HTML via
+{@link ejsappbooking_print_recent_mod_activity()}.&lt;/p&gt;</long-description>
+        <tag line="221" name="param" description="sequentially indexed array of objects with the 'cmid' property" type="array" variable="$activities">
+          <type by_reference="false">array</type>
+        </tag>
+        <tag line="221" name="param" description="the index in the $activities to use for the next record" type="int" variable="$index">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="221" name="param" description="append activity since this time" type="int" variable="$timestart">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="221" name="param" description="the id of the course we produce the report for" type="int" variable="$courseid">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="221" name="param" description="course module id" type="int" variable="$cmid">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="221" name="param" description="check for a particular user's activity only, defaults to 0 (all users)" type="int" variable="$userid">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="221" name="param" description="check for a particular group's activity only, defaults to 0 (all groups)" type="int" variable="$groupid">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="221" name="return" description="adds items into $activities and increases $index" type="void">
+          <type by_reference="false">void</type>
+        </tag>
+      </docblock>
+      <argument line="237">
+        <name>$activities</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="237">
+        <name>$index</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="237">
+        <name>$timestart</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="237">
+        <name>$courseid</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="237">
+        <name>$cmid</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="237">
+        <name>$userid</name>
+        <default>0</default>
+        <type/>
+      </argument>
+      <argument line="237">
+        <name>$groupid</name>
+        <default>0</default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="249" package="mod\ejsappbooking">
+      <name>ejsappbooking_print_recent_mod_activity</name>
+      <full_name>\ejsappbooking_print_recent_mod_activity</full_name>
+      <docblock line="240">
+        <description>Prints single activity item prepared by {@see ejsappbooking_get_recent_mod_activity()}</description>
+        <long-description/>
+        <tag line="240" name="param" description="" type="\global\" variable="$activity"/>
+        <tag line="240" name="param" description="" type="\global\" variable="$courseid"/>
+        <tag line="240" name="param" description="" type="\global\" variable="$detail"/>
+        <tag line="240" name="param" description="" type="\global\" variable="$modnames"/>
+        <tag line="240" name="param" description="" type="\global\" variable="$viewfullnames"/>
+        <tag line="240" name="return" description="" type="void">
+          <type by_reference="false">void</type>
+        </tag>
+      </docblock>
+      <argument line="249">
+        <name>$activity</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="249">
+        <name>$courseid</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="249">
+        <name>$detail</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="249">
+        <name>$modnames</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="249">
+        <name>$viewfullnames</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="259" package="mod\ejsappbooking">
+      <name>ejsappbooking_cron</name>
+      <full_name>\ejsappbooking_cron</full_name>
+      <docblock line="253">
+        <description>Function to be run periodically according to the moodle cron
+This function checks whether all users and all ejsapps are in the ejsappbooking_usersaccess database.</description>
+        <long-description>&lt;p&gt;If not, it add them. It is necessary when a ejsappbooking instance has already been added to a course and then new ejsapp are added or new users are enrolled to that course. Also, the function checks if there are users and ejsapps in the ejsappbooking_usersaccess database that no longer exist. In that case, it deletes them.&lt;/p&gt;</long-description>
+        <tag line="253" name="return" description="" type="boolean">
+          <type by_reference="false">boolean</type>
+        </tag>
+      </docblock>
+    </function>
+    <function namespace="global" line="352" package="mod\ejsappbooking">
+      <name>ejsappbooking_get_extra_capabilities</name>
+      <full_name>\ejsappbooking_get_extra_capabilities</full_name>
+      <docblock line="346">
+        <description>Returns all other caps used in the module</description>
+        <long-description/>
+        <tag line="346" name="example" description="return array('moodle/site:accessallgroups');"/>
+        <tag line="346" name="return" description="" type="array">
+          <type by_reference="false">array</type>
+        </tag>
+      </docblock>
+    </function>
+    <function namespace="global" line="372" package="mod\ejsappbooking">
+      <name>ejsappbooking_scale_used</name>
+      <full_name>\ejsappbooking_scale_used</full_name>
+      <docblock line="360">
+        <description>Is a given scale used by the instance of ejsappbooking?</description>
+        <long-description>&lt;p&gt;This function returns if a scale is being used by one ejsappbooking
+if it has support for grading and scales. Commented code should be
+modified if necessary. See forum, glossary or journal modules
+as reference.&lt;/p&gt;</long-description>
+        <tag line="360" name="param" description="ID of an instance of this module" type="int" variable="$ejsappbookingid">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="360" name="param" description="" type="bool" variable="$scaleid">
+          <type by_reference="false">bool</type>
+        </tag>
+        <tag line="360" name="return" description="true if the scale is used by the given ejsappbooking instance" type="bool">
+          <type by_reference="false">bool</type>
+        </tag>
+      </docblock>
+      <argument line="372">
+        <name>$ejsappbookingid</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="372">
+        <name>$scaleid</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="391" package="mod\ejsappbooking">
+      <name>ejsappbooking_scale_used_anywhere</name>
+      <full_name>\ejsappbooking_scale_used_anywhere</full_name>
+      <docblock line="383">
+        <description>Checks if scale is being used by any instance of ejsappbooking.</description>
+        <long-description>&lt;p&gt;This is used to find out if scale used anywhere.&lt;/p&gt;</long-description>
+        <tag line="383" name="param" description="int" type="\global\" variable="$scaleid"/>
+        <tag line="383" name="return" description="true if the scale is used by any ejsappbooking instance" type="boolean">
+          <type by_reference="false">boolean</type>
+        </tag>
+      </docblock>
+      <argument line="391">
+        <name>$scaleid</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="410" package="mod\ejsappbooking">
+      <name>ejsappbooking_grade_item_update</name>
+      <full_name>\ejsappbooking_grade_item_update</full_name>
+      <docblock line="402">
+        <description>Creates or updates grade item for the give ejsappbooking instance</description>
+        <long-description>&lt;p&gt;Needed by grade_update_mod_grades() in lib/gradelib.php&lt;/p&gt;</long-description>
+        <tag line="402" name="param" description="instance object with extra cmidnumber and modname property" type="\stdClass" variable="$ejsappbooking">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="402" name="return" description="" type="void">
+          <type by_reference="false">void</type>
+        </tag>
+      </docblock>
+      <argument line="410">
+        <name>$ejsappbooking</name>
+        <default/>
+        <type>\stdClass</type>
+      </argument>
+    </function>
+    <function namespace="global" line="433" package="mod\ejsappbooking">
+      <name>ejsappbooking_update_grades</name>
+      <full_name>\ejsappbooking_update_grades</full_name>
+      <docblock line="424">
+        <description>Update ejsappbooking grades in the gradebook</description>
+        <long-description>&lt;p&gt;Needed by grade_update_mod_grades() in lib/gradelib.php&lt;/p&gt;</long-description>
+        <tag line="424" name="param" description="instance object with extra cmidnumber and modname property" type="\stdClass" variable="$ejsappbooking">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="424" name="param" description="update grade of specific user only, 0 means all participants" type="int" variable="$userid">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="424" name="return" description="" type="void">
+          <type by_reference="false">void</type>
+        </tag>
+      </docblock>
+      <argument line="433">
+        <name>$ejsappbooking</name>
+        <default/>
+        <type>\stdClass</type>
+      </argument>
+      <argument line="433">
+        <name>$userid</name>
+        <default>0</default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="458" package="mod\ejsappbooking">
+      <name>ejsappbooking_get_file_areas</name>
+      <full_name>\ejsappbooking_get_file_areas</full_name>
+      <docblock line="447">
+        <description>Returns the lists of all browsable file areas within the given module context</description>
+        <long-description>&lt;p&gt;The file area 'intro' for the activity introduction field is added automatically
+by {@link file_browser::get_file_info_context_module()}&lt;/p&gt;</long-description>
+        <tag line="447" name="param" description="" type="\stdClass" variable="$course">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="447" name="param" description="" type="\stdClass" variable="$cm">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="447" name="param" description="" type="\stdClass" variable="$context">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="447" name="return" description="of [(string)filearea] =&gt; (string)description" type="array">
+          <type by_reference="false">array</type>
+        </tag>
+      </docblock>
+      <argument line="458">
+        <name>$course</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="458">
+        <name>$cm</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="458">
+        <name>$context</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="479" package="mod\ejsappbooking">
+      <name>ejsappbooking_get_file_info</name>
+      <full_name>\ejsappbooking_get_file_info</full_name>
+      <docblock line="462">
+        <description>File browsing support for ejsappbooking file areas</description>
+        <long-description/>
+        <tag line="462" name="package" description="mod_ejsappbooking"/>
+        <tag line="462" name="category" description="files"/>
+        <tag line="462" name="param" description="" type="\file_browser" variable="$browser">
+          <type by_reference="false">\file_browser</type>
+        </tag>
+        <tag line="462" name="param" description="" type="array" variable="$areas">
+          <type by_reference="false">array</type>
+        </tag>
+        <tag line="462" name="param" description="" type="\stdClass" variable="$course">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="462" name="param" description="" type="\stdClass" variable="$cm">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="462" name="param" description="" type="\stdClass" variable="$context">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="462" name="param" description="" type="string" variable="$filearea">
+          <type by_reference="false">string</type>
+        </tag>
+        <tag line="462" name="param" description="" type="int" variable="$itemid">
+          <type by_reference="false">int</type>
+        </tag>
+        <tag line="462" name="param" description="" type="string" variable="$filepath">
+          <type by_reference="false">string</type>
+        </tag>
+        <tag line="462" name="param" description="" type="string" variable="$filename">
+          <type by_reference="false">string</type>
+        </tag>
+        <tag line="462" name="return" description="instance or null if not found" type="\file_info">
+          <type by_reference="false">\file_info</type>
+        </tag>
+      </docblock>
+      <argument line="479">
+        <name>$browser</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$areas</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$course</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$cm</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$context</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$filearea</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$itemid</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$filepath</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="479">
+        <name>$filename</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="497" package="mod\ejsappbooking">
+      <name>ejsappbooking_pluginfile</name>
+      <full_name>\ejsappbooking_pluginfile</full_name>
+      <docblock line="483">
+        <description>Serves the files from the ejsappbooking file areas</description>
+        <long-description/>
+        <tag line="483" name="package" description="mod_ejsappbooking"/>
+        <tag line="483" name="category" description="files"/>
+        <tag line="483" name="param" description="the course object" type="\stdClass" variable="$course">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="483" name="param" description="the course module object" type="\stdClass" variable="$cm">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="483" name="param" description="the ejsappbooking's context" type="\stdClass" variable="$context">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="483" name="param" description="the name of the file area" type="string" variable="$filearea">
+          <type by_reference="false">string</type>
+        </tag>
+        <tag line="483" name="param" description="extra arguments (itemid, path)" type="array" variable="$args">
+          <type by_reference="false">array</type>
+        </tag>
+        <tag line="483" name="param" description="whether or not force download" type="bool" variable="$forcedownload">
+          <type by_reference="false">bool</type>
+        </tag>
+        <tag line="483" name="param" description="additional options affecting the file serving" type="array" variable="$options">
+          <type by_reference="false">array</type>
+        </tag>
+      </docblock>
+      <argument line="497">
+        <name>$course</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="497">
+        <name>$cm</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="497">
+        <name>$context</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="497">
+        <name>$filearea</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="497">
+        <name>$args</name>
+        <default/>
+        <type>array</type>
+      </argument>
+      <argument line="497">
+        <name>$forcedownload</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="497">
+        <name>$options</name>
+        <default>array()</default>
+        <type>array</type>
+      </argument>
+    </function>
+    <function namespace="global" line="523" package="mod\ejsappbooking">
+      <name>ejsappbooking_extend_navigation</name>
+      <full_name>\ejsappbooking_extend_navigation</full_name>
+      <docblock line="513">
+        <description>Extends the global navigation tree by adding ejsappbooking nodes if there is a relevant content</description>
+        <long-description>&lt;p&gt;This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.&lt;/p&gt;</long-description>
+        <tag line="513" name="param" description="An object representing the navigation tree node of the ejsappbooking module instance" type="\navigation_node" variable="$navref">
+          <type by_reference="false">\navigation_node</type>
+        </tag>
+        <tag line="513" name="param" description="" type="\stdClass" variable="$course">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="513" name="param" description="" type="\stdClass" variable="$module">
+          <type by_reference="false">\stdClass</type>
+        </tag>
+        <tag line="513" name="param" description="" type="\cm_info" variable="$cm">
+          <type by_reference="false">\cm_info</type>
+        </tag>
+      </docblock>
+      <argument line="523">
+        <name>$navref</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="523">
+        <name>$course</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="523">
+        <name>$module</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="523">
+        <name>$cm</name>
+        <default/>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="535" package="mod\ejsappbooking">
+      <name>ejsappbooking_extend_settings_navigation</name>
+      <full_name>\ejsappbooking_extend_settings_navigation</full_name>
+      <docblock line="526">
+        <description>Extends the settings navigation with the ejsappbooking settings</description>
+        <long-description>&lt;p&gt;This function is called when the context for the page is a ejsappbooking module. This is not called by AJAX
+so it is safe to rely on the $PAGE.&lt;/p&gt;</long-description>
+        <tag line="526" name="param" description="{@link settings_navigation}" type="\settings_navigation" variable="$settingsnav">
+          <type by_reference="false">\settings_navigation</type>
+        </tag>
+        <tag line="526" name="param" description="{@link navigation_node}" type="\navigation_node" variable="$ejsappbookingnode">
+          <type by_reference="false">\navigation_node</type>
+        </tag>
+      </docblock>
+      <argument line="535">
+        <name>$settingsnav</name>
+        <default/>
+        <type/>
+      </argument>
+      <argument line="535">
+        <name>$ejsappbookingnode</name>
+        <default>null</default>
+        <type/>
+      </argument>
+    </function>
+  </file>
+  <file path="locallib.php" hash="4ea2c8d892d37147396cac000974fd48" package="mod\ejsappbooking">
+    <docblock line="25">
+      <description>Internal library of functions for module ejsappbooking</description>
+      <long-description>&lt;p&gt;All the ejsappbooking specific functions, needed to implement the module
+logic, are here.&lt;/p&gt;</long-description>
+      <tag line="25" name="package" description="mod"/>
+      <tag line="25" name="subpackage" description="ejsappbooking"/>
+      <tag line="25" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="25" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+  </file>
+  <file path="mod_form.php" hash="bc1444f180446757ecdd261958970008" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>The main ejsappbooking configuration form</description>
+      <long-description>&lt;p&gt;It uses the standard core Moodle formslib. For more info about them, please
+visit: http://docs.moodle.org/en/Development:lib/formslib.php&lt;/p&gt;</long-description>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="41" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <class final="false" abstract="false" namespace="global" line="46" package="Default">
+      <extends>\moodleform_mod</extends>
+      <name>mod_ejsappbooking_mod_form</name>
+      <full_name>\mod_ejsappbooking_mod_form</full_name>
+      <docblock line="43">
+        <description>Module instance settings form</description>
+        <long-description/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="global" line="51" package="Default">
+        <name>definition</name>
+        <full_name>definition</full_name>
+        <docblock line="48">
+          <description>Defines forms elements</description>
+          <long-description/>
+        </docblock>
+      </method>
+    </class>
+  </file>
+  <file path="select_rem_lab.php" hash="523de7f9cd8dc632610b92734b0193be" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>Prints a particular instance of ejsappbooking</description>
+      <long-description/>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="36" type="Require Once" package="Default">
+      <name>../../config.php</name>
+    </include>
+    <include line="65" type="Require Once" package="Default">
+      <name>../../filter/multilang/filter.php</name>
+    </include>
+  </file>
+  <file path="select_users.php" hash="091811f91e6a433ff2a7526130d27cf7" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>Prints a particular instance of ejsappbooking</description>
+      <long-description></long-description>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="36" type="Require Once" package="Default">
+      <name>../../config.php</name>
+    </include>
+    <include line="37" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <include line="38" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <constant namespace="global" line="40" package="mod\ejsappbooking">
+      <name>USER_SMALL_CLASS</name>
+      <full_name>\USER_SMALL_CLASS</full_name>
+      <value>20</value>
+    </constant>
+    <constant namespace="global" line="41" package="mod\ejsappbooking">
+      <name>USER_LARGE_CLASS</name>
+      <full_name>\USER_LARGE_CLASS</full_name>
+      <value>200</value>
+    </constant>
+    <constant namespace="global" line="42" package="mod\ejsappbooking">
+      <name>DEFAULT_PAGE_SIZE</name>
+      <full_name>\DEFAULT_PAGE_SIZE</full_name>
+      <value>20</value>
+    </constant>
+    <constant namespace="global" line="43" package="mod\ejsappbooking">
+      <name>SHOW_ALL_PAGE_SIZE</name>
+      <full_name>\SHOW_ALL_PAGE_SIZE</full_name>
+      <value>5000</value>
+    </constant>
+    <constant namespace="global" line="44" package="mod\ejsappbooking">
+      <name>MODE_BRIEF</name>
+      <full_name>\MODE_BRIEF</full_name>
+      <value>0</value>
+    </constant>
+    <constant namespace="global" line="45" package="mod\ejsappbooking">
+      <name>MODE_USERDETAILS</name>
+      <full_name>\MODE_USERDETAILS</full_name>
+      <value>1</value>
+    </constant>
+    <function namespace="global" line="818" package="mod\ejsappbooking">
+      <name>get_course_lastaccess_sql</name>
+      <full_name>\get_course_lastaccess_sql</full_name>
+      <docblock line="813">
+        <description>returns the course last access</description>
+        <long-description></long-description>
+        <tag line="813" name="param" description="" type="int" variable="$accesssince">
+          <type by_reference="false">int</type>
+        </tag>
+      </docblock>
+      <argument line="818">
+        <name>$accesssince</name>
+        <default>''</default>
+        <type/>
+      </argument>
+    </function>
+    <function namespace="global" line="834" package="mod\ejsappbooking">
+      <name>get_user_lastaccess_sql</name>
+      <full_name>\get_user_lastaccess_sql</full_name>
+      <docblock line="829">
+        <description>returns the user last access</description>
+        <long-description></long-description>
+        <tag line="829" name="param" description="" type="int" variable="$accesssince">
+          <type by_reference="false">int</type>
+        </tag>
+      </docblock>
+      <argument line="834">
+        <name>$accesssince</name>
+        <default>''</default>
+        <type/>
+      </argument>
+    </function>
+  </file>
+  <file path="send_messages.php" hash="cc66ee1614bbfde66fdd262f19c68c35" package="mod\ejsappbooking">
+    <docblock line="28">
+      <description>File that sends an invitation to join the collaborative session by (1) email and (2) moodle message</description>
+      <long-description></long-description>
+      <tag line="28" name="package" description="mod"/>
+      <tag line="28" name="subpackage" description="ejsappbooking"/>
+      <tag line="28" name="copyright" description="2012 Luis de la Torre, Ruben Heradio and Carlos Jara"/>
+      <tag line="28" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="37" type="Require Once" package="Default">
+      <name>../../config.php</name>
+    </include>
+    <include line="40" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <include line="41" type="Require Once" package="Default">
+      <name/>
+    </include>
+  </file>
+  <file path="version.php" hash="dda50a7b238511888b5e88bd3c4b6817" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>Defines the version of ejsappbooking</description>
+      <long-description/>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+  </file>
+  <file path="view.php" hash="39fc79c4e327dd7d4e658d1ed2ed1a88" package="mod\ejsappbooking">
+    <docblock line="26">
+      <description>Prints a particular instance of ejsappbooking</description>
+      <long-description></long-description>
+      <tag line="26" name="package" description="mod"/>
+      <tag line="26" name="subpackage" description="ejsappbooking"/>
+      <tag line="26" name="copyright" description="2012 Javier Pavon, Luis de la Torre and Ruben Heradio"/>
+      <tag line="26" name="license" description="http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later"/>
+    </docblock>
+    <include line="35" type="Require Once" package="Default">
+      <name/>
+    </include>
+    <include line="36" type="Require Once" package="Default">
+      <name/>
+    </include>
+  </file>
+  <package name="Default" full_name="Default"/>
+  <package name="mod" full_name="mod">
+    <package name="ejsappbooking" full_name="mod\ejsappbooking"/>
+  </package>
+  <namespace name="global" full_name="global"/>
+  <marker count="0">todo</marker>
+  <marker count="0">fixme</marker>
+  <deprecated count="0"/>
+</project>

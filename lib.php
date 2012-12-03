@@ -55,7 +55,7 @@ function ejsappbooking_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:             return true;
         case FEATURE_MOD_ARCHETYPE:         return MOD_ARCHETYPE_RESOURCE;
-        case FEATURE_BACKUP_MOODLE2:        return false;
+        case FEATURE_BACKUP_MOODLE2:        return true;
         case FEATURE_SHOW_DESCRIPTION:      return true;
         
         default:                        return null;
@@ -71,7 +71,6 @@ function ejsappbooking_supports($feature) {
  * of the new instance.
  *
  * @param object $ejsappbooking An object from the form in mod_form.php
- * @param mod_ejsappbooking_mod_form $mform
  * @return int The id of the newly inserted ejsappbooking record
  */
 function ejsappbooking_add_instance($ejsappbooking) {
@@ -131,7 +130,6 @@ function ejsappbooking_add_instance($ejsappbooking) {
  * will update an existing instance with new data.
  *
  * @param object $ejsappbooking An object from the form in mod_form.php
- * @param mod_ejsappbooking_mod_form $mform
  * @return boolean Success/Fail
  */
 function ejsappbooking_update_instance($ejsappbooking) {
@@ -179,6 +177,10 @@ function ejsappbooking_delete_instance($id) {
  * $return->time = the time they did it
  * $return->info = a short text description
  *
+ * @param int $course
+ * @param $user
+ * @param $mod
+ * @param $ejsappbooking
  * @return stdClass|null
  */
 function ejsappbooking_user_outline($course, $user, $mod, $ejsappbooking) {
@@ -207,6 +209,9 @@ function ejsappbooking_user_complete($course, $user, $mod, $ejsappbooking) {
  * that has occurred in ejsappbooking activities and print it out.
  * Return true if there was output, or false is there was none.
  *
+ * @param $course
+ * @param $viewfullnames
+ * @param $timestart
  * @return boolean
  */
 function ejsappbooking_print_recent_activity($course, $viewfullnames, $timestart) {
@@ -234,10 +239,15 @@ function ejsappbooking_get_recent_mod_activity(&$activities, &$index, $timestart
 
 /**
  * Prints single activity item prepared by {@see ejsappbooking_get_recent_mod_activity()}
-
+ * @param $activity
+ * @param $courseid
+ * @param $detail
+ * @param $modnames
+ * @param $viewfullnames
  * @return void
  */
 function ejsappbooking_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+    // do nothing
 }
 
 /**
@@ -245,7 +255,6 @@ function ejsappbooking_print_recent_mod_activity($activity, $courseid, $detail, 
  * This function checks whether all users and all ejsapps are in the ejsappbooking_usersaccess database. If not, it add them. It is necessary when a ejsappbooking instance has already been added to a course and then new ejsapp are added or new users are enrolled to that course. Also, the function checks if there are users and ejsapps in the ejsappbooking_usersaccess database that no longer exist. In that case, it deletes them.
  *
  * @return boolean
- * @todo Finish documenting this function
  **/
 function ejsappbooking_cron () {
     global $DB;
@@ -282,24 +291,25 @@ function ejsappbooking_cron () {
               }
             }
           }
-          //Grant remote access to admin user:
-          $ejsappbooking_usersaccess->userid = 2;
-          $ejsappbooking_usersaccess->allowremaccess = 1;
-          $DB->insert_record('ejsappbooking_usersaccess', $ejsappbooking_usersaccess);
+          //Check whether the admin user already has booking rights and, if not, grant them to him
+          if (!$DB->record_exists('ejsappbooking_usersaccess', array('ejsappid'=>$course_ejsapp->id, 'userid'=>'2'))) {
+            $ejsappbooking_usersaccess->userid = 2;
+            $ejsappbooking_usersaccess->allowremaccess = 1;
+            $DB->insert_record('ejsappbooking_usersaccess', $ejsappbooking_usersaccess);
+          }
         } 
       }   
     }
     
     //DELETING OLD USERS AND/OR REMOTE EJSAPPS LABS:
     foreach ($ejsappbookings as $ejsappbooking) { 
-      $bookingid = $ejsappbooking->id;
       //Get context of the course to which ejsappbooking belongs to.
       $context = get_context_instance(CONTEXT_COURSE, $ejsappbooking->course);
       $users = get_enrolled_users($context);
       $ejsapps_usersaccess = $DB->get_records('ejsappbooking_usersaccess');
       foreach ($ejsapps_usersaccess as $ejsapp_usersaccess) {
         $ejsapp = $DB->get_record('ejsapp', array('id' => $ejsapp_usersaccess->ejsappid));
-        if ((!$DB->get_record('ejsapp', array('id' => $ejsapp_usersaccess->ejsappid))) || ($ejsapp->is_rem_lab == 0)) {
+        if ((!$ejsapp) || ($ejsapp->is_rem_lab == 0)) {
           $DB->delete_records('ejsappbooking_usersaccess', array('ejsappid' => $ejsapp_usersaccess->ejsappid));
         }
         $user_exists = false;
@@ -309,11 +319,26 @@ function ejsappbooking_cron () {
             break;
           }
         }
-        if ((!$user_exists) && ($ejsapp_usersaccess->userid != 2)) {
-          $DB->delete_records('ejsappbooking_usersaccess', array('userid' => $ejsapp_usersaccess->userid));
+        if (($user_exists == false) && ($ejsapp_usersaccess->userid != 2)) {
+          $DB->delete_records('ejsappbooking_usersaccess', array('bookingid' => $ejsappbooking->id, 'userid' => $ejsapp_usersaccess->userid));
         }
       }
-    }          
+    }
+    
+    //UPDATING VALID VALUES AND DELETING BOOKINGS OLDER THAN A WEEK:
+    $ejsappbookings_remlab_access = $DB->get_records('ejsappbooking_remlab_access');
+    $currenttime = date('Y-m-d H:00:00');
+    foreach ($ejsappbookings_remlab_access as $ejsappbooking_remlab_access) {
+      if ($ejsappbooking_remlab_access->endtime < $currenttime) {
+        $oneweekold = date('Y-m-d H:00:00', strtotime("-7 days"));
+        if ($ejsappbooking_remlab_access->endtime < $oneweekold) {
+          $DB->delete_records('ejsappbooking_remlab_access', array('id' => $ejsappbooking_remlab_access->id));
+        } else {
+          $ejsappbooking_remlab_access->valid = 0;
+          $DB->update_record('ejsappbooking_remlab_access',$ejsappbooking_remlab_access);
+        }
+      }
+    }
     
     return true;
 }
@@ -341,6 +366,7 @@ function ejsappbooking_get_extra_capabilities() {
  * as reference.
  *
  * @param int $ejsappbookingid ID of an instance of this module
+ * @param bool $scaleid
  * @return bool true if the scale is used by the given ejsappbooking instance
  */
 function ejsappbooking_scale_used($ejsappbookingid, $scaleid) {
@@ -494,7 +520,7 @@ function ejsappbooking_pluginfile($course, $cm, $context, $filearea, array $args
  * @param stdClass $module
  * @param cm_info $cm
  */
-function ejsappbooking_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+function ejsappbooking_extend_navigation($navref, $course, $module, $cm) {
 }
 
 /**
@@ -506,5 +532,5 @@ function ejsappbooking_extend_navigation(navigation_node $navref, stdclass $cour
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $ejsappbookingnode {@link navigation_node}
  */
-function ejsappbooking_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $ejsappbookingnode=null) {
+function ejsappbooking_extend_settings_navigation($settingsnav, $ejsappbookingnode=null) {
 }

@@ -49,33 +49,42 @@ class mod_ejsappbooking_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-      //if ( is_null($DB->get_record('ejsappbooking', array('course'=>2))) ) { 
-
+        global $DB, $OUTPUT;
+        
         $mform = $this->_form;
+        $ejsappbooking = $DB->record_exists('ejsappbooking', array('course'=>$this->current->course));
+        $update = optional_param('update', 0, PARAM_INT);
+        
+        if(!$ejsappbooking || $update>0){
+          //-------------------------------------------------------------------------------
+          // Adding the "general" fieldset, where all the common settings are showed
+          $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        //-------------------------------------------------------------------------------
-        // Adding the "general" fieldset, where all the common settings are showed
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+          // Adding the standard "name" field
+          $mform->addElement('text', 'name', get_string('ejsappbookingname', 'ejsappbooking'), array('size'=>'64'));
+          if (!empty($CFG->formatstringstriptags)) {
+              $mform->setType('name', PARAM_TEXT);
+          } else {
+              $mform->setType('name', PARAM_CLEAN);
+          }
+          $mform->addRule('name', null, 'required', null, 'client');
+          $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
+          $mform->addHelpButton('name', 'ejsappbookingname', 'ejsappbooking');
 
-        // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('ejsappbookingname', 'ejsappbooking'), array('size'=>'64'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
-        } else {
-            $mform->setType('name', PARAM_CLEAN);
-        }
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'ejsappbookingname', 'ejsappbooking');
+          // Adding the standard "intro" and "introformat" fields
+          $this->add_intro_editor();
 
-        // Adding the standard "intro" and "introformat" fields
-        $this->add_intro_editor();
-
-        // add standard elements, common to all modules
-        $this->standard_coursemodule_elements();
-        //-------------------------------------------------------------------------------
-        // add standard buttons, common to all modules
-        $this->add_action_buttons();             
+          // add standard elements, common to all modules
+          $this->standard_coursemodule_elements();
+          //-------------------------------------------------------------------------------
+          // add standard buttons, common to all modules
+          $this->add_action_buttons();
+        } else{
+            //An email activity is already set for this course.
+            $mform->addElement('html', $OUTPUT->error_text(get_string('already_enabled', 'ejsappbooking')));
+            $mform->addElement($mform->createElement('cancel'));
+            $this->standard_hidden_coursemodule_elements();
+        }             
     }
     
 }

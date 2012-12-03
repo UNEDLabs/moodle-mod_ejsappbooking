@@ -1,5 +1,0 @@
-driver=com.mysql.jdbc.Driver
-direccion=jdbc:mysql://localhost:3306/bookings_table
-user=root
-password=
-prefijo=

@@ -1,4 +1,4 @@
-puerto=5555
+port=5555
 tiempoPropagacion=5
 diasMantenimiento=1
 diasVida=10

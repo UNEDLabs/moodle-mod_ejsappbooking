@@ -42,8 +42,8 @@
       	<FIELD NAME="username" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="ejsappid"/>
         <FIELD NAME="ejsappid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The EJSApp id" PREVIOUS="username" NEXT="practiceid"/>
         <FIELD NAME="practiceid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The practice id" PREVIOUS="ejsappid" NEXT="starttime"/>
-        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Date and time in which the booking starts" PREVIOUS="practiceid" NEXT="endtime"/>
-        <FIELD NAME="endtime" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Date and time in which the booking ends" PREVIOUS="starttime" NEXT="valid"/>
+        <FIELD NAME="starttime" TYPE="datetime" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Date and time in which the booking starts" PREVIOUS="practiceid" NEXT="endtime"/>
+        <FIELD NAME="endtime" TYPE="datetime" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Date and time in which the booking ends" PREVIOUS="starttime" NEXT="valid"/>
         <FIELD NAME="valid" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the booking is still valid or not" PREVIOUS="endtime"/>
       </FIELDS>
       <KEYS>

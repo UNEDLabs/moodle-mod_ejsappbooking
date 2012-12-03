@@ -23,7 +23,7 @@
 //  (UNED), Madrid, Spain
 
 /**
- * @see uninstall_plugin()
+ * Uninstall file for the ejsapp module
  *
  * @package    mod
  * @subpackage ejsappbooking 
@@ -32,6 +32,8 @@
  */
 
 /**
+ * Custom uninstallation procedure
+ *
  * Custom uninstallation procedure
  */
 function xmldb_ejsappbooking_uninstall() {

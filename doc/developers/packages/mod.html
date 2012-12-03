@@ -1,0 +1,644 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>phpDocumentor » mod</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/mod.html"><i class="icon-folder-open"></i> mod</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">0</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<span class="empty-package"><i class="icon-folder-close"></i>mod</span><ul class="nav nav-list nav-packages"><li>
+<a href="../packages/mod.ejsappbooking.html" title="ejsappbooking"><i class="icon-folder-open"></i>ejsappbooking</a><ul class="nav nav-list nav-packages"></ul>
+</li></ul>
+</li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li class="active"><a href="../packages/mod.html">mod</a></li>
+</li></ul>
+<div class="package-indent">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li><a href="../packages/mod.html">mod</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../packages/mod.ejsappbooking.html">ejsappbooking</a>
+</li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i class="icon-custom icon-function"></i> Functions</h3>
+<a id="function_ejsappbooking_add_instance"></a><div class="element clickable function  function_ejsappbooking_add_instance" data-toggle="collapse" data-target=".function_ejsappbooking_add_instance .collapse">
+<h2>Saves a new instance of the ejsappbooking into the database</h2>
+<pre>ejsappbooking_add_instance(object $ejsappbooking) : int</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Given an object containing all the necessary data,
+(defined by the form in mod_form.php) this function
+will create a new instance and return the id number
+of the new instance.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$ejsappbooking</h4>
+<code>object</code><p>An object from the form in mod_form.php</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>int</code>The id of the newly inserted ejsappbooking record</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_cron"></a><div class="element clickable function  function_ejsappbooking_cron" data-toggle="collapse" data-target=".function_ejsappbooking_cron .collapse">
+<h2>Function to be run periodically according to the moodle cron
+This function checks whether all users and all ejsapps are in the ejsappbooking_usersaccess database.</h2>
+<pre>ejsappbooking_cron() : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>If not, it add them. It is necessary when a ejsappbooking instance has already been added to a course and then new ejsapp are added or new users are enrolled to that course. Also, the function checks if there are users and ejsapps in the ejsappbooking_usersaccess database that no longer exist. In that case, it deletes them.</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_delete_instance"></a><div class="element clickable function  function_ejsappbooking_delete_instance" data-toggle="collapse" data-target=".function_ejsappbooking_delete_instance .collapse">
+<h2>Removes an instance of the ejsappbooking from the database</h2>
+<pre>ejsappbooking_delete_instance(int $id) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Given an ID of an instance of this module,
+this function will permanently delete the instance
+and any data that depends on it.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$id</h4>
+<code>int</code><p>Id of the module instance</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>Success/Failure</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_extend_navigation"></a><div class="element clickable function  function_ejsappbooking_extend_navigation" data-toggle="collapse" data-target=".function_ejsappbooking_extend_navigation .collapse">
+<h2>Extends the global navigation tree by adding ejsappbooking nodes if there is a relevant content</h2>
+<pre>ejsappbooking_extend_navigation(\navigation_node $navref, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $course, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $module, \cm_info $cm) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$navref</h4>
+<code>\navigation_node</code><p>An object representing the navigation tree node of the ejsappbooking module instance</p></div>
+<div class="subelement argument">
+<h4>$course</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<div class="subelement argument">
+<h4>$module</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<div class="subelement argument">
+<h4>$cm</h4>
+<code>\cm_info</code>
+</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_extend_settings_navigation"></a><div class="element clickable function  function_ejsappbooking_extend_settings_navigation" data-toggle="collapse" data-target=".function_ejsappbooking_extend_settings_navigation .collapse">
+<h2>Extends the settings navigation with the ejsappbooking settings</h2>
+<pre>ejsappbooking_extend_settings_navigation(\settings_navigation $settingsnav, \navigation_node $ejsappbookingnode) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This function is called when the context for the page is a ejsappbooking module. This is not called by AJAX
+so it is safe to rely on the $PAGE.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$settingsnav</h4>
+<code>\settings_navigation</code><p>{@link settings_navigation}</p>
+</div>
+<div class="subelement argument">
+<h4>$ejsappbookingnode</h4>
+<code>\navigation_node</code><p>{@link navigation_node}</p>
+</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_get_extra_capabilities"></a><div class="element clickable function  function_ejsappbooking_get_extra_capabilities" data-toggle="collapse" data-target=".function_ejsappbooking_get_extra_capabilities .collapse">
+<h2>Returns all other caps used in the module</h2>
+<pre>ejsappbooking_get_extra_capabilities() : array</pre>
+<div class="labels"></div>
+<div class="row collapse">
+<div class="span4">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>example</th>
+<td>return array('moodle/site:accessallgroups');</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div>
+<div class="span4">
+<h3>Examples</h3>
+<pre class="prettyprint linenums"></pre>
+</div>
+</div>
+</div>
+<a id="function_ejsappbooking_get_file_areas"></a><div class="element clickable function  function_ejsappbooking_get_file_areas" data-toggle="collapse" data-target=".function_ejsappbooking_get_file_areas .collapse">
+<h2>Returns the lists of all browsable file areas within the given module context</h2>
+<pre>ejsappbooking_get_file_areas(<a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $course, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $cm, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $context) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>The file area 'intro' for the activity introduction field is added automatically
+by <a href="file_browser::get_file_info_context_module()">file_browser::get_file_info_context_module()</a></p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$course</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<div class="subelement argument">
+<h4>$cm</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<div class="subelement argument">
+<h4>$context</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>of [(string)filearea] => (string)description</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_get_file_info"></a><div class="element clickable function  function_ejsappbooking_get_file_info" data-toggle="collapse" data-target=".function_ejsappbooking_get_file_info .collapse">
+<h2>File browsing support for ejsappbooking file areas</h2>
+<pre>ejsappbooking_get_file_info(\file_browser $browser, array $areas, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $course, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $cm, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $context, string $filearea, int $itemid, string $filepath, string $filename) : \file_info</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/mod.ejsappbooking.html">mod_ejsappbooking</a></td>
+</tr>
+<tr>
+<th>category</th>
+<td>files</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$browser</h4>
+<code>\file_browser</code>
+</div>
+<div class="subelement argument">
+<h4>$areas</h4>
+<code>array</code>
+</div>
+<div class="subelement argument">
+<h4>$course</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<div class="subelement argument">
+<h4>$cm</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<div class="subelement argument">
+<h4>$context</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code>
+</div>
+<div class="subelement argument">
+<h4>$filearea</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$itemid</h4>
+<code>int</code>
+</div>
+<div class="subelement argument">
+<h4>$filepath</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$filename</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\file_info</code>instance or null if not found</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_get_recent_mod_activity"></a><div class="element clickable function  function_ejsappbooking_get_recent_mod_activity" data-toggle="collapse" data-target=".function_ejsappbooking_get_recent_mod_activity .collapse">
+<h2>Prepares the recent activity data</h2>
+<pre>ejsappbooking_get_recent_mod_activity(array $activities, int $index, int $timestart, int $courseid, int $cmid, int $userid, int $groupid) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This callback function is supposed to populate the passed array with
+custom activity records. These records are then rendered into HTML via
+<a href="ejsappbooking_print_recent_mod_activity()">ejsappbooking_print_recent_mod_activity()</a>.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$activities</h4>
+<code>array</code><p>sequentially indexed array of objects with the 'cmid' property</p>
+</div>
+<div class="subelement argument">
+<h4>$index</h4>
+<code>int</code><p>the index in the $activities to use for the next record</p>
+</div>
+<div class="subelement argument">
+<h4>$timestart</h4>
+<code>int</code><p>append activity since this time</p></div>
+<div class="subelement argument">
+<h4>$courseid</h4>
+<code>int</code><p>the id of the course we produce the report for</p></div>
+<div class="subelement argument">
+<h4>$cmid</h4>
+<code>int</code><p>course module id</p></div>
+<div class="subelement argument">
+<h4>$userid</h4>
+<code>int</code><p>check for a particular user's activity only, defaults to 0 (all users)</p>
+</div>
+<div class="subelement argument">
+<h4>$groupid</h4>
+<code>int</code><p>check for a particular group's activity only, defaults to 0 (all groups)</p>
+</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_grade_item_update"></a><div class="element clickable function  function_ejsappbooking_grade_item_update" data-toggle="collapse" data-target=".function_ejsappbooking_grade_item_update .collapse">
+<h2>Creates or updates grade item for the give ejsappbooking instance</h2>
+<pre>ejsappbooking_grade_item_update(\stdClass $ejsappbooking) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Needed by grade_update_mod_grades() in lib/gradelib.php</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$ejsappbooking</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>instance object with extra cmidnumber and modname property</p></div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_pluginfile"></a><div class="element clickable function  function_ejsappbooking_pluginfile" data-toggle="collapse" data-target=".function_ejsappbooking_pluginfile .collapse">
+<h2>Serves the files from the ejsappbooking file areas</h2>
+<pre>ejsappbooking_pluginfile(<a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $course, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $cm, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $context, string $filearea, array $args, bool $forcedownload, array $options) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered">
+<tr>
+<th>package</th>
+<td><a href="../packages/mod.ejsappbooking.html">mod_ejsappbooking</a></td>
+</tr>
+<tr>
+<th>category</th>
+<td>files</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$course</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>the course object</p></div>
+<div class="subelement argument">
+<h4>$cm</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>the course module object</p></div>
+<div class="subelement argument">
+<h4>$context</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>the ejsappbooking's context</p>
+</div>
+<div class="subelement argument">
+<h4>$filearea</h4>
+<code>string</code><p>the name of the file area</p></div>
+<div class="subelement argument">
+<h4>$args</h4>
+<code>array</code><p>extra arguments (itemid, path)</p>
+</div>
+<div class="subelement argument">
+<h4>$forcedownload</h4>
+<code>bool</code><p>whether or not force download</p></div>
+<div class="subelement argument">
+<h4>$options</h4>
+<code>array</code><p>additional options affecting the file serving</p></div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_print_recent_activity"></a><div class="element clickable function  function_ejsappbooking_print_recent_activity" data-toggle="collapse" data-target=".function_ejsappbooking_print_recent_activity .collapse">
+<h2>Given a course and a time, this module should find recent activity
+that has occurred in ejsappbooking activities and print it out.</h2>
+<pre>ejsappbooking_print_recent_activity($course, $viewfullnames, $timestart) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Return true if there was output, or false is there was none.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$course</h4></div>
+<div class="subelement argument"><h4>$viewfullnames</h4></div>
+<div class="subelement argument"><h4>$timestart</h4></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_print_recent_mod_activity"></a><div class="element clickable function  function_ejsappbooking_print_recent_mod_activity" data-toggle="collapse" data-target=".function_ejsappbooking_print_recent_mod_activity .collapse">
+<h2>Prints single activity item prepared by {@see ejsappbooking_get_recent_mod_activity()}</h2>
+<pre>ejsappbooking_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$activity</h4></div>
+<div class="subelement argument"><h4>$courseid</h4></div>
+<div class="subelement argument"><h4>$detail</h4></div>
+<div class="subelement argument"><h4>$modnames</h4></div>
+<div class="subelement argument"><h4>$viewfullnames</h4></div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_scale_used"></a><div class="element clickable function  function_ejsappbooking_scale_used" data-toggle="collapse" data-target=".function_ejsappbooking_scale_used .collapse">
+<h2>Is a given scale used by the instance of ejsappbooking?</h2>
+<pre>ejsappbooking_scale_used(int $ejsappbookingid, bool $scaleid) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This function returns if a scale is being used by one ejsappbooking
+if it has support for grading and scales. Commented code should be
+modified if necessary. See forum, glossary or journal modules
+as reference.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$ejsappbookingid</h4>
+<code>int</code><p>ID of an instance of this module</p></div>
+<div class="subelement argument">
+<h4>$scaleid</h4>
+<code>bool</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>true if the scale is used by the given ejsappbooking instance</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_scale_used_anywhere"></a><div class="element clickable function  function_ejsappbooking_scale_used_anywhere" data-toggle="collapse" data-target=".function_ejsappbooking_scale_used_anywhere .collapse">
+<h2>Checks if scale is being used by any instance of ejsappbooking.</h2>
+<pre>ejsappbooking_scale_used_anywhere($scaleid) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This is used to find out if scale used anywhere.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$scaleid</h4><p>int</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>true if the scale is used by any ejsappbooking instance</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_supports"></a><div class="element clickable function  function_ejsappbooking_supports" data-toggle="collapse" data-target=".function_ejsappbooking_supports .collapse">
+<h2>Returns the information on whether the module supports a feature</h2>
+<pre>ejsappbooking_supports(string $feature) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="">in lib/moodlelib.php</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$feature</h4>
+<code>string</code><p>FEATURE_xx constant for requested feature</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>true if the feature is supported, null if unknown</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_update_grades"></a><div class="element clickable function  function_ejsappbooking_update_grades" data-toggle="collapse" data-target=".function_ejsappbooking_update_grades .collapse">
+<h2>Update ejsappbooking grades in the gradebook</h2>
+<pre>ejsappbooking_update_grades(\stdClass $ejsappbooking, int $userid) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Needed by grade_update_mod_grades() in lib/gradelib.php</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$ejsappbooking</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>instance object with extra cmidnumber and modname property</p></div>
+<div class="subelement argument">
+<h4>$userid</h4>
+<code>int</code><p>update grade of specific user only, 0 means all participants</p></div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_update_instance"></a><div class="element clickable function  function_ejsappbooking_update_instance" data-toggle="collapse" data-target=".function_ejsappbooking_update_instance .collapse">
+<h2>Updates an instance of the ejsappbooking in the database</h2>
+<pre>ejsappbooking_update_instance(object $ejsappbooking) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Given an object containing all the necessary data,
+(defined by the form in mod_form.php) this function
+will update an existing instance with new data.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$ejsappbooking</h4>
+<code>object</code><p>An object from the form in mod_form.php</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>boolean</code>Success/Fail</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_user_complete"></a><div class="element clickable function  function_ejsappbooking_user_complete" data-toggle="collapse" data-target=".function_ejsappbooking_user_complete .collapse">
+<h2>Prints a detailed representation of what a user has done with
+a given particular instance of this module, for user activity reports.</h2>
+<pre>ejsappbooking_user_complete(<a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $course, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $user, \cm_info $mod, <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> $ejsappbooking) : \void,</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$course</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>the current course record</p></div>
+<div class="subelement argument">
+<h4>$user</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>the record of the user we are generating report for</p></div>
+<div class="subelement argument">
+<h4>$mod</h4>
+<code>\cm_info</code><p>course module info</p></div>
+<div class="subelement argument">
+<h4>$ejsappbooking</h4>
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><p>the module instance record</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>\void,</code>is supposed to echp directly</div>
+</div></div>
+</div>
+<a id="function_ejsappbooking_user_outline"></a><div class="element clickable function  function_ejsappbooking_user_outline" data-toggle="collapse" data-target=".function_ejsappbooking_user_outline .collapse">
+<h2>Returns a small object with summary information about what a
+user has done with a given particular instance of this module
+Used for user activity reports.</h2>
+<pre>ejsappbooking_user_outline(int $course, $user, $mod, $ejsappbooking) : <a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a> | null</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>$return->time = the time they did it
+$return->info = a short text description</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$course</h4>
+<code>int</code>
+</div>
+<div class="subelement argument"><h4>$user</h4></div>
+<div class="subelement argument"><h4>$mod</h4></div>
+<div class="subelement argument"><h4>$ejsappbooking</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code><a href="http://php.net/manual/en/class.stdclass.php">\stdClass</a></code><code>null</code>
+</div>
+</div></div>
+</div>
+<a id="function_get_course_lastaccess_sql"></a><div class="element clickable function  function_get_course_lastaccess_sql" data-toggle="collapse" data-target=".function_get_course_lastaccess_sql .collapse">
+<h2>returns the course last access</h2>
+<pre>get_course_lastaccess_sql(int $accesssince) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$accesssince</h4>
+<code>int</code>
+</div>
+</div></div>
+</div>
+<a id="function_get_user_lastaccess_sql"></a><div class="element clickable function  function_get_user_lastaccess_sql" data-toggle="collapse" data-target=".function_get_user_lastaccess_sql .collapse">
+<h2>returns the user last access</h2>
+<pre>get_user_lastaccess_sql(int $accesssince) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$accesssince</h4>
+<code>int</code>
+</div>
+</div></div>
+</div>
+<a id="function_xmldb_ejsappbooking_install"></a><div class="element clickable function  function_xmldb_ejsappbooking_install" data-toggle="collapse" data-target=".function_xmldb_ejsappbooking_install .collapse">
+<h2>Post installation procedure</h2>
+<pre>xmldb_ejsappbooking_install() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="">\global\upgrade_plugins_modules()</a></td>
+</tr></table>
+</div></div>
+</div>
+<a id="function_xmldb_ejsappbooking_install_recovery"></a><div class="element clickable function  function_xmldb_ejsappbooking_install_recovery" data-toggle="collapse" data-target=".function_xmldb_ejsappbooking_install_recovery .collapse">
+<h2>Post installation recovery procedure</h2>
+<pre>xmldb_ejsappbooking_install_recovery() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td><a href="">\global\upgrade_plugins_modules()</a></td>
+</tr></table>
+</div></div>
+</div>
+<a id="function_xmldb_ejsappbooking_uninstall"></a><div class="element clickable function  function_xmldb_ejsappbooking_uninstall" data-toggle="collapse" data-target=".function_xmldb_ejsappbooking_uninstall .collapse">
+<h2>Custom uninstallation procedure</h2>
+<pre>xmldb_ejsappbooking_uninstall() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>Custom uninstallation procedure</p></div></div></div>
+</div>
+<a id="function_xmldb_ejsappbooking_upgrade"></a><div class="element clickable function  function_xmldb_ejsappbooking_upgrade" data-toggle="collapse" data-target=".function_xmldb_ejsappbooking_upgrade .collapse">
+<h2>Execute ejsappbooking upgrade from the given old version</h2>
+<pre>xmldb_ejsappbooking_upgrade(int $oldversion) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$oldversion</h4>
+<code>int</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>bool</code></div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_DEFAULT_PAGE_SIZE"> </a><div class="element clickable constant  constant_DEFAULT_PAGE_SIZE" data-toggle="collapse" data-target=".constant_DEFAULT_PAGE_SIZE .collapse">
+<h2>DEFAULT_PAGE_SIZE</h2>
+<pre>DEFAULT_PAGE_SIZE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_MODE_BRIEF"> </a><div class="element clickable constant  constant_MODE_BRIEF" data-toggle="collapse" data-target=".constant_MODE_BRIEF .collapse">
+<h2>MODE_BRIEF</h2>
+<pre>MODE_BRIEF </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_MODE_USERDETAILS"> </a><div class="element clickable constant  constant_MODE_USERDETAILS" data-toggle="collapse" data-target=".constant_MODE_USERDETAILS .collapse">
+<h2>MODE_USERDETAILS</h2>
+<pre>MODE_USERDETAILS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SHOW_ALL_PAGE_SIZE"> </a><div class="element clickable constant  constant_SHOW_ALL_PAGE_SIZE" data-toggle="collapse" data-target=".constant_SHOW_ALL_PAGE_SIZE .collapse">
+<h2>SHOW_ALL_PAGE_SIZE</h2>
+<pre>SHOW_ALL_PAGE_SIZE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_USER_LARGE_CLASS"> </a><div class="element clickable constant  constant_USER_LARGE_CLASS" data-toggle="collapse" data-target=".constant_USER_LARGE_CLASS .collapse">
+<h2>USER_LARGE_CLASS</h2>
+<pre>USER_LARGE_CLASS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_USER_SMALL_CLASS"> </a><div class="element clickable constant  constant_USER_SMALL_CLASS" data-toggle="collapse" data-target=".constant_USER_SMALL_CLASS .collapse">
+<h2>USER_SMALL_CLASS</h2>
+<pre>USER_SMALL_CLASS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a11</a> and<br>
+            generated on 2012-12-03T15:31:18+01:00.<br></footer></div>
+</div>
+</body>
+</html>

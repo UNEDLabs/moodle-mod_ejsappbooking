@@ -36,14 +36,35 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'Sistema de reservas EJSApp';
 $string['modulenameplural'] = 'Sistemas de reservas EJSApp';
-$string['modulename_help'] = 'El módulo de recurso EJSAppBooking permite a los usuarios de Moodle reservas franjas de tiempo para experimentación real y remota usando los applets creados con Easy Java Simulations (EJS) y subidos a los cursos de Moodle mediante el módulo de actividad EJSApp.
+$string['modulename_help'] = 'El m&oacute;dulo de recurso EJSAppBooking permite a los usuarios de Moodle reservas franjas de tiempo para experimentaci&oacute;n real y remota usando los applets creados con Easy Java Simulations (EJS) y subidos a los cursos de Moodle mediante el m&oacute;dulo de actividad EJSApp.
 
-Este recurso añade una aplicación Java que muestra una lista de los laboratorios remotos disponibles para el usuario y le permite seleccionar una reserva para cualquier día y hora deseados.
+Este recurso a&ntilde;ade una aplicaci&oacute;n Java que muestra una lista de los laboratorios remotos disponibles para el usuario y le permite seleccionar una reserva para cualquier d&iacute;a y hora deseados.
 
-El sistema de reservas consiste en dos partes: el cliente de reservas y el servidor de reservas. Mientras que la aplicación del cliente de reservas se añade con este módulo, el servidor de reservas necesita estar en ejecución en el servidor que aloja el portal de Moodle. Puedes encontrar esta aplicación en tu carpeta /mod/ejsappbooking/applets/BookingServer/.';
-$string['view_error'] = 'No se pudo abrir la aplicación del sistema de reservas.';
+El sistema de reservas consiste en dos partes: el cliente de reservas y el servidor de reservas. Mientras que la aplicaci&oacute;n del cliente de reservas se a&ntilde;ade con este m&oacute;dulo, el servidor de reservas necesita estar en ejecuci&oacute;n en el servidor que aloja el portal de Moodle. Puedes encontrar esta aplicaci&oacute;n en tu carpeta /mod/ejsappbooking/applets/BookingServer/';
+$string['view_error'] = 'No se pudo abrir la aplicaci&oacute;n del sistema de reservas.';
 $string['ejsappbookingname'] = 'Nombre del sistema de reservas EJSApp';
 $string['ejsappbookingname_help'] = 'Nombre a mostrar para el sistema de reservas EJSApp en tu curso de Moodle.';
 $string['ejsappbooking'] = 'EJSAppBooking';
-$string['pluginadministration'] = 'Administración de EJSAppBooking';
+$string['pluginadministration'] = 'Administraci&oacute;n de EJSAppBooking';
 $string['pluginname'] = 'EJSAppBooking';
+
+$string['manage_access_but'] = 'Gestionar el acceso de usuarios';
+
+//select_rem_lab.php
+$string['selectRemLab_pageTitle'] = 'Selecci&oacute;n de laboratorio remoto';
+$string['rem_lab_selection'] = 'Seleccione un laboratorio remoto';
+$string['select_users_but'] = 'Fijar permisos de usuarios para este laboratorio';
+$string['no_rem_labs'] = 'No hay laboratorios remotos en este curso';
+
+//select_users.php
+$string['selectUsers_pageTitle'] = 'Selecci&oacute;n de usuarios';
+$string['users_selection'] = 'Seleccione los usuarios a los que dar&aacute; permisos de reserva en el laboratorio remoto seleccionado';
+$string['accept_users_but'] = 'Aceptar';
+$string['save_changes'] = 'Guardar cambios';
+$string['booking_rights'] = 'Permiso de reserva';
+
+//Send_messages.php:
+$string['allow_remlabaccess'] = 'Ha recibido permisos para realizar reservas en un nuevo laboratorio remoto: ';
+$string['sending_message'] = 'Enviando mensajes de aviso';
+
+$string['already_enabled'] = 'Ya tiene un sistema de reservas en este curso.';

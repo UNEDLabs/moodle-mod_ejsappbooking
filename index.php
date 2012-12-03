@@ -24,6 +24,9 @@
 
 
 /**
+ * This page is used by Moodle when listing all the instances of your module that are in a
+ * particular course with the course id being passed to this script
+ *
  * @package    mod
  * @subpackage ejsappbooking
  * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio

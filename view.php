@@ -24,7 +24,6 @@
 
 
 /**
- *
  * Prints a particular instance of ejsappbooking
  *
  * @package    mod
@@ -69,42 +68,53 @@ $PAGE->set_button(update_module_button($cm->id, $course->id, get_string('modulen
 echo $OUTPUT->header();
 
 // Embed the BookingClient applet into Moodle
-$dir = get_plugin_directory('mod','ejsappbooking');
-if ( is_file($dir . '/applets/BookingClient/BookingClient.jar') ) {
+$dir = get_plugin_directory('mod','ejsappbooking');      
+if ( is_file($dir . '/applets/BookingClient/BookingClient.jar') && is_file($dir . '/applets/BookingServer/configuracion/valores.dat') ) {
   global $USER, $CFG;
-  $host = substr($CFG->wwwroot,7);
+  //Applet params:
+  $host = $CFG->wwwroot;
+  $fs = fopen($dir . '/applets/BookingServer/configuracion/valores.dat','r');
+  $port = fgets($fs);
+  fclose($fs);
+  $port = intval(substr($port,5));
+  $language = current_language();   
+  $dbhost = $CFG->dbhost;
+  if (strcmp($dbhost,'localhost') == 0) $dbhost = substr($CFG->wwwroot,7); 
+  $dbhost_exp = explode("/",$dbhost);
+  $dbhost = $dbhost_exp[0];     
   $code = '';
   $code .= '<script "text/javascript">';
   $code .= "var w = 740, h = 545;
   document.write('<applet code=\"com.booking_client.ClienteReservas.class\"');
-  document.write('codebase=\"http://$host/mod/ejsappbooking/applets/BookingClient/\"');
+  document.write('codebase=\"$host/mod/ejsappbooking/applets/BookingClient/\"');
   document.write('archive=\"BookingClient.jar\"');
   document.write('name=\"BookingClient\"');
   document.write('id=\"BookingClient\"');
   document.write('width=\"'+w+'\"');
-  document.write('height=\"'+h+'\"');";
-  //Applet params
-  $port = "5555";//Este paramametro debería leerse directamente de /applets/BookingServer/configuracion/valores.dat
-  $language = current_language();
-  //$code .= document.write('<param name=\"courseid\" value=\"{$course->id}\"/>');
-  $code .= "
+  document.write('height=\"'+h+'\"');
   document.write('<param name=\"nullParam\" value=\"null\"/>');
-  document.write('<param name=\"lang\" value=\"{$language}\"/>');
-  document.write('<param name=\"host\" value=\"{$host}\"/>');
+  document.write('<param name=\"host\" value=\"{$dbhost}\"/>');
   document.write('<param name=\"port\" value=\"{$port}\"/>');
+  document.write('<param name=\"lang\" value=\"{$language}\"/>');
   document.write('<param name=\"user\" value=\"{$USER->username}\"/>');
   document.write('<param name=\"password\" value=\"{$USER->password}\"/>');
   document.write('</applet>');";
   $code .= '</script>';
 } else {
   $code = get_string('view_error', 'ejsappbooking');
-  }
+}
 
 echo $OUTPUT->heading($code);
 
 if ($ejsappbooking->intro) { // If some text was written, show the intro
   echo $OUTPUT->box(format_module_intro('ejsappbooking', $ejsappbooking, $cm->id), 'generalbox mod_introbox', 'ejsappbookingintro');
 }
+
+// Check wether the user has teacher or admin privileges. If so, let him grant his students access to make bookings for the remote labs in the course
+if (has_capability('moodle/course:viewhiddensections', $context, $USER->id, true)) {
+  $select_rem_lab = $CFG->wwwroot . '/mod/ejsappbooking/select_rem_lab.php';
+  echo $OUTPUT->heading('<form action="' . $select_rem_lab . '" method="get"><input type="hidden" name="id" value="' . $cm->id . '"><input type="hidden" name="courseid" value="' . $course->id . '"><input type="hidden" name="contextid" value="' . $context->id . '"><input type=submit id="manage_access" value="' . get_string('manage_access_but', 'ejsappbooking') . '"></form>');  
+} 
 
 // Finish the page
 echo $OUTPUT->footer();
