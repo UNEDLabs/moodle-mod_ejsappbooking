@@ -1,11 +1,11 @@
 ######################
-# EJSAppBookings 1.3 #
+# EJSAppBooking 1.3 #
 ######################
 
 1. Content
 ==========
 
-This plugin lets you add a booking system to handle the conecctions to the remote
+This plugin lets you add a booking system to handle the conections to the remote
 laboratories developed using EJS and added to your Moodle course using the ejsapp plugin.
 
 2. License
