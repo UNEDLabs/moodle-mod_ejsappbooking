@@ -60,10 +60,8 @@ class restore_ejsappbooking_activity_structure_step extends restore_activity_str
 
         $ejsappbooking_has_been_restored_by_EJSApp = $DB->get_record('ejsappbooking',array('course'=>$data->course));
         if (!$ejsappbooking_has_been_restored_by_EJSApp) {
-            echo "aqui1";
             $newitemid = $DB->insert_record('ejsappbooking', $data);
         } else {
-            echo "aqui2";
             xdebug_var_dump($ejsappbooking_has_been_restored_by_EJSApp);
             $newitemid = $ejsappbooking_has_been_restored_by_EJSApp->id;
         }
