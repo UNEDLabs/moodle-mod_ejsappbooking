@@ -112,8 +112,8 @@ if ($ejsappbooking->intro) { // If some text was written, show the intro
 
 // Check wether the user has teacher or admin privileges. If so, let him grant his students access to make bookings for the remote labs in the course
 if (has_capability('moodle/course:viewhiddensections', $context, $USER->id, true)) {
-  $select_rem_lab = $CFG->wwwroot . '/mod/ejsappbooking/select_rem_lab.php';
-  echo $OUTPUT->heading('<form action="' . $select_rem_lab . '" method="get"><input type="hidden" name="id" value="' . $cm->id . '"><input type="hidden" name="courseid" value="' . $course->id . '"><input type="hidden" name="contextid" value="' . $context->id . '"><input type=submit id="manage_access" value="' . get_string('manage_access_but', 'ejsappbooking') . '"></form>');  
+  $set_permissions = $CFG->wwwroot . '/mod/ejsappbooking/set_permissions.php';
+  echo $OUTPUT->heading('<form action="' . $set_permissions . '" method="get"><input type="hidden" name="id" value="' . $cm->id . '"><input type="hidden" name="courseid" value="' . $course->id . '"><input type="hidden" name="contextid" value="' . $context->id . '"><input type=submit id="manage_access" value="' . get_string('manage_access_but', 'ejsappbooking') . '"></form>');  
 } 
 
 // Finish the page

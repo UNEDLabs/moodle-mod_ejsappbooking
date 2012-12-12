@@ -167,10 +167,11 @@ foreach ($users_no_remaccess as $user_no_remaccess) {
 
   $good = true;
   if ($good) {
+  $contextid = $context->id;
 	$redirection = <<<EOD
 <center>
 <script>
-	location.href='{$CFG->wwwroot}/mod/ejsappbooking/view.php?id=$id';
+	location.href='{$CFG->wwwroot}/mod/ejsappbooking/set_permissions.php?id=$id&courseid=$mycourseid&contextid=$contextid';
 </script>
 EOD;
  	echo $redirection;
