@@ -340,6 +340,28 @@ function ejsappbooking_cron () {
       }
     }
     
+    //CHECKING WHETHER REMOTE LABS PCS ARE ON OR NOT:
+    function ping($host,$port=80,$timeout=5) {
+      $fsock = fsockopen($host, $port, $errno, $errstr, $timeout);
+      if (!$fsock ) {
+        return FALSE;
+      }
+      else {
+        return TRUE;
+      }
+    }
+    
+    $ejsapp_remlabs_conf = $DB->get_records('ejsapp_remlab_conf');
+    foreach ($ejsapp_remlabs_conf as $ejsapp_remlab_conf) {
+      $up = ping($ejsapp_remlab_conf->ip, $ejsapp_remlab_conf->port);
+      if($up) {
+        $ejsapp_remlab_conf->active = 1;
+      } else {
+        $ejsapp_remlab_conf->active = 0;
+      }
+      $DB->update_record('ejsapp_remlab_conf',$ejsapp_remlab_conf);
+    }
+    
     return true;
 }
 
