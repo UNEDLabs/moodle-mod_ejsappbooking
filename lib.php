@@ -257,7 +257,7 @@ function ejsappbooking_print_recent_mod_activity($activity, $courseid, $detail, 
  * @return boolean
  **/
 function ejsappbooking_cron () {
-    global $DB;
+    global $DB, $CFG;
     
     $ejsappbooking_usersaccess = new stdClass();
     
@@ -341,7 +341,7 @@ function ejsappbooking_cron () {
     }
     
     //CHECKING WHETHER REMOTE LABS PCS ARE ON OR NOT:
-    function ping($host,$port=80,$timeout=5) {
+    function ping($host,$port=80,$timeout=3) {
       $fsock = fsockopen($host, $port, $errno, $errstr, $timeout);
       if (!$fsock ) {
         return FALSE;
@@ -354,6 +354,21 @@ function ejsappbooking_cron () {
     $ejsapp_remlabs_conf = $DB->get_records('ejsapp_remlab_conf');
     foreach ($ejsapp_remlabs_conf as $ejsapp_remlab_conf) {
       $up = ping($ejsapp_remlab_conf->ip, $ejsapp_remlab_conf->port);
+      // Send mail to teachers if the remote lab has passed from active to inactive:
+      if ($ejsapp_remlab_conf->active == 1 && !$up) {
+        $rem_lab_down = $DB->get_record('ejsapp', array('id' => $ejsapp_remlab_conf->ejsappid));
+        $role = $DB->get_record('role', array('shortname' => 'editingteacher'));
+        $context = get_context_instance(CONTEXT_COURSE, $rem_lab_down->course);
+        $teachers = get_role_users($role->id, $context);
+        require_once($CFG->dirroot . '/filter/multilang/filter.php');
+        $multilang = new filter_multilang($context, array('filter_multilang_force_old'=>0));
+        $subject = get_string('mail_subject', 'ejsappbooking');
+        $messagebody = get_string('mail_content1', 'ejsappbooking') . $multilang->filter($rem_lab_down->name) . 
+        get_string('mail_content2', 'ejsappbooking') . $ejsapp_remlab_conf->ip . get_string('mail_content3', 'ejsappbooking');
+        foreach ($teachers as $teacher) { 
+          email_to_user($teacher, $teacher, $subject, $messagebody);
+        }
+      }
       if($up) {
         $ejsapp_remlab_conf->active = 1;
       } else {

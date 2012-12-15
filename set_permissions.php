@@ -36,6 +36,7 @@
 require_once('../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
+require_once($CFG->dirroot . '/filter/multilang/filter.php');
 
 define('USER_SMALL_CLASS', 20);   // Below this is considered small
 define('USER_LARGE_CLASS', 200);  // Above this is considered large
@@ -72,7 +73,6 @@ $PAGE->set_heading($title);
 $rem_labs = $DB->get_records('ejsapp', array('course' => $courseid, 'is_rem_lab' => '1'));
 $i = 1;
 
-require_once('../../filter/multilang/filter.php');
 $multilang = new filter_multilang($context, array('filter_multilang_force_old'=>0));
 foreach ($rem_labs as $rem_lab) {
   $lab_name[$rem_lab->id] = $multilang->filter($rem_lab->name);
