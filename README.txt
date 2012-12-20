@@ -37,8 +37,8 @@ This module has been tested in Moodle versions 2.0, 2.1, 2.2 and 2.3.
 ===============
 
 This module needs the ejsapp module to be of any use. It works with version 1.4 (or later) of 
-EJSApp. You can find and download it at the plugins section in the Moodle.org webpage or at
-https://github.com/UNEDLabs.
+EJSApp. You can find and download it at https://moodle.org/plugins/view.php?plugin=mod_ejsappbooking,
+in the plugins section in the Moodle.org webpage or at https://github.com/UNEDLabs.
 
 An explanation of EJSApp is included in the folder "doc". There, you will also find a txt 
 file with relevant links.
