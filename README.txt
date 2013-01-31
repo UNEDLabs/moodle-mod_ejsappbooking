@@ -31,7 +31,7 @@ ejsappbooking. If you downloaded it from Moodle.org, then you are fine.
 
 This is a module plugin for Moodle so you should place the ejsappbooking folder in your /mod
 folder, inside you Moodle installation.
-This module has been tested in Moodle versions 2.0, 2.1, 2.2 and 2.3.
+This module has been tested in all Moodle 2.x versions.
 
 4. Dependencies
 ===============

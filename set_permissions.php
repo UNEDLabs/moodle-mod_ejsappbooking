@@ -96,7 +96,7 @@ if ($isfrontpage) {
   $PAGE->set_pagelayout('incourse');
 }
 
-$rolenamesurl = new moodle_url("$CFG->wwwroot/mod/ejsappbooking/set_permissions.php?id=$id&courseid=$courseid&contextid=$contextmodid&sifirst=&silast=");
+$rolenamesurl = new moodle_url("$CFG->wwwroot/mod/ejsappbooking/set_permissions.php?id=$id&courseid=$courseid&contextid=$contextmodid&labid=$labid&sifirst=&silast=");
 
 $allroles = get_all_roles();
 $roles = get_profile_roles($context);
@@ -176,6 +176,38 @@ if ($course->id===SITEID) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('users_selection','ejsappbooking'));
 
+/**
+ * returns the course last access
+ *
+ * @param int $accesssince
+ */
+function get_course_lastaccess_sql($accesssince='') {
+  if (empty($accesssince)) {
+    return '';
+  }
+  if ($accesssince == -1) { // never
+    return 'ul.timeaccess = 0';
+  } else {
+    return 'ul.timeaccess != 0 AND ul.timeaccess < '.$accesssince;
+  }
+}
+
+/**
+ * returns the user last access
+ *
+ * @param int $accesssince
+ */
+function get_user_lastaccess_sql($accesssince='') {
+  if (empty($accesssince)) {
+    return '';
+  }
+  if ($accesssince == -1) { // never
+    return 'u.lastaccess = 0';
+  } else {
+    return 'u.lastaccess != 0 AND u.lastaccess < '.$accesssince;
+  }
+}
+
 if ($i>1) { // If there is at least one remote lab
     echo '<div class="userlist">';
     
@@ -195,7 +227,8 @@ if ($i>1) { // If there is at least one remote lab
           'roleid' => $roleid,
           'perpage' => $perpage,
           'accesssince' => $accesssince,
-          'search' => s($search)));
+          'search' => s($search),
+          'labid' => $labid));
     
     /// setting up tags
     if ($course->id == SITEID) {
@@ -230,7 +263,7 @@ if ($i>1) { // If there is at least one remote lab
     /// Print my course menus
     if ($mycourses = enrol_get_my_courses()) {
       $courselist = array();
-    	$popupurl = new moodle_url('/mod/ejsappbooking/set_permissions.php?id='.$id.'&courseid='.$courseid.'&contextid='.$contextmodid.'&roleid='.$roleid.'&sifirst=&silast=');
+    	$popupurl = new moodle_url('/mod/ejsappbooking/set_permissions.php?id='.$id.'&courseid='.$courseid.'&contextid='.$contextmodid.'&roleid='.$roleid.'&labid='.$labid.'&sifirst=&silast=');
       foreach ($mycourses as $mycourse) {
         $courselist[$mycourse->id] = format_string($mycourse->shortname);
       }
@@ -505,6 +538,7 @@ if ($i>1) { // If there is at least one remote lab
     }
     
     if ($roleid > 0) {
+      $a = new stdClass();
       $a->number = $totalcount;
       $a->role = $rolenames[$roleid];
       $heading = format_string(get_string('xuserswiththerole', 'role', $a));
@@ -830,38 +864,6 @@ if ($i>1) { // If there is at least one remote lab
     
     if ($userlist) {
       $userlist->close();
-    }
-    
-    /**
-     * returns the course last access
-     *
-     * @param int $accesssince
-     */
-    function get_course_lastaccess_sql($accesssince='') {
-      if (empty($accesssince)) {
-        return '';
-      }
-      if ($accesssince == -1) { // never
-        return 'ul.timeaccess = 0';
-      } else {
-        return 'ul.timeaccess != 0 AND ul.timeaccess < '.$accesssince;
-      }
-    }
-    
-    /**
-     * returns the user last access
-     *
-     * @param int $accesssince
-     */
-    function get_user_lastaccess_sql($accesssince='') {
-      if (empty($accesssince)) {
-        return '';
-      }
-      if ($accesssince == -1) { // never
-        return 'u.lastaccess = 0';
-      } else {
-        return 'u.lastaccess != 0 AND u.lastaccess < '.$accesssince;
-      }
     }
 } else { // If there are no remote labs
   echo  get_string('no_rem_labs', 'ejsappbooking');
