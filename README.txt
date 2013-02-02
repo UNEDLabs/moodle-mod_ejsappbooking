@@ -33,6 +33,10 @@ This is a module plugin for Moodle so you should place the ejsappbooking folder 
 folder, inside you Moodle installation.
 This module has been tested in all Moodle 2.x versions.
 
+ WARNING: If you are updating ejsappbooking from a previous version, DO NOT replace your old 
+ applets/BookingServer/configuracion folder inside your old ejsappbooking directory with the one 
+ in the newer version. Otherwise, you will need to reconfigure the parameters set in point 6.
+
 4. Dependencies
 ===============
 
@@ -63,32 +67,50 @@ presented in the bookings applets GUIs.
 6. Server Configuration
 =======================
 
-First, you need to configure the server so it can connect to your sql database:
+First, you need to configure the server so it can connect to your sql database. You can do that
+in two different ways:
 
-1. Go to the applets/BookingServer folder.
+First one (using the GUI):
 
-2. Run the BookingServer.jar applet.
+1. Go to the applets/BookingServer/configuracion folder.
 
-3. Click on the options tab of the top menu.
+2. Edit the valores.dat file and change interfaz=0 to interfaz=1. This makes the booking server
+application to run showing a graphical user interface.
 
-4. Select the "Server settings" option.
+3. Run the BookingServer.jar applet.
 
-5. Enter the needed data to let the booking server access your sql database.
+4. Click on the options tab of the top menu.
 
-6. Use the "Test" button to check whether the booking server can access the database or not.
+5. Select the "Server settings" option.
 
-Once the previous test has been passed, you can either check and/or modify the configuration
-of both the remote experimental systems added to your Moodle site by means of the EJSApp plugin
-and the mail server configuration. This can be done selecting the "Plants management" and "Mail
-server settings" options in the top menu of the application.
+6. Enter the needed data to let the booking server access your sql database.
+
+7. Use the "Test" button to check whether the booking server can access the database or not.
+
+Second one (editing text files):
+
+1. Go to the applets/BookingServer/configuracion folder.
+
+2. Edit the moodle.dat file and modify the user=root password= lines with the data of your sql
+admin user.
+
+3. You can then run the BookingServer.jar applet without the GUI.
+
+IMPORTANT! Either way, you always need to execute the BookingServer.jar file with administrator
+privileges.
+
+If the GUI is activated, once the previous test has been passed, you can either check and/or 
+modify the configuration of both the remote experimental systems added to your Moodle site by 
+means of the EJSApp plugin and the mail server configuration. This can be done selecting the 
+"Plants management" and "Mail server settings" options in the top menu of the application.
 
 7. Authors
 ==========
 
 EJSAppBooking has been developed by:
- - Javier Pavon: javi.pavon@gmail.com
  - Luis de la Torre: ldelatorre@dia.uned.es
  - Ruben Heradio: rheradio@issi.uned.es
+ - Javier Pavon: javi.pavon@gmail.com
 
   at the Computer Science and Automatic Control Department, Spanish Open University (UNED), 
   Madrid, Spain.

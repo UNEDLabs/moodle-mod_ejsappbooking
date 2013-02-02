@@ -81,7 +81,7 @@ $SESSION->emailselect[$mycourseid] = array('messagebody' => $messagebody);
 
 $count = 0;
 
-foreach ($_POST as $k => $v) {
+foreach ($_POST as $k => $v) { 
 	if (preg_match('/^(user|teacher)(\d+)$/',$k,$m)) {
     if (!array_key_exists($m[2],$SESSION->emailto[$mycourseid])) {
       if ($user = $DB->get_record_select('user', "id = ?", array($m[2]), 'id,firstname,lastname,idnumber,email,mailformat,lastaccess, lang')) {
@@ -120,7 +120,7 @@ if (count($SESSION->emailto[$mycourseid])) {
   foreach ($allrecords as $onerecord) {
     $allusers[] = $onerecord->userid;
   }
-  foreach ($SESSION->emailto[$mycourseid] as $user) {
+  foreach ($SESSION->emailto[$mycourseid] as $user) { 
     $selectedusers[] =  $user->id;
     $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user->id,'ejsappid'=>$labid);
     $prev_access = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$update_conditions);
@@ -152,6 +152,7 @@ if (count($SESSION->emailto[$mycourseid])) {
 
 // Delete booking rights of non-selected users
 foreach ($users_no_remaccess as $user_no_remaccess) {
+var_dump($user_no_remaccess);
   if (has_capability('moodle/course:viewhiddensections', $context, $user_no_remaccess, true) == false) {
     $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid);      
   	$update_id = $DB->get_field('ejsappbooking_usersaccess','id',$update_conditions);
@@ -159,7 +160,7 @@ foreach ($users_no_remaccess as $user_no_remaccess) {
       $forbidremaccess = array('id'=>$update_id, 'allowremaccess'=>'0');
       $DB->update_record('ejsappbooking_usersaccess',$forbidremaccess);
     } else {
-      $forbidremaccess = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess->id,'ejsappid'=>$labid,'allowremaccess'=>'0');
+      $forbidremaccess = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid,'allowremaccess'=>'0');
 	    $DB->insert_record('ejsappbooking_usersaccess',$forbidremaccess);
     }
   }
