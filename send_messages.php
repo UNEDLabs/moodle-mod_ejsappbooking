@@ -152,7 +152,6 @@ if (count($SESSION->emailto[$mycourseid])) {
 
 // Delete booking rights of non-selected users
 foreach ($users_no_remaccess as $user_no_remaccess) {
-var_dump($user_no_remaccess);
   if (has_capability('moodle/course:viewhiddensections', $context, $user_no_remaccess, true) == false) {
     $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid);      
   	$update_id = $DB->get_field('ejsappbooking_usersaccess','id',$update_conditions);
