@@ -81,7 +81,8 @@ if ( is_file($dir . '/applets/BookingClient/BookingClient.jar') && is_file($dir 
   $dbhost = $CFG->dbhost;
   if (strcmp($dbhost,'localhost') == 0) $dbhost = substr($CFG->wwwroot,7); 
   $dbhost_exp = explode("/",$dbhost);
-  $dbhost = $dbhost_exp[0];     
+  $dbhost = $dbhost_exp[0];  
+  $server_time = number_format(microtime(true)*1000,0,'.','');
   $code = '';
   $code .= '<script "text/javascript">';
   $code .= "var w = 740, h = 545;
@@ -98,6 +99,7 @@ if ( is_file($dir . '/applets/BookingClient/BookingClient.jar') && is_file($dir 
   document.write('<param name=\"lang\" value=\"{$language}\"/>');
   document.write('<param name=\"user\" value=\"{$USER->username}\"/>');
   document.write('<param name=\"password\" value=\"{$USER->password}\"/>');
+  document.write('<param name=\"serverTime\" value=\"{$server_time}\"/>');
   document.write('</applet>');";
   $code .= '</script>';
 } else {
