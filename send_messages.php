@@ -150,7 +150,7 @@ if (count($SESSION->emailto[$mycourseid])) {
   $users_no_remaccess = $allusers;
 }
 
-// Delete booking rights of non-selected users
+// Delete booking rights and already made bookings of non-selected users
 foreach ($users_no_remaccess as $user_no_remaccess) {
   if (has_capability('moodle/course:viewhiddensections', $context, $user_no_remaccess, true) == false) {
     $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid);      
@@ -160,7 +160,11 @@ foreach ($users_no_remaccess as $user_no_remaccess) {
       $DB->update_record('ejsappbooking_usersaccess',$forbidremaccess);
     } else {
       $forbidremaccess = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid,'allowremaccess'=>'0');
-	    $DB->insert_record('ejsappbooking_usersaccess',$forbidremaccess);
+	  $DB->insert_record('ejsappbooking_usersaccess',$forbidremaccess);
+    }
+    $username = $DB->get_field('user', 'username', array('id'=>$user_no_remaccess));
+    if ($username != null) {
+      $DB->delete_records('ejsappbooking_remlab_access', array('username'=>$username,'ejsappid'=>$labid));
     }
   }
 }
