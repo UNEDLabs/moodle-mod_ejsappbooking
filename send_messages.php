@@ -1,36 +1,34 @@
 <?php
 
-// This file is part of the Moodle block "EJSApp Collab Session"
+// This file is part of the Moodle module "EJSApp booking system"
 //
-// EJSApp Collab Session is free software: you can redistribute it and/or modify
+// EJSApp booking system is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// EJSApp Collab Session is distributed in the hope that it will be useful,
+// EJSApp booking system is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
-// EJSApp Collab Session has been developed by:
-//  - Luis de la Torre (1): ldelatorre@dia.uned.es
-//	- Ruben Heradio (1): rheradio@issi.uned.es
-//  - Carlos Jara (2): carlos.jara@ua.es
+// EJSApp booking system has been developed by:
+//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
+//  - Luis de la Torre: ldelatorre@dia.uned.es
+//	- Ruben Heradio: rheradio@issi.uned.es
 //
-//  (1): Computer Science and Automatic Control, Spanish Open University (UNED),
-//       Madrid, Spain
-//  (2): Physics, Systems Engineering and Signal Theory Department, University
-//       of Alicante, Spain
+//  at the Computer Science and Automatic Control, Spanish Open University
+//  (UNED), Madrid, Spain
 
 
 /**
- * File that sends an invitation to join the collaborative session by (1) email and (2) moodle message
+ * File that sends an informative message to users when they receive permissions for booking a remote lab by (1) email and (2) moodle message
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Luis de la Torre, Ruben Heradio and Carlos Jara
+ * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
  
@@ -45,7 +43,7 @@ $id = required_param('id', PARAM_RAW);
 $labid = required_param('labid', PARAM_RAW);
 $bookingid = required_param('bookingid', PARAM_RAW);
 
-$context = get_context_instance(CONTEXT_MODULE, $id);
+$context = context_module::instance($id);
 
 $send = true;
 $preview = false;
@@ -64,7 +62,7 @@ $url->param('messagebody', $messagebody);
 $url->param('format', $format);
 
 $PAGE->set_url($url);
-$PAGE->set_context(get_context_instance(CONTEXT_SYSTEM));
+$PAGE->set_context(context_system::instance());
 
 if (!$course = $DB->get_record('course', array('id'=>$mycourseid))) {
   print_error('invalidcourseid');
@@ -72,8 +70,8 @@ if (!$course = $DB->get_record('course', array('id'=>$mycourseid))) {
 
 require_login();
 
-$coursecontext = get_context_instance(CONTEXT_COURSE, $mycourseid);   // Course context
-$systemcontext = get_context_instance(CONTEXT_SYSTEM);   // SYSTEM context
+$coursecontext = context_course::instance($mycourseid);   // Course context
+$systemcontext = context_system::instance();   // SYSTEM context
 
 $SESSION->emailto = array();
 $SESSION->emailto[$mycourseid] = array();

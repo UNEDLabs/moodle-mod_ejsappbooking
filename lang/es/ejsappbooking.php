@@ -74,3 +74,35 @@ $string['mail_content2'] = ' - IP: ';
 $string['mail_content3'] = ') ha dejado de estar accesible.';
 
 $string['already_enabled'] = 'Ya tiene un sistema de reservas en este curso.';
+
+$string['makereservation'] = 'Realizar una reserva';
+$string['deleteBooking'] = 'Informaci&oacute;n de la reserva eliminada';
+$string['mybookings'] = 'Mis reservas';
+$string['plant'] = 'Planta';
+$string['availability'] = 'Disponibilidad';
+$string['bookinginfo'] = 'Informaci&oacute;n sobre la reserva';
+$string['totalslots'] = 'M&aacute;ximos slots permitidos en este laboratorio';
+$string['weeklyslots'] = 'M&aacute;ximos slots semanales permitidos o seleccionados en este laboratorio';
+$string['dailyslots'] = 'M&aacute;ximos slots por dia';
+$string['bookingexits'] = 'La reserva ya existe';
+$string['selectdate'] = 'Debe seleccionar una fecha y hora disponible en el calendario';
+$string['delete'] = 'Borrar';
+$string['selectbooking'] = 'Si desea anular alguna reserva seleccionar y pulsar';
+$string['nobooking'] = 'No existen reservas';
+$string['date'] = 'Fecha';
+$string['hour'] = 'Hora';
+$string['send_message'] = 'Enviado mensaje de aviso de la acci&oacute;n anterior';
+$string['book'] = 'Reservar';
+$string['book_message'] = 'Reserva';
+$string['messageDelete'] = 'Esta seguro de que desea eliminar';
+$string['cancel'] = 'Cancelar';
+$string['plantActive'] = 'Planta disponible';
+$string['iyear'] = 'A&ntilde;o';
+$string['imonth'] = 'Mes';
+$string['availability_booking'] = 'N&uacute;mero de reservas disponibles';
+$string['rem_prac_selection'] = 'Seleccione una practica';
+$string['messageOccupied'] = 'El slot esta ocupado';
+$string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún laboratorio remoto configurado';
+
+
+

@@ -15,7 +15,7 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Javier Pavon: javi.pavon@gmail.com
+//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
 //
@@ -29,7 +29,7 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -56,9 +56,6 @@ echo $OUTPUT->header();
 if (! $ejsappbookings = get_all_instances_in_course('ejsappbooking', $course)) {
     notice(get_string('noejsappbookings', 'ejsappbooking'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
-
-$table = new html_table();
-$table->attributes['class'] = 'generaltable mod_ejsappbooking';
 
 if ($course->format == 'weeks') {
     $table->head  = array(get_string('week'), get_string('name'));

@@ -74,3 +74,36 @@ $string['mail_content2'] = ' - IP: ';
 $string['mail_content3'] = ') has ceased to be accessible.';
 
 $string['already_enabled'] = 'You already have a booking system in this course.';
+
+$string['makereservation'] = 'Make a reservation';
+$string['deleteBooking'] = 'Booking Info deleted';
+$string['mybookings'] = 'My bookings';
+$string['plant'] = 'Plant';
+$string['availability'] = 'Availability';
+$string['bookinginfo'] = 'Booking info';
+$string['totalslots'] = 'Max slots allowed in this laboratory';
+$string['weeklyslots'] = 'Max weekly slots allowed or selected in this laboratory';
+$string['dailyslots'] = 'Max slots per day';
+$string['bookingexits'] = 'The reserve already exists';
+$string['selectdate'] = 'You must select a date and time available on the calendar';
+$string['delete'] = 'Delete';
+$string['selectbooking'] = 'To cancel a reservation, select and press the button';
+$string['nobooking'] = 'Not reservations';
+$string['date'] = 'Date';
+$string['hour'] = 'Time';
+$string['send_message'] = 'Submitted warning prior action';
+$string['book'] = 'Book';
+$string['book_message'] = 'Booking';
+$string['messageDelete'] = 'Are you sure you want to delete';
+$string['cancel'] = 'Cancel';
+$string['plantActive'] = 'Plant availability';
+$string['iyear'] = 'Year';
+$string['imonth'] = 'Month';
+$string['availability_booking'] = 'Number of available reserves';
+$string['rem_prac_selection'] = 'Select a practice';
+$string['messageOccupied'] = 'The slot is occupied';
+$string['no_labs_rem'] = 'You are not authorized to book or there is no remote laboratory set';
+
+
+
+

@@ -15,7 +15,7 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Javier Pavon: javi.pavon@gmail.com
+//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
 //
@@ -31,7 +31,7 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -82,7 +82,7 @@ function ejsappbooking_add_instance($ejsappbooking) {
     $bookingid = $DB->insert_record('ejsappbooking', $ejsappbooking);
     
     //ejsappbooking_usersaccess table:
-    $context = get_context_instance(CONTEXT_COURSE, $ejsappbooking->course);
+    $context =context_course::instance($ejsappbooking->course);
     $users = get_enrolled_users($context);
     $course_ejsapps = $DB->get_records('ejsapp', array('course'=>$ejsappbooking->course));
     
@@ -271,7 +271,7 @@ function ejsappbooking_cron () {
     foreach ($ejsappbookings as $ejsappbooking) { 
       $ejsappbooking_usersaccess->bookingid = $ejsappbooking->id;
       //Get context of the course to which ejsappbooking belongs to.
-      $context = get_context_instance(CONTEXT_COURSE, $ejsappbooking->course);
+      $context = context_course::instance($ejsappbooking->course);
       $users = get_enrolled_users($context);
       $course_ejsapps = $DB->get_records('ejsapp', array('course'=>$ejsappbooking->course));
       foreach ($course_ejsapps as $course_ejsapp) {
@@ -304,7 +304,7 @@ function ejsappbooking_cron () {
     //DELETING OLD USERS AND/OR REMOTE EJSAPPS LABS:
     foreach ($ejsappbookings as $ejsappbooking) { 
       //Get context of the course to which ejsappbooking belongs to.
-      $context = get_context_instance(CONTEXT_COURSE, $ejsappbooking->course);
+      $context = context_course::instance($ejsappbooking->course);
       $users = get_enrolled_users($context);
       $ejsapps_usersaccess = $DB->get_records('ejsappbooking_usersaccess');
       foreach ($ejsapps_usersaccess as $ejsapp_usersaccess) {
@@ -358,7 +358,7 @@ function ejsappbooking_cron () {
       if ($ejsapp_remlab_conf->active == 1 && !$up) {
         $rem_lab_down = $DB->get_record('ejsapp', array('id' => $ejsapp_remlab_conf->ejsappid));
         $role = $DB->get_record('role', array('shortname' => 'editingteacher'));
-        $context = get_context_instance(CONTEXT_COURSE, $rem_lab_down->course);
+        $context = context_course::instance($rem_lab_down->course);
         $teachers = get_role_users($role->id, $context);
         require_once($CFG->dirroot . '/filter/multilang/filter.php');
         $multilang = new filter_multilang($context, array('filter_multilang_force_old'=>0));

@@ -15,7 +15,7 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Javier Pavon: javi.pavon@gmail.com
+//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
 //
@@ -28,16 +28,16 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2013030100;      // The current module version (Date: YYYYMMDDXX)
+$module->version   = 2014060200;      // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2010112400;      // Requires this Moodle version
 $module->cron      = 86400;           // Period for cron to check this module (secs)
 $module->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place
 $module->maturity = MATURITY_STABLE;
-$module->release = '1.3 (Build: 2013030100)';
+$module->release = '2.0 (Build: 2014060200)';
 $module->dependencies = array('mod_ejsapp' => 2012121800);

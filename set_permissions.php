@@ -15,7 +15,7 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Javier Pavon: javi.pavon@gmail.com
+//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
 //
@@ -24,15 +24,14 @@
 
 
 /**
- *
- * Prints a particular instance of ejsappbooking
+ * Page for setting the users' booking permissions for the different remote labs
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 require_once('../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
@@ -61,7 +60,7 @@ $roleid = optional_param('roleid', 0, PARAM_INT);                   // optional 
 $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
 
 require_login($course, true, $cm);
-$contextmod = get_context_instance_by_id($contextmodid, MUST_EXIST);
+$contextmod = context::instance_by_id($contextmodid);
 $context = context_course::instance($courseid);
 
 $title = get_string('selectUsers_pageTitle', 'ejsappbooking');
@@ -85,10 +84,10 @@ foreach ($rem_labs as $rem_lab) {
 
 $PAGE->set_url('/mod/ejsappbooking/set_permissions.php', array('id' => $id, 'courseid' => $courseid, 'contextid' => $context->id));
 
-$systemcontext = get_context_instance(CONTEXT_SYSTEM);
+$systemcontext = context_system::instance();
 $isfrontpage = ($course->id == SITEID);
 
-$frontpagectx = get_context_instance(CONTEXT_COURSE, SITEID);
+$frontpagectx = context_course::instance(SITEID);
 
 if ($isfrontpage) {
   $PAGE->set_pagelayout('admin');
@@ -422,6 +421,7 @@ if ($i>1) { // If there is at least one remote lab
     $table->no_sorting('select');
     
     $table->set_attribute('cellspacing', '0');
+    $table->set_attribute('align','center');
     $table->set_attribute('id', 'participants');
     $table->set_attribute('class', 'generaltable generalbox');
     
@@ -436,7 +436,7 @@ if ($i>1) { // If there is at least one remote lab
     $table->setup();
     
     // we are looking for all users with this role assigned in this context or higher
-    $contextlist = get_related_contexts_string($context);
+    $contextlist = $context->get_parent_context_ids(true);
     
     list($esql, $params) = get_enrolled_sql($context, NULL, $currentgroup, true);
     
@@ -466,7 +466,12 @@ if ($i>1) { // If there is at least one remote lab
     }
     
     // performance hacks - we preload user contexts together with accounts
-    list($ccselect, $ccjoin) = context_instance_preload_sql('u.id', CONTEXT_USER, 'ctx');
+    //list($ccselect, $ccjoin) = context_instance_preload_sql('u.id', CONTEXT_USER, 'ctx');
+    $joinon = 'u.id';
+    $contextlevel = CONTEXT_USER;
+    $tablealias = 'ctx';
+    $ccselect = ", " . context_helper::get_preload_record_columns_sql($tablealias);
+    $ccjoin = "LEFT JOIN {context} $tablealias ON ($tablealias.instanceid = $joinon AND $tablealias.contextlevel = $contextlevel)";
     $select .= $ccselect;
     $joins[] = $ccjoin;
     
@@ -641,11 +646,11 @@ if ($i>1) { // If there is at least one remote lab
             continue;
                     }
             $usersprinted[] = $user->id; /// Add new user to the array of users printed
+
+            context_helper::preload_from_record($user);
     
-            context_instance_preload($user);
-    
-            $context = get_context_instance(CONTEXT_COURSE, $course->id);
-            $usercontext = get_context_instance(CONTEXT_USER, $user->id);
+            $context = context_course::instance($course->id);
+            $usercontext = context_user::instance($user->id);
     
             $countries = get_string_manager()->get_list_of_countries();
     
@@ -755,8 +760,8 @@ if ($i>1) { // If there is at least one remote lab
           continue;
           }
           $usersprinted[] = $user->id; /// Add new user to the array of users printed
-    
-          context_instance_preload($user);
+
+            context_helper::preload_from_record($user);
         
           if ($user->lastaccess) {
             $lastaccess = format_time(time() - $user->lastaccess, $datestring);
@@ -774,14 +779,19 @@ if ($i>1) { // If there is at least one remote lab
             }
           }
     
-          $usercontext = get_context_instance(CONTEXT_USER, $user->id);
-    
+          $usercontext = context_user::instance($user->id);
+
+          if(!isset($user->firstnamephonetic)) $user->firstnamephonetic = $user->firstname;
+          if(!isset($user->lastnamephonetic)) $user->lastnamephonetic = $user->lastname;
+          if(!isset($user->middlename)) $user->middlename = '';
+          if(!isset($user->alternatename)) $user->alternatename = '';
+
           if ($piclink = ($USER->id == $user->id || has_capability('moodle/user:viewdetails', $context) || has_capability('moodle/user:viewdetails', $usercontext))) {
             $profilelink = '<strong><a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
           } else {
             $profilelink = '<strong>'.fullname($user).'</strong>';
           }
-    
+
           $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid'=>$course->id)), $profilelink);
     
           if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
@@ -830,6 +840,11 @@ if ($i>1) { // If there is at least one remote lab
       } // if ($userlist)
     
       $table->print_html();
+
+      /*$filterform = new enrol_users_filter_form('set_permissions.php', array('courseid' => $id),
+            'get', '', array('courseid' => 'filterform'));
+      $filterform->set_data(array('search' => '', 'ifilter' => 0, 'role' => 0));
+      echo $renderer->render_course_enrolment_users_table($table, $filterform);*/
     
     } // if ($mode === MODE_USERDETAILS) ... else
     
