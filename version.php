@@ -34,10 +34,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2014060200;      // The current module version (Date: YYYYMMDDXX)
+$module->version   = 2014071406;      // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2010112400;      // Requires this Moodle version
 $module->cron      = 86400;           // Period for cron to check this module (secs)
 $module->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place
 $module->maturity = MATURITY_STABLE;
-$module->release = '2.0 (Build: 2014060200)';
+$module->release = '2.0 (Build: 2014071406)';
 $module->dependencies = array('mod_ejsapp' => 2012121800);

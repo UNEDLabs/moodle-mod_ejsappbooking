@@ -42,9 +42,18 @@ $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
 require_course_login($course);
 
-add_to_log($course->id, 'ejsappbooking', 'view all', 'index.php?id='.$course->id, '');
+if ($CFG->version < 2013111800) { //Moodle 2.5 or inferior
+    add_to_log($course->id, 'ejsappbooking', 'view all', "index.php?id=$course->id", '');
+} else {
+    $params = array(
+        'context' => context_course::instance($course->id)
+    );
+    $event = \mod_ejsappbooking\event\course_module_instance_list_viewed::create($params);
+    $event->add_record_snapshot('course', $course);
+    $event->trigger();
+}
 
-$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$coursecontext = context_course::instance($course->id);
 
 $PAGE->set_url('/mod/ejsapp/index.php', array('id' => $id));
 $PAGE->set_title(format_string($course->fullname));
@@ -56,6 +65,9 @@ echo $OUTPUT->header();
 if (! $ejsappbookings = get_all_instances_in_course('ejsappbooking', $course)) {
     notice(get_string('noejsappbookings', 'ejsappbooking'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
+
+$table = new html_table();
+$table->attributes['class'] = 'generaltable mod_ejsappbooking';
 
 if ($course->format == 'weeks') {
     $table->head  = array(get_string('week'), get_string('name'));

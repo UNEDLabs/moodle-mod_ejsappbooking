@@ -105,7 +105,7 @@ function ejsappbooking_add_instance($ejsappbooking) {
     foreach ($users as $user) {
       $ejsappbooking_usersaccess->userid = $user->id;
       if ($user->id != 2) {
-        if (!has_capability('moodle/course:viewhiddensections', $context, $user->id, false)) {
+        if (!has_capability('mod/ejsapp:addinstance', $context, $user->id, true)) {
           $ejsappbooking_usersaccess->allowremaccess = 0;
         } else {
           $ejsappbooking_usersaccess->allowremaccess = 1;
@@ -276,19 +276,19 @@ function ejsappbooking_cron () {
       $course_ejsapps = $DB->get_records('ejsapp', array('course'=>$ejsappbooking->course));
       foreach ($course_ejsapps as $course_ejsapp) {
         if ($course_ejsapp->is_rem_lab == 1) {
-          $ejsappbooking_usersaccess->ejsappid = $course_ejsapp->id;                              
+          $ejsappbooking_usersaccess->ejsappid = $course_ejsapp->id;
           foreach ($users as $user) {
             $ejsappbooking_usersaccess->userid = $user->id;
-            if (!has_capability('moodle/course:viewhiddensections', $context, $user->id, false)) {
-              $ejsappbooking_usersaccess->allowremaccess = 0; 
+            if (!has_capability('mod/ejsapp:addinstance', $context, $user->id, true)) {
+              $ejsappbooking_usersaccess->allowremaccess = 0;
             } else {
               $ejsappbooking_usersaccess->allowremaccess = 1;
             }
             if (!$ejsapp_exists = $DB->get_record('ejsappbooking_usersaccess', array('ejsappid' => $course_ejsapp->id, 'userid' => $user->id))) {
-              if ($user->id != 2) {
-                //Not admin users:
-                $DB->insert_record('ejsappbooking_usersaccess', $ejsappbooking_usersaccess);
-              }
+              $DB->insert_record('ejsappbooking_usersaccess', $ejsappbooking_usersaccess);
+            } else if ($ejsappbooking_usersaccess->allowremaccess == 1) {
+              $ejsappbooking_usersaccess->id = $ejsapp_exists->id;
+              $DB->update_record('ejsappbooking_usersaccess', $ejsappbooking_usersaccess);
             }
           }
           //Check whether the admin user already has booking rights and, if not, grant them to him

@@ -104,5 +104,6 @@ $string['rem_prac_selection'] = 'Seleccione una practica';
 $string['messageOccupied'] = 'El slot esta ocupado';
 $string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún laboratorio remoto configurado';
 
-
-
+//Capabilities
+$string['ejsappbooking:addinstance'] = 'Añadir un nuevo sistema de reservas';
+$string['ejsappbooking:view'] = 'Ver el sistema de reservas';

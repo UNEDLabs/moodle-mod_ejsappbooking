@@ -22,13 +22,8 @@
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
 
-
 /**
- * Steps file to perform the EJSAppBooking backup
- *
- * Backup/Restore files in ejsappbooking just work with data in the ejsappbooking table.
- * The data from ejsappbooking_remlab_access and ejsappbooking_useraccess is backup/restored
- * by ejsapp
+ * custom settings to be used by EJSAppBooking backup
  *
  * @package    mod
  * @subpackage ejsappbooking
@@ -36,24 +31,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-/**
- * Define the complete EJSApp-Booking structure for backup
- */
-class backup_ejsappbooking_activity_structure_step extends backup_activity_structure_step {
-
-    /**
-     * Define the complete structure for backup, with file and id annotations
-     */
-    protected function define_structure() {
-        global $DB;
-
-        $ejsappbooking = new backup_nested_element('ejsappbooking', array('id'),
-            array('course', 'name', 'intro', 'introformat', 'timecreated', 'timemodified'));
-
-        $ejsappbooking->set_source_table('ejsappbooking', array('id' => backup::VAR_ACTIVITYID));
-        return $this->prepare_activity_structure($ejsappbooking);
-    }
-    
-}
+// This activity has not particular settings but the inherited from the generic
+// backup_activity_task so here there isn't any class definition, like the ones
+// existing in /backup/moodle2/backup_settingslib.php (activities section)

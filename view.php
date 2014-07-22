@@ -71,7 +71,20 @@ if ($id) {
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
-add_to_log($course->id, 'ejsappbooking', 'view', "view.php?id={$cm->id}", $ejsappbooking->name, $cm->id);
+if ($CFG->version < 2013111800) { //Moodle 2.5 or inferior
+    add_to_log($course->id, 'ejsappbooking', 'view', "view.php?id={$cm->id}", $ejsappbooking->name, $cm->id);
+} else {
+    $event = \mod_ejsappbooking\event\course_module_viewed::create(array(
+        'objectid' => $ejsappbooking->id,
+        'context' => $context
+    ));
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('ejsappbooking', $ejsappbooking);
+    // In the next line you can use $PAGE->activityrecord if you have set it, or skip this line if you don't have a record.
+    //$event->add_record_snapshot($PAGE->cm->modname, $activityrecord);
+    $event->trigger();
+}
 
 /// Print the page header
 $PAGE->set_title(format_string($ejsappbooking->name));

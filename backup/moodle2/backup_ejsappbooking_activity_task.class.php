@@ -17,6 +17,7 @@
 // EJSApp has been developed by:
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
+//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
 //
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
@@ -30,13 +31,14 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/mod/ejsappbooking/backup/moodle2/backup_ejsappbooking_stepslib.php');
+require_once($CFG->dirroot . '/mod/ejsappbooking/backup/moodle2/backup_ejsappbooking_settingslib.php');
 
 /**
  * EJSAppBooking backup task that provides all the settings and steps to perform one

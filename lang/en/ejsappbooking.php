@@ -104,6 +104,6 @@ $string['rem_prac_selection'] = 'Select a practice';
 $string['messageOccupied'] = 'The slot is occupied';
 $string['no_labs_rem'] = 'You are not authorized to book or there is no remote laboratory set';
 
-
-
-
+//Capabilities
+$string['ejsappbooking:addinstance'] = 'Add a new booking system';
+$string['ejsappbooking:view'] = 'View the booking system';

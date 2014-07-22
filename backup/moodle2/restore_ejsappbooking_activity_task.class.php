@@ -17,6 +17,7 @@
 // EJSApp has been developed by:
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
+//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
 //
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
@@ -26,7 +27,7 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
