@@ -22,6 +22,27 @@
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
 
+// This file is part of the Moodle module "EJSApp booking system"
+//
+// EJSApp booking system is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// EJSApp booking system is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+//
+// EJSApp booking system has been developed by:
+//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+//  - Luis de la Torre: ldelatorre@dia.uned.es
+//	- Ruben Heradio: rheradio@issi.uned.es
+//
+//  at the Computer Science and Automatic Control, Spanish Open University
+//  (UNED), Madrid, Spain
 
 /**
  * English strings for ejsappbooking
@@ -38,7 +59,7 @@ $string['modulename'] = 'Sistema de reservas EJSApp';
 $string['modulenameplural'] = 'Sistemas de reservas EJSApp';
 $string['modulename_help'] = 'El m&oacute;dulo de recurso EJSAppBooking permite a los usuarios de Moodle reservas franjas de tiempo para experimentaci&oacute;n real y remota usando los applets creados con Easy Java Simulations (EJS) y subidos a los cursos de Moodle mediante el m&oacute;dulo de actividad EJSApp.
 
-Este recurso a&ntilde;ade una aplicaci&oacute;n Java que muestra una lista de los laboratorios remotos disponibles para el usuario y le permite seleccionar una reserva para cualquier d&iacute;a y hora deseados.
+Este recurso a&ntilde;ade una aplicaci&oacute;n Java que muestra una lista de los laboratorios remotos disponibles para el cuser y le permite seleccionar una reserva para cualquier d&iacute;a y hora deseados.
 
 El sistema de reservas consiste en dos partes: el cliente de reservas y el servidor de reservas. Mientras que la aplicaci&oacute;n del cliente de reservas se a&ntilde;ade con este m&oacute;dulo, el servidor de reservas necesita estar en ejecuci&oacute;n en el servidor que aloja el portal de Moodle. Puedes encontrar esta aplicaci&oacute;n en tu carpeta /mod/ejsappbooking/applets/BookingServer/';
 $string['view_error'] = 'No se pudo abrir la aplicaci&oacute;n del sistema de reservas.';
@@ -82,7 +103,7 @@ $string['plant'] = 'Planta';
 $string['availability'] = 'Disponibilidad';
 $string['bookinginfo'] = 'Informaci&oacute;n sobre la reserva';
 $string['totalslots'] = 'M&aacute;ximos slots permitidos en este laboratorio';
-$string['weeklyslots'] = 'M&aacute;ximos slots semanales permitidos o seleccionados en este laboratorio';
+$string['weeklyslots'] = 'M&aacute;ximos slots semanales permitidos';
 $string['dailyslots'] = 'M&aacute;ximos slots por dia';
 $string['bookingexits'] = 'La reserva ya existe';
 $string['selectdate'] = 'Debe seleccionar una fecha y hora disponible en el calendario';

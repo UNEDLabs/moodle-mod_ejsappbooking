@@ -22,6 +22,27 @@
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
 
+// This file is part of the Moodle module "EJSApp booking system"
+//
+// EJSApp booking system is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// EJSApp booking system is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+//
+// EJSApp booking system has been developed by:
+//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+//  - Luis de la Torre: ldelatorre@dia.uned.es
+//	- Ruben Heradio: rheradio@issi.uned.es
+//
+//  at the Computer Science and Automatic Control, Spanish Open University
+//  (UNED), Madrid, Spain
 
 /**
  * Library of interface functions and constants for module ejsappbooking
@@ -106,6 +127,7 @@ function ejsappbooking_add_instance($ejsappbooking) {
       $ejsappbooking_usersaccess->userid = $user->id;
       if ($user->id != 2) {
         if (!has_capability('mod/ejsapp:addinstance', $context, $user->id, true)) {
+        //if (!has_capability('moodle/course:viewhiddensections', $context, $user->id, false)) {
           $ejsappbooking_usersaccess->allowremaccess = 0;
         } else {
           $ejsappbooking_usersaccess->allowremaccess = 1;

@@ -22,6 +22,27 @@
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
 
+// This file is part of the Moodle module "EJSApp booking system"
+//
+// EJSApp booking system is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// EJSApp booking system is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+//
+// EJSApp booking system has been developed by:
+//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+//  - Luis de la Torre: ldelatorre@dia.uned.es
+//	- Ruben Heradio: rheradio@issi.uned.es
+//
+//  at the Computer Science and Automatic Control, Spanish Open University
+//  (UNED), Madrid, Spain
 
 /**
  * Spanish strings for ejsappbooking
@@ -82,7 +103,7 @@ $string['plant'] = 'Plant';
 $string['availability'] = 'Availability';
 $string['bookinginfo'] = 'Booking info';
 $string['totalslots'] = 'Max slots allowed in this laboratory';
-$string['weeklyslots'] = 'Max weekly slots allowed or selected in this laboratory';
+$string['weeklyslots'] = 'Max weekly slots allowed in this laboratory';
 $string['dailyslots'] = 'Max slots per day';
 $string['bookingexits'] = 'The reserve already exists';
 $string['selectdate'] = 'You must select a date and time available on the calendar';

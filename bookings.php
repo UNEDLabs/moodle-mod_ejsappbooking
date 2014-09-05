@@ -15,7 +15,7 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
+//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
 //

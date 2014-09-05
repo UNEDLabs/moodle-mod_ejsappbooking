@@ -22,6 +22,27 @@
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
 
+// This file is part of the Moodle module "EJSApp booking system"
+//
+// EJSApp booking system is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// EJSApp booking system is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+//
+// EJSApp booking system has been developed by:
+//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+//  - Luis de la Torre: ldelatorre@dia.uned.es
+//	- Ruben Heradio: rheradio@issi.uned.es
+//
+//  at the Computer Science and Automatic Control, Spanish Open University
+//  (UNED), Madrid, Spain
 
 /**
  * Prints a particular instance of ejsappbooking
@@ -41,19 +62,19 @@ require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->dirroot . '/calendar/lib.php');
 require_once($CFG->dirroot . '/filter/multilang/filter.php');
 
-$debug = false;
+
 $deletebutton = false;
 $message = false;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT); // ejsappbooking instance ID - it should be named as the first character of the module
-$labid = optional_param('labid', 0, PARAM_INT); // Laboratorio seleccionado
-$practid = optional_param('practid', 0, PARAM_INT); // Practica seleccionada
-$booking = optional_param_array('booking', array(), PARAM_INT); // Reservas seleccionadas para grabar o borrar
-$bookingbutton = optional_param('bookingbutton', 0, PARAM_RAW); // Controla la funcionalidad de grabar reservas
-$Mybookingsbutton = optional_param('Mybookingsbutton', 0, PARAM_RAW); // Controla la funcionalidad de mostrar las reservas del usuario
-$Mybookingsdelete = optional_param('Mybookingsdelete', 0, PARAM_RAW); // Controla la funcionalidad de borrar las reservas seleccionadas del usuario
-$selectDay = optional_param('selectDay', 0, PARAM_RAW); // Dia seleccionado
+$labid = optional_param('labid', 0, PARAM_INT); // selected laboratory
+$practid = optional_param('practid', 0, PARAM_INT); // selected practice
+$booking = optional_param_array('booking', array(), PARAM_INT); // bookings selected to save or delete
+$bookingbutton = optional_param('bookingbutton', 0, PARAM_RAW); // controls record functionality reserves
+$Mybookingsbutton = optional_param('Mybookingsbutton', 0, PARAM_RAW); // Controls the functionality of showing the user reservation
+$Mybookingsdelete = optional_param('Mybookingsdelete', 0, PARAM_RAW); // Controls functionality to delete the selected user reservation
+$selectDay = optional_param('selectDay', 0, PARAM_RAW); // selected day
 $page = optional_param('page', 0, PARAM_INT); // which page to show
 
 if ($id) {
@@ -104,10 +125,12 @@ if ($ejsappbooking->intro) { // If some text was written, show the intro
     echo $OUTPUT->box(format_module_intro('ejsappbooking', $ejsappbooking, $cm->id), 'generalbox mod_introbox', 'ejsappbookingintro');
 }
 
-// Obtener los laboratorios remotos autorizados para el usuario
+// Get remote laboratories authorized user
 $rem_labs = $DB->get_records_sql("SELECT DISTINCT (a.id), a.name FROM {ejsapp} a INNER JOIN {ejsappbooking_usersaccess} b ON a.id = b.ejsappid WHERE b.userid = ? AND a.course = ? AND a.is_rem_lab = 1 AND b.allowremaccess = 1", array($USER->id, $course->id));
 
+
 if(!$rem_labs) {
+    // No labs
     echo $OUTPUT->box_start();
     echo $OUTPUT->heading(get_string('no_labs_rem', 'ejsappbooking'));
 }
@@ -123,62 +146,58 @@ foreach ($rem_labs as $rem_lab) {
     $i++;
 }
 
+$today = new DateTime("now");
 
-// Verificar si es la primera vez que se entra o el valor del parametro selectDay, también se instancian unas variables
-// utilizados para deshabilitar algunos slot en la tabla de reservas disponibles
-$anterior = false;
-$hoy = true;
-
+// Check the selected day
 if (!$selectDay) {
-    $fecha = new DateTime("now");
-    $today = new DateTime("now");
+    $sDate = $today;
+    $previous_day = false;
+    $now = true;
 } else {
-    $today = new DateTime("now");
-    $fecha = DateTime::createFromFormat("Y-m-d", $selectDay);
-
-    if ($today->format("Y-m-d") == $fecha->format("Y-m-d")) {
-        //$hoy = true;
-        //echo 'DIA ACTUAL: ' . $fecha->format('Y-m-d') . ' ' . $today->format("Y-m-d");
-    } else if ($today->format("Y-m-d") < $fecha->format("Y-m-d")) {
-        $anterior = false;
-        $hoy = false;
+    $sDate = DateTime::createFromFormat("Y-m-d", $selectDay);
+    // used to clear days in the calendar
+    if ($today->format("Y-m-d") == $sDate->format("Y-m-d")) {
+        $previous_day = false;
+        $now = true;
+    } else if ($today->format("Y-m-d") < $sDate->format("Y-m-d")) {
+        $previous_day = false;
+        $now = false;
     } else {
-        $anterior = true;
-        $hoy = false;
+        $previous_day = true;
+        $now = false;
     }
 
 }
 
-// Comienza la creación de la página web
-
+// Started building the website
 $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
 echo $OUTPUT->box_start();
 echo $OUTPUT->heading(get_string('makereservation', 'ejsappbooking'));
-$iconurl = $CFG->wwwroot . '/mod/ejsappbooking/pix/seleccionada.png';
+$iconurl = $CFG->wwwroot . '/mod/ejsappbooking/pix/selected.png';
 
-// Se comprueba si el laboratorio esta activo
+// Check the configuration of the lab
 $conf_labs = $DB->get_record('ejsapp_remlab_conf', array('ejsappid' => $labid));
 
+// It checks if the laboratory is active
 if($conf_labs->active)
     $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_success_44x44.png';
 else
     $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_error_44x44.png';
 
-// Se construye la parte de la interfaz donde aparecen los datos del usuario y el control del calendario
-
+//  user data and control the calendar
 echo html_writer::start_tag('div', array('id' => 'container', 'align' => 'center'));
 $user_picture = $OUTPUT->user_picture($USER, array('size' => 100, 'courseid'=>$course->id));
 $user_fullname = $OUTPUT->container('<p align="center">' . fullname($USER, has_capability('moodle/site:viewfullnames', $context)). '</strong></p>', 'username');
-$date_active = $OUTPUT->container('<p align="center"> <strong> <span id="fechaActiva">' . $fecha->format("Y-m-d") . '</span> </strong></p>');
+$date_active = $OUTPUT->container('<p align="center"> <strong> <span id="ActiveDate">' . $sDate->format("Y-m-d") . '</span> </strong></p>');
 $plant_name = $OUTPUT->container('<p align="center">'. get_string('plantActive','ejsappbooking').'</p>');
 $plant_state = $OUTPUT->container('<p align="center"><img src="' . $plantico. '" width="44px" height="44px"></p>');
-$calendar = html_writer::start_tag('div', array('id' => 'calendario', 'align' => 'center'));
+$calendar = html_writer::start_tag('div', array('id' => 'calendar', 'align' => 'center'));
 $calendar .= html_writer::end_tag('div')  . '<br>';
 $selectDate = html_writer::start_tag('div', array('id' => 'control', 'align' => 'center'));
-$selectDate .= '<button id="restarAno">&lt;' . get_string('iyear','ejsappbooking') . '</button>';
-$selectDate .= '<button id="restarMes">&lt;' . get_string('imonth','ejsappbooking') . '</button>';
-$selectDate .= '<button id="sumarMes">' . get_string('imonth','ejsappbooking') . '&gt;</button>';
-$selectDate .= '<button id="sumarAno">' . get_string('iyear','ejsappbooking') . '&gt;</button>';
+$selectDate .= '<button id="subyear">&lt;' . get_string('iyear','ejsappbooking') . '</button>';
+$selectDate .= '<button id="submonth">&lt;' . get_string('imonth','ejsappbooking') . '</button>';
+$selectDate .= '<button id="addmonth">' . get_string('imonth','ejsappbooking') . '&gt;</button>';
+$selectDate .= '<button id="addyear">' . get_string('iyear','ejsappbooking') . '&gt;</button>';
 $selectDate .= html_writer::end_tag('div') . '<br>';
 $table = new html_table();
 $table->attributes['class'] = 'userinfobox';
@@ -195,13 +214,12 @@ $row->cells[2]->text = '';
 $table->data[0] = $row;
 echo html_writer::table($table);
 
-// Se estable el formulario de selección de laboratorios y practicas
-
+// Select labs
 $out = html_writer::start_tag('form', array('id' => 'bookingform', 'method' => 'get', 'action' => $baseurl));
 $out .= html_writer::start_tag('div', array('id' => 'controls', 'align' => 'center'));
 $out .= get_string('rem_lab_selection', 'ejsappbooking');
-$out .= '<select name="labid" data-previousindex="0" onchange="this.form.submit()"> ';
-$labactual = '';
+$out .= '&nbsp;&nbsp;<select name="labid" data-previousindex="0" onchange="this.form.submit()"> ';
+$currentLab = '';
 $i = 1;
 foreach ($rem_labs as $rem_lab) {
     $lab_name[$rem_lab->id] = $multilang->filter($rem_lab->name);
@@ -212,12 +230,14 @@ foreach ($rem_labs as $rem_lab) {
 
     if ($labid == $rem_lab->id) {
         $out .= 'selected="selected"';
-        $labactual = $lab_name[$rem_lab->id];
+        $currentLab = $lab_name[$rem_lab->id];
     }
     $out .= '>' . $lab_name[$rem_lab->id] . '</option>';
     $i++;
 }
 $out .= '</select>';
+
+// Select practices
 $rem_practices = $DB->get_records_sql("SELECT id, ejsappid, practiceid, practiceintro FROM {ejsapp_expsyst2pract} WHERE ejsappid = ? ", array($labid));
 $i = 1;
 $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
@@ -231,7 +251,7 @@ foreach ($rem_practices as $practice_lab) {
 $practActual = '';
 $out .= '<br>';
 $out .= get_string('rem_prac_selection', 'ejsappbooking');
-$out .= '<select name="practid" data-previousindex="0" onchange="this.form.submit()"> ';
+$out .= '&nbsp;&nbsp;<select name="practid" data-previousindex="0" onchange="this.form.submit()"> ';
 $i = 1;
 foreach ($rem_practices as $practice_lab) {
     $lab_name[$practice_lab->practiceid] = $multilang->filter($practice_lab->practiceintro);
@@ -256,97 +276,94 @@ $bookingtable->attributes['border'] = '1';
 $bookingtable->id = 'tablabooking';
 $bookingtable->cellspacing = 0;
 $bookingtable->align[1] = 'center';
-$bookingtable->head = array(' ', get_string('availability', 'ejsappbooking'), $fecha->format('d-m-Y'), ' ');
 
+// start the program logic
 
-// Empieza la logica del programa
-
-// Se comprueba si se ha pulsado el botón de reservas
+// reservation functionality
 if ($bookingbutton) {
 
-    // Si existen reservas en la petición. Se controla las restricciones del laboratorio, controlando las peticiones existentes y reserva en curso
+    // checks if there are reservations on request
     if ($booking) {
 
         $bookingtable->head = array(get_string('plant', 'ejsappbooking'), get_string('date', 'ejsappbooking'), get_string('hour', 'ejsappbooking'));
 
         $i = 0;
-        $message = "";
-        $today = new DateTime("now");
-        //$user_access = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE DATE_FORMAT(starttime, '%Y-%m-%d') >= ? AND username = ? AND ejsappid = ? ORDER BY starttime ASC", array($today->format('Y-m-d'), $USER->username, $labid));
-        // Numero de reservas en el laboratorio
+        //$message = "";
+
+        // user´s bookings at the DB
         $user_access = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE username = ? AND ejsappid = ? ORDER BY starttime ASC", array($USER->username, $labid));
-        // Reservas en la petición
+        $userBooks = count($user_access);
+
+            // bookings at the request
         $pre_booking = count($booking);
-        // Reservas en la BD
-        $numero = count($user_access);
-        $mensaje = false;
-        // Se establece el guardado de la reserva antes de la comprobación de las restricciones
+
+        $message = false;
+        // Set save
         $save = 1;
+        $total = $pre_booking + $userBooks;
+        $day = $sDate->format('w');
 
-        // Comienzo codigo comprobacion restricciones laboratorio
-        $total = $pre_booking + $numero;
-        $dia = $fecha->format('w');
-
-        if ($dia == 0) {
-            $lunes = 6;
-            $domingo = 0;
+        if ($day == 0) {
+            $monday = 6;
+            $sunday = 0;
         } else {
-            $lunes = $dia - 1;
-            $domingo = 7 - $dia;
+            $monday = $day - 1;
+            $sunday = 7 - $day;
         }
 
-        $dlunes = strtotime('-' . $lunes . 'day', strtotime($fecha->format('Y-m-d')));
-        $ddomingo = strtotime('+' . $domingo . 'day', strtotime($fecha->format('Y-m-d')));
+        $dmonday = strtotime('-' . $monday . 'day', strtotime($sDate->format('Y-m-d')));
+        $dsunday = strtotime('+' . $sunday . 'day', strtotime($sDate->format('Y-m-d')));
+        $dmonday = date('Y-m-d', $dmonday);
+        $dsunday = date('Y-m-d', $dsunday);
 
-        $dlunes = date('Y-m-d', $dlunes);
-        $ddomingo = date('Y-m-d', $ddomingo);
-
-        if ($dlunes < $today->format('Y-m-d')) {
-            $dlunes = $today->format('Y-m-d');
+        if ($dmonday < $today->format('Y-m-d')) {
+            $dmonday = $today->format('Y-m-d');
         }
 
-        $user_access_week = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE DATE_FORMAT(starttime, '%Y-%m-%d') >= ? AND DATE_FORMAT(starttime, '%Y-%m-%d') <= ? AND username = ? AND ejsappid = ? ORDER BY starttime ASC", array($dlunes, $ddomingo, $USER->username, $labid));
+        // user´s bookings of the week
+        $user_access_week = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE DATE_FORMAT(starttime, '%Y-%m-%d') >= ? AND DATE_FORMAT(starttime, '%Y-%m-%d') <= ? AND username = ? AND ejsappid = ? ORDER BY starttime ASC", array($dmonday, $dsunday, $USER->username, $labid));
+        $weekBooks = count($user_access_week);
 
-        $numero2 = count($user_access_week);
-        $total2 = $pre_booking + $numero2;
+        $total2 = $pre_booking + $weekBooks;
 
-        // Se comprueban las restricciones totales, semanales y diarias.
+        // check restrictions
         if ($total > $conf_labs->totalslots) {
             $save = 0;
-            $number = $conf_labs->totalslots - $numero;
-            $mensaje = get_string('totalslots', 'ejsappbooking'). ': ' . $conf_labs->totalslots;
+            $number = $conf_labs->totalslots - $userBooks;
+            $message = get_string('totalslots', 'ejsappbooking'). ': ' . $conf_labs->totalslots;
             if($number > 0)
-                $mensaje .= '. ' . get_string('availability_booking', 'ejsappbooking') . ': ' . $number;
+                $message .= '. ' . get_string('availability_booking', 'ejsappbooking') . ': ' . $number;
         } else if ($total2 > $conf_labs->weeklyslots) {
             $save = 0;
-            $mensaje = get_string('weeklyslots', 'ejsappbooking') . '. ';
-            $number = $conf_labs->weeklyslots - $numero2;
+            $message = get_string('weeklyslots', 'ejsappbooking') . '. ';
+            $number = $conf_labs->weeklyslots - $weekBooks;
             if($number > 0)
-                $mensaje .= get_string('availability_booking', 'ejsappbooking') . ': ' . $number;
+                $message .= get_string('availability_booking', 'ejsappbooking') . ': ' . $number;
         } else {
             $i = $pre_booking;
 
-            if (count($user_access) == 0) {
+            if ($userBooks == 0) {
                 if ($i > $conf_labs->dailyslots) {
                     $save = 0;
-                    $mensaje = get_string('dailyslots', 'ejsappbooking')  . ': ' . $conf_labs->dailyslots ;
+                    $message = get_string('dailyslots', 'ejsappbooking')  . ': ' . $conf_labs->dailyslots ;
                 }
             } else {
+
                 foreach ($user_access as $access) {
 
                     $convert = date("Y-m-d", strtotime($access->starttime));
 
-                    if ($selectDay == $convert)
+                    if ($convert == $sDate->format("Y-m-d"))
                         $i++;
 
+
                     if ($i > $conf_labs->dailyslots) {
-                        $mensaje = get_string('dailyslots', 'ejsappbooking') . ': ' . $conf_labs->dailyslots;
+                        $message = get_string('dailyslots', 'ejsappbooking') . ': ' . $conf_labs->dailyslots;
                         $number = $conf_labs->dailyslots - $i;
 
                         if($number < 0)
                             $number = 0;
 
-                        $mensaje .= ' ' . get_string('availability_booking', 'ejsappbooking') . ': ' . $number;
                         $save = 0;
                         break;
                     }
@@ -354,21 +371,21 @@ if ($bookingbutton) {
             }
         }
 
-        // Si existe alguna restricción, muestra un mensaje
-        if ($mensaje) {
-            $out .= '<p align="center"><strong>' . $mensaje . '</strong></p><br>';
+        // If there are any restrictions, displays a message
+        if ($message) {
+            $out .= '<p align="center"><strong>' . $message . '</strong></p><br>';
         } else {
-            // En caso contrario se graba la reserva
+            // booking save
             if ($save) {
                 $i = 0;
-                //Preparamos el mensaje informando sobre la reserva
+                // booking info
                 $messagebody = get_string('bookinginfo', 'ejsappbooking') . '<br><br>';
 
-                // Recorremos cada reserva
+                // bookings
                 foreach ($booking as $book) {
 
                     $event = new stdClass();
-                    $event->name = get_string('book_message', 'ejsappbooking') . ' '. $labactual . '. ' . $practActual;
+                    $event->name = get_string('book_message', 'ejsappbooking') . ' '. $currentLab . '. ' . $practActual;
                     $event->description = get_string('bookinginfo', 'ejsappbooking') . '<br><br>';
                     $event->groupid = 0;
                     $event->courseid = 0;
@@ -376,7 +393,7 @@ if ($bookingbutton) {
                     $event->timeduration = 3540;
                     $event->eventtype = 'user';
 
-                    $date = $fecha->format("Y-m-d") . ' ' . $book . ':00:00';
+                    $date = $sDate->format("Y-m-d") . ' ' . $book . ':00:00';
 
                     $bk = new stdClass();
                     $bk->username = $USER->username;
@@ -390,10 +407,10 @@ if ($bookingbutton) {
                     $finishTime = new DateTime($bk->endtime);
 
 
-                    // Comprobamos si la reserva existe
+                    // Will the book exists?
                     if ($DB->record_exists('ejsappbooking_remlab_access', array('starttime' => $bk->starttime, 'ejsappid' => $labid, 'practiceid' => $practid))) {
 
-                        //Informamos que el slot esta ocupado
+                        // report that the slot is occupied
                         $bookingtable->data[] = new html_table_row();
 
                         $bookingcell = new html_table_cell();
@@ -415,14 +432,14 @@ if ($bookingbutton) {
 
                     } else {
 
-                        // El slot no esta ocupado, se guarda en la BD
+                        // save in database
                         $identificador = $DB->insert_record('ejsappbooking_remlab_access', $bk, true);
 
                         $bookingtable->data[] = new html_table_row();
 
                         $bookingcell = new html_table_cell();
                         $bookingcell->attributes['class'] = 'center';
-                        $bookingcell->text = $labactual . '. ' . $practActual;
+                        $bookingcell->text = $currentLab . '. ' . $practActual;
                         $bookingtable->data[$i]->cells[] = $bookingcell;
 
                         $bookingcell = new html_table_cell();
@@ -439,33 +456,33 @@ if ($bookingbutton) {
 
                         $event->timestart = make_timestamp($initTime->format('Y'), $initTime->format('m'), $initTime->format('d'), $initTime->format('H'));
 
-                        // Completamos el mensaje con la información de la reserva
-                        $messagebody = $messagebody . get_string('plant', 'ejsappbooking') . ': ' . $labactual . '. ' . $practActual . '<br>';
+                        // Booking information - Message
+                        $messagebody = $messagebody . get_string('plant', 'ejsappbooking') . ': ' . $currentLab . '. ' . $practActual . '<br>';
                         $messagebody = $messagebody . get_string('date', 'ejsappbooking') . ': ' . $initTime->format("Y-m-d") . '<br>';
                         $messagebody = $messagebody . get_string('hour', 'ejsappbooking') . ': ' . $initTime->format('H:00:00') . '-' . $finishTime->format('H:59:59') . '<br><br>';
 
-                        // Completamos el evento con la información de la reserva
-                        $event->description = $event->description . get_string('plant', 'ejsappbooking') . ': ' . $labactual . '. ' . $practActual . '<br>';
+                        // Booking information - Event
+                        $event->description = $event->description . get_string('plant', 'ejsappbooking') . ': ' . $currentLab . '. ' . $practActual . '<br>';
                         $event->description = $event->description . get_string('date', 'ejsappbooking') . ': ' . $initTime->format("Y-m-d") . '<br>';
                         $event->description = $event->description . get_string('hour', 'ejsappbooking') . ': ' . $initTime->format('H:00:00') . '-' . $finishTime->format('H:59:59');
 
-                        // Creamos el evento en el calendario
+                        // create the event on the calendar
                         calendar_event::create($event);
                     }
                     $i++;
                 }
 
-                // Informamos si la mensajeria esta activada
+                // check message delivery
                 if (empty($CFG->messaging)) {
                     $out .= '<p align="center"> <strong>' . get_string('messagingdisabled', 'message') . '</strong></p>';
                 }
 
-                //Formateamos y enviamos el mensaje mediante el usuario Admin
+                // format and send the message by the Admin user
                 $format = FORMAT_HTML;
-                $usuario = $DB->get_record('user', array('id' => 2));
-                @message_post_message($usuario, $USER, $messagebody, $format);
+                $cuser = $DB->get_record('user', array('id' => 2));
+                @message_post_message($cuser, $USER, $messagebody, $format);
 
-                // Escribimos la tabla con la información de la reserva
+                // Booking information
                 $out .= '<p align="center"> <strong>' . get_string('bookinginfo', 'ejsappbooking') . '</strong></p>';
                 $out .= html_writer::table($bookingtable);
                 $out .= '<p align="center"> <strong>' . get_string('sending_message', 'ejsappbooking') . '</strong></p>';
@@ -473,24 +490,24 @@ if ($bookingbutton) {
         }
 
     } else {
-        // No recibimos como parametro ninguna fecha, mostramos un error
+        // no date, show an error
         $out .= '<p align="center"><strong>' . get_string('selectdate', 'ejsappbooking') . '</strong></p>';
     }
 
-// Logica del programa donde se muestran las reservas del usuario y controla su eliminación
+// Manage user´s bookings
 } else if ($Mybookingsbutton || $Mybookingsdelete) {
 
     $deletebutton = true;
     $bookingtable->head = array(' ', ' ', get_string('plant', 'ejsappbooking'), get_string('date', 'ejsappbooking'), get_string('hour', 'ejsappbooking'));
     $username = $USER->username;
 
-    // El programa ha recibido una petición para borrar la reserva
+    // delete booking request
     if ($Mybookingsdelete) {
 
-        // Preparamos el mensaje para informar
+        // info - message
         $messagebody = get_string('deleteBooking', 'ejsappbooking') . '<br><br>';
 
-        // Recorremos las reservas seleccionadas y las eliminamos
+        // check and delete bookings
         foreach ($booking as $book) {
 
             $record = $DB->get_record('ejsappbooking_remlab_access', array('id' => $book));
@@ -504,68 +521,70 @@ if ($bookingbutton) {
             $time = make_timestamp($initTime->format('Y'), $initTime->format('m'), $initTime->format('d'), $initTime->format('H'));
             $event = $DB->get_record_sql('SELECT * FROM {event} WHERE userid = ? AND name = ? AND timestart = ?', array($USER->id, get_string('book_message', 'ejsappbooking') . ' '. $labs->name . '. ' . $prac->practiceintro, $time));
 
-            // Eliminamos el evento del calendario
+            // delete calendar´s event
             if ($event) {
                 $event = calendar_event::load($event->id);
                 $event->delete($deleterepeated = false);
             }
         }
 
-        // Informamos si la mensajeria esta activada
+        // check message delivery
         if (empty($CFG->messaging)) {
             $out .= '<p align="center"> <strong>' . get_string('messagingdisabled', 'message') . '</strong></p>';
         }
 
-        // Formateamos y enviamos el mensaje como Admin
+        // format and send the message by the Admin user
         $format = FORMAT_HTML;
-        $usuario = $DB->get_record('user', array('id' => 2));
-        @message_post_message($usuario, $USER, $messagebody, $format);
-        // Informamos por pantalla
+        $cuser = $DB->get_record('user', array('id' => 2));
+        @message_post_message($cuser, $USER, $messagebody, $format);
+
+        // Booking information
         $message = '<p align="center"> <strong>' . get_string('send_message', 'ejsappbooking') . '</strong></p>';
     }
 
-    // Paginamos y presentamos las reservas del usuario
-    $today = new DateTime("now");
+    // show user´s bookings
     $events = $DB->get_records_sql("SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, a.valid, b.name FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id WHERE a.username = ? AND DATE_FORMAT(a.starttime, '%Y-%m-%d') >= ?  ORDER BY a.starttime ASC", array($username, $today->format('Y-m-d')));
     $result = count($events);
-    $reservasPorPagina = 12;
-    $paginasTotales = ceil($result / $reservasPorPagina);
-    $paginaActual = 0;
+
+    //  page´s configuration
+    $bookingPage = 12;
+    $pages = ceil($result / $bookingPage);
+    $currentPage = 0;
 
     if (isset($page) || empty($page)) {
-        $paginaActual = $page;
+        $currentPage = $page;
     }
 
-    if ($paginaActual < 1) {
-        $paginaActual = 1;
-    } else if ($paginaActual > $paginasTotales) {
-        $paginaActual = $paginasTotales;
+    if ($currentPage < 1) {
+        $currentPage = 1;
+    } else if ($currentPage > $pages) {
+        $currentPage = $pages;
     }
 
-    $reservaInicial = ($paginaActual - 1) * $reservasPorPagina;
+    $initBook = ($currentPage - 1) * $bookingPage;
 
-    $sql = 'SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, a.valid, b.name, c.practiceintro FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id  INNER JOIN {ejsapp_expsyst2pract} c ON a.practiceid = c.practiceid  WHERE a.ejsappid = c.ejsappid AND a.username = "' . $username . '" AND DATE_FORMAT(starttime, "%Y-%m-%d") >= "'. $today->format('Y-m-d') .'"ORDER BY a.starttime ASC LIMIT ' . $reservaInicial . ', ' . $reservasPorPagina . '';
+    // check bookings
+    $sql = 'SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, a.valid, b.name, c.practiceintro FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id  INNER JOIN {ejsapp_expsyst2pract} c ON a.practiceid = c.practiceid  WHERE a.ejsappid = c.ejsappid AND a.username = "' . $username . '" AND DATE_FORMAT(starttime, "%Y-%m-%d") >= "'. $today->format('Y-m-d') .'"ORDER BY a.starttime ASC LIMIT ' . $initBook . ', ' . $bookingPage . '';
     $events2 = $DB->get_records_sql($sql);
     $result2 = count($events2);
-    $fecha = new DateTime("now");
 
-    // Existen reservas
+
+    // Exists
     if ($result != 0) {
 
         $i = 0;
         foreach ($events2 as $event) {
 
-            $nombre = 'booking[' . $i . ']';
-            $valor = $event->id;
+            $name = 'booking[' . $i . ']';
+            $value = $event->id;
 
-            $today = new DateTime("now");
             $time = new DateTime($event->starttime);
             $visible = array(null);
 
             if ($today->format("Y-m-d") < $time->format("Y-m-d")) {
-                $url = 'disponible.png';
+                $url = 'available.png';
             } else {
-                $url = 'ocupada.png';
+                $url = 'busy.png';
                 if ($today->format("Y-m-d") == $time->format("Y-m-d"))
                     $visible = array('disabled' => 'disable');
             }
@@ -574,17 +593,17 @@ if ($bookingbutton) {
 
             $bookingcell = new html_table_cell();
             $bookingcell->attributes['class'] = 'center';
-            if ($paginaActual == 1)
+            if ($currentPage == 1)
                 $numpage = ($i + 1);
             else
-                $numpage = (($paginaActual - 1) * $reservasPorPagina) + ($i + 1);
+                $numpage = (($currentPage - 1) * $bookingPage) + ($i + 1);
 
             $bookingcell->text = ' ' . $numpage . ' ';
             $bookingtable->data[$i]->cells[] = $bookingcell;
 
             $bookingcell = new html_table_cell();
             $bookingcell->attributes['class'] = 'center';
-            $bookingcell->text = html_writer::checkbox($nombre, $valor, false, null, $visible);
+            $bookingcell->text = html_writer::checkbox($name, $value, false, null, $visible);
             $bookingtable->data[$i]->cells[] = $bookingcell;
 
             $bookingcell = new html_table_cell();
@@ -610,20 +629,18 @@ if ($bookingbutton) {
         $out .= '<p align="center"> <strong>' . get_string('mybookings', 'ejsappbooking') . '</strong></p>';
         $out .= html_writer::table($bookingtable);
 
-        if ($result > $reservasPorPagina) {
+        if ($result > $bookingPage) {
 
             $out .= '<div class="paginacion">';
 
-            // mostramos la paginación
-            for ($i = 1; $i <= $paginasTotales; $i++) {
+            // show pagination
+            for ($i = 1; $i <= $pages; $i++) {
 
-                if ($i == $paginaActual) {
+                if ($i == $currentPage) {
                     $out .= '&nbsp;&nbsp;&nbsp;<span class="pagina actual">' . $i . '</span>';
                 }
-                // sólo vamos a mostrar los enlaces de la primer página,
-                // las dos siguientes, las dos anteriores
-                // y la última
-                else if ($i == 1 || $i == $paginasTotales || ($i >= $paginaActual - 2 && $i <= $paginaActual + 2)) {
+
+                else if ($i == 1 || $i == $pages || ($i >= $currentPage - 2 && $i <= $currentPage + 2)) {
                     $out .= '&nbsp;&nbsp;&nbsp;<a href="' . $baseurl->out() . '&amp;Mybookingsbutton=1&amp;page=' . $i . '" class="pagina">' . $i . '</a>';
                 }
             }
@@ -632,16 +649,16 @@ if ($bookingbutton) {
         $out .= '<input id="Mybookingsdelete" name="Mybookingsdelete" value="0" type="hidden">';
 
     } else {
-        // Mostramos un mensaje indicando que no existen reservas
+        // No bookings
         $deletebutton = false;
         $out .= '<p><strong>' . get_string('nobooking', 'ejsappbooking') . '</strong></p>';
     }
-    // Fin mostrar reservas y su eliminación
+    // End - Manage user´s bookings
 
-// Se genera la tabla con las reservas en un laboratorio remoto en el dia seleccionado.
+// show slots in selected day
 } else {
 
-    $events = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE DATE_FORMAT(starttime, '%Y-%m-%d') = ? AND ejsappid = ? AND $practid = ? ORDER BY starttime ASC", array($fecha->format('Y-m-d'), $labid, $practid));
+    $events = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE DATE_FORMAT(starttime, '%Y-%m-%d') = ? AND ejsappid = ? AND $practid = ? ORDER BY starttime ASC", array($sDate->format('Y-m-d'), $labid, $practid));
 
     for ($i = 0; $i < 6; $i++) {
 
@@ -656,56 +673,63 @@ if ($bookingbutton) {
             $initTime->add(new DateInterval('PT' . $index . 'H'));
             $finishTime->add(new DateInterval('PT' . ($index + 1) . 'H'));
 
-            $nombre = 'booking[' . $index . ']';
-            $valor = $index;
-            $etiqueta = $initTime->format('H:i') . ' - ' . $finishTime->format('H:i');
+            $name = 'booking[' . $index . ']';
+            $value = $index;
+            $tag = $initTime->format('H:i') . ' - ' . $finishTime->format('H:i');
             $visible = array(null);
-            $chequeado = false;
-            $url = 'disponible.png';
+            $checked = false;
+            $url = 'available.png';
 
-            // Horas no validas
-            $actual = new DateTime("now");
-            if ($anterior) {
+            // hours not valid
+            //$actual = new DateTime("now");
+
+            if ($previous_day) {
                 $visible = array('disabled' => 'disable');
-                $chequeado = false;
-                $url = 'nodisponible.png';
-            } else if (($initTime->format('H') < $actual->format('H')) && $hoy) {
+                $checked = false;
+                $url = 'no_available.png';
+            } else if (($initTime->format('H') < $today->format('H')) && $now) {
                 $visible = array('disabled' => 'disable');
-                $chequeado = false;
-                $url = 'nodisponible.png';
+                $checked = false;
+                $url = 'no_available.png';
             }
 
-            // Comprobar si la hora esta reservada
+            // reserved slot
             foreach ($events as $event) {
                 $date = $event->starttime;
                 if ($initTime->format('H:i') == date("H:i", strtotime($date))) {
-                    $chequeado = true;
+                    $checked = true;
                     $visible = array('disabled' => 'disable');
-                    $url = 'ocupada.png';
+                    $url = 'busy.png';
                 }
             }
             $bookingcell = new html_table_cell();
             $bookingcell->attributes['class'] = 'center';
-            $bookingcell->text = '<img id=bookimg' . $valor . ' src="' . $CFG->wwwroot . '/mod/ejsappbooking/pix/' . $url . '" width="12px" height="12px">&nbsp;' . html_writer::checkbox($nombre, $valor, $chequeado, $etiqueta, $visible);
+            $bookingcell->text = '<img id=bookimg' . $value . ' src="' . $CFG->wwwroot . '/mod/ejsappbooking/pix/' . $url . '" width="12px" height="12px">&nbsp;' . html_writer::checkbox($name, $value, $checked, $tag, $visible);
             $bookingtable->data[$i]->cells[] = $bookingcell;
+
+
         }
     }
+    $out .=  '<p align="center"><strong>' . get_string('availability', 'ejsappbooking') . ' ' . $sDate->format('d-m-Y') . '</strong></p>';
     $out .= html_writer::table($bookingtable);
-    $out .= '<p align="center"><button name="bookingbutton" value="1" type="submit">' . get_string('book', 'ejsappbooking') . '</button></p>';
+    $out .= '<br><p align="center"><button name="bookingbutton" value="1" type="submit">' . get_string('book', 'ejsappbooking') . '</button></p>';
 }
 
 $out .= html_writer::end_tag('div');
 
-// Parametros ocultos enviados en el formulario
+// hidden parameters
 $out .= '<input id="id" name="id" value=' . $id . ' type="hidden">';
 $out .= '<input id="selectdate" name="selectDay" value="' . $selectDay . '" type="hidden">';
 
-// Boton muestra mis reservas
-$out .= '<p align="center"><button name="Mybookingsbutton" value="1" type="submit">' . get_string('mybookings', 'ejsappbooking') . '</button></p>';
-$out .= html_writer::end_tag('form');
-// Fin formulario
+// show my bookings
+ if (!$Mybookingsbutton) {
+        $out .= '<p align="center"><button name="Mybookingsbutton" value="1" type="submit">' . get_string('mybookings', 'ejsappbooking') . '</button></p>';
+    }
 
-// Si se trata de la opcíon de borrar, mostramos el botón que ejecuta y confirma la acción.
+$out .= html_writer::end_tag('form');
+
+
+// delete button
 if ($deletebutton) {
     $out .= '<p align="center"><strong>' . get_string('selectbooking', 'ejsappbooking') . '</strong>&nbsp;';
     $out .= '<button class="yui3-button btn-show">' . get_string('delete', 'ejsappbooking') . '</button></p>';
@@ -713,7 +737,7 @@ if ($deletebutton) {
         $out .= $message;
 }
 
-// Creamos y presentamos la salida: slot disponibles, reserva realizada, eliminacion de reservas, reservas del usuario en la página.
+// show the slots
 $table = new html_table();
 $table->attributes['class'] = 'userinfobox';
 $row = new html_table_row();

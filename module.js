@@ -1,17 +1,43 @@
-﻿/**
- * Created by U872275 on 7/11/13.
+﻿
+// This file is part of the Moodle module "EJSApp booking system"
+//
+// EJSApp booking system is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// EJSApp booking system is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+//
+// EJSApp booking system has been developed by:
+//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+//  - Luis de la Torre: ldelatorre@dia.uned.es
+//	- Ruben Heradio: rheradio@issi.uned.es
+//
+//  at the Computer Science and Automatic Control, Spanish Open University
+//  (UNED), Madrid, Spain
+
+/**
+ * @package    mod
+ * @subpackage ejsappbooking
+ * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// Example
 M.ejsappbooking = {};
-
-// Ejemplo llamada a función
 M.ejsappbooking.hello = function (Y) {
     alert('Hello World!');
 };
 
+// Start
 YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay", "event-mouseenter",  "calendar", "panel", "io-base", "json-parse", function (Y) {
 
-    // Creamos un panel para pedir confirmación de la eliminación de la reserva
+    // confirm reservation
     var dialog = new Y.Panel({
 
         contentBox: Y.Node.create('<div id="dialog" />'),
@@ -39,7 +65,7 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
         }
     })
 
-    // Comportamiento al pulsar cancelar
+    // press cancel
     dialog.onCancel = function (e) {
         e.preventDefault();
         this.hide();
@@ -48,7 +74,7 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
         this.callback = false;
     }
 
-    // Comportamiento al pulsar ok
+    // press ok
     dialog.onOK = function (e) {
         e.preventDefault();
         this.hide();
@@ -60,7 +86,7 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
         this.callback = false;
     }
 
-    // Acción al pulsar ok, instancia Mybookinsdelete a uno para que se vuelvan a mostrar las reservas del usuario
+    //  re-display the user reservation
     var doSomething = function () {
 
         Y.one('#Mybookingsdelete').set("value", "1");
@@ -69,10 +95,8 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
 
     };
 
-    // Capturamos el botón
     var btn = Y.one('.btn-show');
 
-    // Si es distinto de null mostramos el mensaje, preguntamos por la confirmación y ejecutamos la acción
     if(btn != null) {
         btn.on('click', function (ev) {
             // set the content you want in the message
@@ -80,7 +104,7 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
 
             // set the icon (or none) that appears next to the message.
             // the Class 'message' also needs to be maintained.
-            Y.one('#dialog .message').set('className', 'message icon-bubble');
+            Y.one('#dialog .message').set('className', 'message icon-none');
             /* classnames and images provided in the CSS are:
              .icon-bubble
              .icon-error
@@ -98,40 +122,38 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
         });
     }
 
-    // Variable utilizada para guardar la fecha actual seleccionada
-    var fechaActual;
+    // selected date
+    var currentDate;
 
-    // Array que almacena la llamada a JSON con las reservas del mes en el laboratorio para marcarlas en el calendario
-    var reservas = new Array();
+    // My bookings array
+    var myBookings = new Array();
 
-    // Cuando la fecha seleccionada esta disponible en la página
+    // selected date available
     Y.on("available", function (ev) {
 
-        // Tomamos el valor de la fecha seleccionada
-        var fecha = Y.one('#fechaActiva');
-        fechaActual = Y.Date.parse(fecha.getHTML());
-        var dateActual = "dateActual=" + Y.DataType.Date.format(fechaActual, { format: '%Y-%m-%d' });
+        var fecha = Y.one('#ActiveDate');
+        currentDate = Y.Date.parse(fecha.getHTML());
+        var dateActual = "dateActual=" + Y.DataType.Date.format(currentDate, { format: '%Y-%m-%d' });
 
-        // LLamada a bookings.php que devuelve un objeto JSON con las reservas del laboratorio para el mes seleccionado
+        //  My bookings JSON call
         Y.io('bookings.php', {
             data: ' ' + dateActual + ' ',
             dataType: 'json',
             on: {
                 complete: function (id, response) {
                     if(response.status >= 200 && response.status < 300) {
-                        //Y.log('Llamada JSON');
 
                         var data;
 
                         try {
-                            //Y.log("RESPONSE: " + response.responseText);
+
                             data = Y.JSON.parse(response.responseText);
 
                         } catch(e) {
                             Y.log('Invalid JSON' + e);
                         }
 
-                        // Recorremos la reservas y preparamos el mensaje emergente
+                        // My bookings popup message
                         for (var p in data) {
 
                             var mn_array = data[p].split(',');
@@ -140,20 +162,20 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
 
                             var d = Y.DataType.Date.format(mdate, { format: '%e' })
 
-                            if(!reservas[d]) {
-                                reservas[d] = d + "@" + "<tr><td>" + mn_array[1] + "</td><td>" + mn_array[3] + "</td></tr>";
+                            if(!myBookings[d]) {
+                                myBookings[d] = d + "@" + "<tr><td>" + mn_array[1] + "</td><td>" + mn_array[3] + "</td></tr>";
 
                             }
                             else {
-                                reservas[d] = reservas[d] + "<tr><td>" + mn_array[1] + "</td><td>" + mn_array[3] + "</td></tr>";
+                                myBookings[d] = myBookings[d] + "<tr><td>" + mn_array[1] + "</td><td>" + mn_array[3] + "</td></tr>";
                             }
                         }
 
-                        // Recorrer todos los dias del año para marcar si el dia tiene reservas
-                        var reglas = {"all": {"all":{"all" : "booking"}}};
+                        // Config calendar
+                        var rule = {"all": {"all":{"all" : "booking"}}};
 
-                        // Aplicamos al calendario una función que modifica la celda con reserva
-                        calendar.set('customRenderer', { rules: reglas, filterFunction: miFuncionRender});
+                        // Cell custom render
+                        calendar.set('customRenderer', { rules: rule, filterFunction: miFuncionRender});
                         calendar.render();
                         Y.log('Fin JSON');
                     }
@@ -167,27 +189,27 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
 
         });
 
-        // Modificamos el calendario para que nos muestre la fecha actual seleccionada
-        calendar.set("date", fechaActual);
-        calendar.selectDates(fechaActual);
+        // to change to new selected day
+        calendar.set("date", currentDate);
+        calendar.selectDates(currentDate);
         calendar.render();
 
-    }, '#fechaActiva');
+    }, '#ActiveDate');
 
 
-    //Funcion de renderizado
+    // rendering function
     function miFuncionRender( fecha, nodo, reglas ){
         var s = Y.DataType.Date.format(fecha, { format: '%e' });
 
-        // Si el dia esta en el array de reservas lo marca
-        if(reservas[s]) {
+        // mark the days in the calendar
+        if(myBookings[s]) {
             nodo.setStyles( { borderColor: '#88F', borderWidth: '5px'});
         }
     };
 
-    // Establecemos las caracteristicas del calendario
+    // calendar settings
     var calendar, settings = {
-        contentBox: "#calendario",
+        contentBox: "#calendar",
         //headerRenderer: "%d %B %Y",
         headerRenderer: "%B %Y",
         //height: '232px',
@@ -200,49 +222,49 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
 
     var YDate = Y.DataType.Date;
 
-    // Aplicamos las caracteristicas
+    // Apply settings
     calendar = new Y.Calendar(settings);
 
-    // Controlamos las acciones al pulsar sobre un dia del calendario
+    // calendar actions
     calendar.on('dateClick', function (ev) {
         var fecha = ev.date;
         var nodo = ev.cell;
 
-        // Establecemos la nueva fecha en la pagina
-        Y.one('#fechaActiva').setHTML(YDate.format(fecha, { format: '%Y-%m-%d'}));
+        // new Date
+        Y.one('#ActiveDate').setHTML(YDate.format(fecha, { format: '%Y-%m-%d'}));
         fecha = Y.DataType.Date.format(fecha, { format: '%Y-%m-%d' });
 
-        // Establecemos la nueva fecha como parametro de la solicitud
+        // form hidden parameter
         Y.one('#selectdate').set("value", fecha);
 
-        // Enviamos la nueva petición al servidor
+        // submit the form
         var form = Y.one('#bookingform');
         form.submit();
     });
 
-    // Botones selección mes y año que controlan el calendario
+    // Month and year selection buttons that control the calendar
     Y.on('click', function () {
         calendar.subtractYear();
         var date = calendar.get('date');
         updateCalendar(date);
-    }, '#restarAno');
+    }, '#subyear');
     Y.on('click', function () {
         calendar.subtractMonth();
         var date = calendar.get('date');
         updateCalendar(date);
-    }, '#restarMes');
+    }, '#submonth');
     Y.on('click', function () {
         calendar.addYear();
         var date = calendar.get('date');
         updateCalendar(date);
-    }, '#sumarAno');
+    }, '#addyear');
     Y.on('click', function () {
         calendar.addMonth();
         var date = calendar.get('date');
         updateCalendar(date);
-    }, '#sumarMes');
+    }, '#addmonth');
 
-    // Funciones que controlan el comportamiento al pulsar en un dia del mes anterior o posterior al actual sobre el calendario
+    //
     calendar.on('prevMonthClick', function () {
         calendar.subtractMonth();
         var date = calendar.get('date');
@@ -254,20 +276,20 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
         updateCalendar(date);
     });
 
-    // Función que actualiza la información del calendario y la página.
+    // Functions that control the behavior of the press in a day before or after the current month on the calendar
     function updateCalendar(fecha) {
-        // Establece las nueva fecha
-        Y.one('#fechaActiva').setHTML(YDate.format(fecha, { format: '%Y-%m-%d'}));
+        // Sets new date
+        Y.one('#ActiveDate').setHTML(YDate.format(fecha, { format: '%Y-%m-%d'}));
         fecha = Y.DataType.Date.format(fecha, { format: '%Y-%m-%d' });
         Y.one('#selectdate').set("value", fecha);
 
-        // Envia los datos al servidor
+        // Send data to the server
         var form = Y.one('#bookingform');
         form.submit();
 
     };
 
-    // Función que controla el cambio de estado del slot en la tabla de slots disponibles, al seleccionarlo
+    // Function that controls the state change slot in the table slots available at select
     Y.one('#tablabooking').on('click', function (e) {
 
         var clave = e.target.get('value');
@@ -275,15 +297,15 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
 
         if (source2) {
             var source = source2.get("src");
-            var n = source.search("seleccionada.png");
+            var n = source.search("selected.png");
 
             if (n == -1) {
-                var res = source.replace("disponible.png", "seleccionada.png");
+                var res = source.replace("available.png", "selected.png");
                 Y.one('#bookimg' + clave).set("src", res);
 
             }
             else {
-                var res = source.replace("seleccionada.png", "disponible.png");
+                var res = source.replace("selected.png", "available.png");
                 Y.one('#bookimg' + clave).set("src", res);
             }
         }
@@ -291,22 +313,22 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
     }, 'input[type=checkbox]');
 
 
-    // Creamos un tooltip para mostrar las reservas del dia seleccionado
+    // create a tooltip to display the bookings
     var tooltip = new Y.Overlay({width: 250, visible: false, zIndex:1000});
 
-    // Función que se ejecuta al entrar el ratón sobre la celda de un dia del calendario
+    // Function that is run when the mouse over the cell of a calendar day
     function enter(ev) {
-        // Nodo DOM actual
+        // current node
         var node = ev.currentTarget;
-        // Calculamos la posición donde debe mostrarse el tooltip
+        // calculate the position where the tooltip should be displayed
         tooltip.align(node, [Y.WidgetPositionAlign.TL, Y.WidgetPositionAlign.BC]);
 
-        // Establecemos el contenido del tooltip
-        for (var p in reservas) {
+        // establish the content of the tooltip
+        for (var p in myBookings) {
 
-            var mn_array = reservas[p].split('@');
+            var mn_array = myBookings[p].split('@');
 
-            // Se muestra al usuario si existen reservas en ese dia
+            // show my bookings
             if(mn_array[0].trim() == node.getHTML()) {
                 tooltip.set('headerContent','<div style="background-color:blue;font-weight:bolder;color:white;padding:10px;border: solid 1px black;">' + M.str.ejsappbooking.book_message + '</div>');
                 tooltip.set('bodyContent', '<div style="background-color:white;padding: 10px;border: solid 1px black;"><table>' + mn_array[1] + '</table></div>');
@@ -317,19 +339,19 @@ YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay"
 
     }
 
-    // Función que se ejecuta al dejar el foco de un celda del calendario
+    // Function running to leave the focus of a calendar cell
     function leave(ev) {
         tooltip.hide();
     }
 
-    // Establecemos las funciones a las celdas del calendario
-    Y.delegate('mouseenter', enter, '#calendario', 'td');
-    Y.delegate('mouseleave', leave, '#calendario', 'td');
+    // establish the functions calendar cells
+    Y.delegate('mouseenter', enter, '#calendar', 'td');
+    Y.delegate('mouseleave', leave, '#calendar', 'td');
 
-    // Creamos el tooltip inicia que permanece oculto
+    // Create the initial tooltip that remains hidden
     tooltip.render();
 
-    // Pintamos el calendario inicial que se actualiza al estar disponible fechaActiva en la página.
+    // Create the initial calendar
     calendar.render();
 
 });
