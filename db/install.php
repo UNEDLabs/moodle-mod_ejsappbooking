@@ -15,7 +15,7 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Javier Pavon: javi.pavon@gmail.com
+//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
 //
@@ -28,7 +28,7 @@
  *
  * @package    mod
  * @subpackage ejsappbooking
- * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

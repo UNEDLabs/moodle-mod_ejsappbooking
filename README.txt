@@ -1,4 +1,4 @@
-﻿######################
+######################
 # EJSAppBooking 2.0  #
 ######################
 
@@ -50,7 +50,7 @@ file with relevant links.
 EJSAppBooking has been developed by:
  - Luis de la Torre: ldelatorre@dia.uned.es
  - Ruben Heradio: rheradio@issi.uned.es
- - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+ - Francisco Jos� Calvillo Mu�oz: fcalvillo9@alumno.uned.es
 
   at the Computer Science and Automatic Control Department, Spanish Open University (UNED), 
   Madrid, Spain.

@@ -22,28 +22,6 @@
 //  at the Computer Science and Automatic Control, Spanish Open University
 //  (UNED), Madrid, Spain
 
-// This file is part of the Moodle module "EJSApp booking system"
-//
-// EJSApp booking system is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// EJSApp booking system is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
-//
-// EJSApp booking system has been developed by:
-//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
-//
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
-
 /**
  * Page for setting the users' booking permissions for the different remote labs
  *
@@ -62,8 +40,6 @@ define('USER_SMALL_CLASS', 20);   // Below this is considered small
 define('USER_LARGE_CLASS', 200);  // Above this is considered large
 define('DEFAULT_PAGE_SIZE', 20);
 define('SHOW_ALL_PAGE_SIZE', 5000);
-define('MODE_BRIEF', 0);
-define('MODE_USERDETAILS', 1);
 
 $id = required_param('id', PARAM_INT);
 $courseid = required_param('courseid', PARAM_INT);
@@ -71,10 +47,10 @@ $contextmodid = required_param('contextid', PARAM_INT);
 $cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
 
 $labid = optional_param('labid', 0, PARAM_INT);
-$page = optional_param('page', 0, PARAM_INT);                     // which page to show
-$perpage = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT);  // how many per page
-$mode = optional_param('mode', NULL, PARAM_INT);                  // use the MODE_ constants
-$accesssince = optional_param('accesssince',0,PARAM_INT);                // filter by last access. -1 = never
+$page = optional_param('page', 0, PARAM_INT);                       // which page to show
+$perpage = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT); // how many per page
+$mode = optional_param('mode', NULL, PARAM_INT);                    // use the MODE_ constants
+$accesssince = optional_param('accesssince',0,PARAM_INT);           // filter by last access. -1 = never
 $search = optional_param('search','',PARAM_RAW);                    // make sure it is processed with p() or s() when sending to output!
 $roleid = optional_param('roleid', 0, PARAM_INT);                   // optional roleid, 0 means all enrolled users (or all on the frontpage)
 
@@ -84,7 +60,7 @@ require_login($course, true, $cm);
 $contextmod = context::instance_by_id($contextmodid);
 $context = context_course::instance($courseid);
 
-$title = get_string('selectUsers_pageTitle', 'ejsappbooking');
+$title = get_string('bookingRights_pageTitle', 'ejsappbooking');
 $PAGE->set_context($contextmod);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
@@ -150,8 +126,6 @@ if (empty($rolenames) && !$isfrontpage) {
   }
 }
 
-$bulkoperations = true;
-
 $countries = get_string_manager()->get_list_of_countries();
 
 $strnever = get_string('never');
@@ -173,10 +147,7 @@ if ($mode !== NULL) {
   $SESSION->userindexmode = $mode;
 } else if (isset($SESSION->userindexmode)) {
   $mode = (int)$SESSION->userindexmode;
-} else {
-  $mode = MODE_BRIEF;
 }
-
 /// Check to see if groups are being used in this course
 /// and if so, set $currentgroup to reflect the current group
 
@@ -197,9 +168,11 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('users_selection','ejsappbooking'));
 
 /**
- * returns the course last access
+ *
+ * Returns the course last access
  *
  * @param int $accesssince
+ * @return string
  */
 function get_course_lastaccess_sql($accesssince='') {
   if (empty($accesssince)) {
@@ -213,9 +186,12 @@ function get_course_lastaccess_sql($accesssince='') {
 }
 
 /**
- * returns the user last access
+ *
+ * Returns the user last access
  *
  * @param int $accesssince
+ * @return string
+ *
  */
 function get_user_lastaccess_sql($accesssince='') {
   if (empty($accesssince)) {
@@ -247,8 +223,7 @@ if ($i>1) { // If there is at least one remote lab
           'roleid' => $roleid,
           'perpage' => $perpage,
           'accesssince' => $accesssince,
-          'search' => s($search),
-          'labid' => $labid));
+          'search' => s($search)));
     
     /// setting up tags
     if ($course->id == SITEID) {
@@ -355,26 +330,6 @@ if ($i>1) { // If there is at least one remote lab
       }
     } // if (!isset($hiddenfields['lastaccess']))
     
-    // <Select rem lab pulldown menu>
-    $select = new single_select($baseurl, 'labid', $lab_name, $labid, null, 'formatmenu');
-    $select->set_label(get_string('rem_lab_selection', 'ejsappbooking'));
-    $remlabslistcell = new html_table_cell();
-    $remlabslistcell->attributes['class'] = 'right';
-    $remlabslistcell->text = $OUTPUT->render($select);
-    $controlstable->data[0]->cells[] = $remlabslistcell;
-    // </Select rem lab pulldown menu>
-    
-    $formatmenu = array( '0' => get_string('brief'),
-                         '1' => get_string('userdetails'));
-    $select = new single_select($baseurl, 'mode', $formatmenu, $mode, null, 'formatmenu');
-    $select->set_label(get_string('userlist'));
-    $userlistcell = new html_table_cell();
-    $userlistcell->attributes['class'] = 'right';
-    $userlistcell->text = $OUTPUT->render($select);
-    $controlstable->data[0]->cells[] = $userlistcell;
-    
-    echo html_writer::table($controlstable);
-    
     if ($currentgroup and (!$isseparategroups or has_capability('moodle/site:accessallgroups', $context))) {    /// Display info about the group
     	if ($group = groups_get_group($currentgroup)) {
         if (!empty($group->description) or (!empty($group->picture) and empty($group->hidepicture))) {
@@ -408,11 +363,11 @@ if ($i>1) { // If there is at least one remote lab
     /// Define a table showing a list of users in the current role selection
     $tablecolumns = array('userpic', 'fullname');
     $tableheaders = array(get_string('userpic'), get_string('fullnameuser'));
-    if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
+    if (!isset($hiddenfields['city'])) {
       $tablecolumns[] = 'city';
       $tableheaders[] = get_string('city');
     }
-    if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
+    if (!isset($hiddenfields['country'])) {
       $tablecolumns[] = 'country';
       $tableheaders[] = get_string('country');
     }
@@ -420,12 +375,10 @@ if ($i>1) { // If there is at least one remote lab
       $tablecolumns[] = 'lastaccess';
       $tableheaders[] = get_string('lastaccess');
     }
-    
-    if ($bulkoperations) {
-      $tablecolumns[] = 'select';
-      $tableheaders[] = get_string('booking_rights','ejsappbooking');
-    }
-    
+
+    $tablecolumns[] = 'select';
+    $tableheaders[] = get_string('booking_rights','ejsappbooking');
+
     $table = new flexible_table('user-index-participants-'.$course->id);
     
     $table->define_columns($tablecolumns);
@@ -498,7 +451,7 @@ if ($i>1) { // If there is at least one remote lab
     
     // limit list to users with some role only
     if ($roleid) {
-      $wheres[] = "u.id IN (SELECT userid FROM {role_assignments} WHERE roleid = :roleid AND contextid $contextlist)";
+      $wheres[] = "u.id IN (SELECT userid FROM {role_assignments} WHERE roleid = :roleid AND contextid IN (" . implode(',',$contextlist) . "))";
       $params['roleid'] = $roleid;
     }
     
@@ -562,6 +515,17 @@ if ($i>1) { // If there is at least one remote lab
       $rolename = reset($rolenames);
       echo $rolename . '</div>';
     }
+
+    // <Select rem lab pulldown menu>
+    $select = new single_select($baseurl, 'labid', $lab_name, $labid, null, 'formatmenu');
+    $select->set_label(get_string('rem_lab_selection', 'ejsappbooking'));
+    $remlabslistcell = new html_table_cell();
+    $remlabslistcell->attributes['class'] = 'right';
+    $remlabslistcell->text = $OUTPUT->render($select);
+    $controlstable->data[0]->cells[] = $remlabslistcell;
+
+    echo html_writer::table($controlstable);
+    // </Select rem lab pulldown menu>
     
     if ($roleid > 0) {
       $a = new stdClass();
@@ -602,283 +566,109 @@ if ($i>1) { // If there is at least one remote lab
         echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount . $editlink, 3);
       }
     }
-    
-    
-    if ($bulkoperations) {
-      $ejsappbooking = $DB->get_record('ejsappbooking', array('course' => $courseid));
-      echo "<form action=\"send_messages.php?courseid=$courseid&id=$id&labid=$labid&bookingid=$ejsappbooking->id\" method=\"post\" id=\"participantsform\">" . '<div>';
-      echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />
-      <input type="hidden" name="returnto" value="'.s(me()).'" />';
-    }
-    
-    if ($mode === MODE_USERDETAILS) {    // Print simple listing
-      if ($totalcount < 1) {
-        echo $OUTPUT->heading(get_string('nothingtodisplay'));
-      } else {
-        if ($totalcount > $perpage) {
-          $firstinitial = $table->get_initial_first();
-          $lastinitial  = $table->get_initial_last();
-          $strall = get_string('all');
-          $alpha  = explode(',', get_string('alphabet', 'langconfig'));
-    
-          // Bar of first initials
-         
-          echo '<div class="initialbar firstinitial">'.get_string('firstname').' : ';
-          if(!empty($firstinitial)) {
-            echo '<a href="'.$baseurl->out().'&amp;sifirst=">'.$strall.'</a>';
-          } else {
-            echo '<strong>'.$strall.'</strong>';
-          }
-          foreach ($alpha as $letter) {
-            if ($letter == $firstinitial) {
-              echo ' <strong>'.$letter.'</strong>';
-            } else {
-              echo ' <a href="'.$baseurl->out().'&amp;sifirst='.$letter.'">'.$letter.'</a>';
-            }
-          }
-          echo '</div>';
-    
-          // Bar of last initials
-    
-          echo '<div class="initialbar lastinitial">'.get_string('lastname').' : ';
-          if(!empty($lastinitial)) {
-            echo '<a href="'.$baseurl->out().'&amp;silast=">'.$strall.'</a>';
-          } else {
-            echo '<strong>'.$strall.'</strong>';
-          }
-          foreach ($alpha as $letter) {
-            if ($letter == $lastinitial) {
-              echo ' <strong>'.$letter.'</strong>';
-            } else {
-              echo ' <a href="'.$baseurl->out().'&amp;silast='.$letter.'">'.$letter.'</a>';
-            }
-          }
-          echo '</div>';
-          
-          $pagingbar = new paging_bar($matchcount, intval($table->get_page_start() / $perpage), $perpage, $baseurl);
-          $pagingbar->pagevar = 'spage';
-          echo $OUTPUT->render($pagingbar);
-      } // if ($totalcount > $perpage)
-    
-      if ($matchcount > 0) {
+
+
+    $ejsappbooking = $DB->get_record('ejsappbooking', array('course' => $courseid));
+    echo "<form action=\"send_messages.php?courseid=$courseid&id=$id&labid=$labid&bookingid=$ejsappbooking->id\" method=\"post\" id=\"participantsform\">" . '<div>';
+    echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />
+    <input type="hidden" name="returnto" value="'.s(me()).'" />';
+
+    $countrysort = (strpos($sort, 'country') !== false);
+    $timeformat = get_string('strftimedate');
+
+    if ($userlist) {
         $usersprinted = array();
         foreach ($userlist as $user) {
-          if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
-            continue;
-                    }
+            if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
+                continue;
+            }
             $usersprinted[] = $user->id; /// Add new user to the array of users printed
 
             context_helper::preload_from_record($user);
-    
-            $context = context_course::instance($course->id);
+
+            if ($user->lastaccess) {
+                $lastaccess = format_time(time() - $user->lastaccess, $datestring);
+            } else {
+                $lastaccess = $strnever;
+            }
+
+            if (empty($user->country)) {
+                $country = '';
+            } else {
+                if($countrysort) {
+                    $country = '('.$user->country.') '.$countries[$user->country];
+                } else {
+                    $country = $countries[$user->country];
+                }
+            }
+
             $usercontext = context_user::instance($user->id);
-    
-            $countries = get_string_manager()->get_list_of_countries();
-    
-            /// Get the hidden field list
-            if (has_capability('moodle/course:viewhiddenuserfields', $context)) {
-              $hiddenfields = array();
+
+            if(!isset($user->firstnamephonetic)) $user->firstnamephonetic = $user->firstname;
+            if(!isset($user->lastnamephonetic)) $user->lastnamephonetic = $user->lastname;
+            if(!isset($user->middlename)) $user->middlename = '';
+            if(!isset($user->alternatename)) $user->alternatename = '';
+
+            if ($piclink = ($USER->id == $user->id || has_capability('moodle/user:viewdetails', $context) || has_capability('moodle/user:viewdetails', $usercontext))) {
+                $profilelink = '<strong><a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
             } else {
-              $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
-            }
-              $table = new html_table();
-              $table->attributes['class'] = 'userinfobox';
-            
-              $row = new html_table_row();
-              $row->cells[0] = new html_table_cell();
-              $row->cells[0]->attributes['class'] = 'left side';
-    
-              $row->cells[0]->text = $OUTPUT->user_picture($user, array('size' => 100, 'courseid'=>$course->id));
-              $row->cells[1] = new html_table_cell();
-              $row->cells[1]->attributes['class'] = 'content';
-    
-              $row->cells[1]->text = $OUTPUT->container(fullname($user, has_capability('moodle/site:viewfullnames', $context)), 'username');
-              $row->cells[1]->text .= $OUTPUT->container_start('info');
-    
-              if (!empty($user->role)) {
-                $row->cells[1]->text .= get_string('role').get_string('labelsep', 'langconfig').$user->role.'<br />';
-              }
-              if ($user->maildisplay == 1 or ($user->maildisplay == 2 and ($course->id != SITEID) and !isguestuser()) or has_capability('moodle/course:viewhiddenuserfields', $context)) {
-                $row->cells[1]->text .= get_string('email').get_string('labelsep', 'langconfig').html_writer::link("mailto:$user->email", $user->email) . '<br />';
-              }
-              if (($user->city or $user->country) and (!isset($hiddenfields['city']) or !isset($hiddenfields['country']))) {
-                $row->cells[1]->text .= get_string('city').get_string('labelsep', 'langconfig');
-                if ($user->city && !isset($hiddenfields['city'])) {
-                  $row->cells[1]->text .= $user->city;
-                }
-                if (!empty($countries[$user->country]) && !isset($hiddenfields['country'])) {
-                  if ($user->city && !isset($hiddenfields['city'])) {
-                    $row->cells[1]->text .= ', ';
-                  }
-                  $row->cells[1]->text .= $countries[$user->country];
-                }
-                $row->cells[1]->text .= '<br />';
-              }
-    
-              if (!isset($hiddenfields['lastaccess'])) {
-                if ($user->lastaccess) {
-                  $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').userdate($user->lastaccess);
-                  $row->cells[1]->text .= '&nbsp; ('. format_time(time() - $user->lastaccess, $datestring) .')';
-                } else {
-                  $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').get_string('never');
-                }
-              }
-    
-              $row->cells[1]->text .= $OUTPUT->container_end();
-    
-              $row->cells[2] = new html_table_cell();
-              $row->cells[2]->attributes['class'] = 'links';
-              $row->cells[2]->text = '';
-    
-              $links = array();
-    
-              if ($CFG->bloglevel > 0) {
-                $links[] = html_writer::link(new moodle_url('/blog/collaborative_index.php?userid='.$user->id), get_string('blogs','blog'));
-              }
-    
-              if (!empty($CFG->enablenotes) and (has_capability('moodle/notes:manage', $context) || has_capability('moodle/notes:view', $context))) {
-                $links[] = html_writer::link(new moodle_url('/notes/collaborative_index.php?course=' . $course->id. '&user='.$user->id), get_string('notes','notes'));
-              }
-    
-              if (has_capability('moodle/site:viewreports', $context) or has_capability('moodle/user:viewuseractivitiesreport', $usercontext)) {
-                $links[] = html_writer::link(new moodle_url('/course/user.php?id='. $course->id .'&user='. $user->id), get_string('activity'));
-              }
-    
-              if ($USER->id != $user->id && !session_is_loggedinas() && has_capability('moodle/user:loginas', $context) && !is_siteadmin($user->id)) {
-                $links[] = html_writer::link(new moodle_url('/course/loginas.php?id='. $course->id .'&user='. $user->id .'&sesskey='. sesskey()), get_string('loginas'));
-              }
-    
-              $links[] = html_writer::link(new moodle_url('/user/view.php?id='. $user->id .'&course='. $course->id), get_string('fullprofile') . '...');
-    
-              $row->cells[2]->text .= implode('', $links);
-    
-              if (!empty($messageselect)) {
-                $check_user_permission = array('ejsappid'=>$labid,'userid'=>$user->id);
-      	        $user_permission = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$check_user_permission);
-                if ($user_permission==1) { 
-                  $row->cells[2]->text .= '<br /><input type="checkbox" checked="yes" name="user'.$user->id.'" /> ';
-                } else {
-                  $row->cells[2]->text .= '<br /><input type="checkbox" name="user'.$user->id.'" /> ';
-                }
-              }
-              $table->data = array($row);
-              echo html_writer::table($table);
-            } // foreach ($userlist as $user) 
-    
-          } else {
-            echo $OUTPUT->heading(get_string('nothingtodisplay'));
-          }
-      } // if ($totalcount < 1) ... else
-    
-    } else {
-      $countrysort = (strpos($sort, 'country') !== false);
-      $timeformat = get_string('strftimedate');
-    
-      if ($userlist) {
-        $usersprinted = array();
-        foreach ($userlist as $user) {
-          if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
-          continue;
-          }
-          $usersprinted[] = $user->id; /// Add new user to the array of users printed
-
-            context_helper::preload_from_record($user);
-        
-          if ($user->lastaccess) {
-            $lastaccess = format_time(time() - $user->lastaccess, $datestring);
-          } else {
-            $lastaccess = $strnever;
-          }
-    
-          if (empty($user->country)) {
-            $country = '';    
-          } else {
-            if($countrysort) {
-              $country = '('.$user->country.') '.$countries[$user->country];
-            } else {
-              $country = $countries[$user->country];
-            }
-          }
-    
-          $usercontext = context_user::instance($user->id);
-
-          if(!isset($user->firstnamephonetic)) $user->firstnamephonetic = $user->firstname;
-          if(!isset($user->lastnamephonetic)) $user->lastnamephonetic = $user->lastname;
-          if(!isset($user->middlename)) $user->middlename = '';
-          if(!isset($user->alternatename)) $user->alternatename = '';
-
-          if ($piclink = ($USER->id == $user->id || has_capability('moodle/user:viewdetails', $context) || has_capability('moodle/user:viewdetails', $usercontext))) {
-            $profilelink = '<strong><a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
-          } else {
             $profilelink = '<strong>'.fullname($user).'</strong>';
+            }
+
+            $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid'=>$course->id)), $profilelink);
+
+            if (!isset($hiddenfields['city'])) {
+                $data[] = $user->city;
+            }
+            if (!isset($hiddenfields['country'])) {
+                $data[] = $country;
+            }
+            if (!isset($hiddenfields['lastaccess'])) {
+                $data[] = $lastaccess;
+            }
+
+          if (isset($userlist_extra) && isset($userlist_extra[$user->id])) {
+              $ras = $userlist_extra[$user->id]['ra'];
+              $rastring = '';
+              foreach ($ras AS $key=>$ra) {
+                  $rolename = $allrolenames[$ra['roleid']] ;
+                  if ($ra['ctxlevel'] == CONTEXT_COURSECAT) {
+                      $rastring .= $rolename. ' @ ' . '<a href="'.$CFG->wwwroot.'/course/category.php?id='.$ra['ctxinstanceid'].'">'.s($ra['ccname']).'</a>';
+                  } elseif ($ra['ctxlevel'] == CONTEXT_SYSTEM) {
+                      $rastring .= $rolename. ' - ' . get_string('globalrole','role');
+                  } else {
+                      $rastring .= $rolename;
+                  }
+              }
+              $data[] = $rastring;
+              if ($groupmode != 0) {
+                  // htmlescape with s() and implode the array
+                  $data[] = implode(', ', array_map('s',$userlist_extra[$user->id]['group']));
+                  $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
+              }
           }
 
-          $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid'=>$course->id)), $profilelink);
-    
-          if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
-            $data[] = $user->city;
-          }
-          if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
-            $data[] = $country;
-          }
-          if (!isset($hiddenfields['lastaccess'])) {
-            $data[] = $lastaccess;
-          }
-    
-          if (isset($userlist_extra) && isset($userlist_extra[$user->id])) {
-            $ras = $userlist_extra[$user->id]['ra'];
-            $rastring = '';
-            foreach ($ras AS $key=>$ra) {
-              $rolename = $allrolenames[$ra['roleid']] ;
-              if ($ra['ctxlevel'] == CONTEXT_COURSECAT) {
-                $rastring .= $rolename. ' @ ' . '<a href="'.$CFG->wwwroot.'/course/category.php?id='.$ra['ctxinstanceid'].'">'.s($ra['ccname']).'</a>';
-              } elseif ($ra['ctxlevel'] == CONTEXT_SYSTEM) {
-                $rastring .= $rolename. ' - ' . get_string('globalrole','role');
-              } else {
-                $rastring .= $rolename;
-              }
-            }
-            $data[] = $rastring;
-            if ($groupmode != 0) {
-              // htmlescape with s() and implode the array
-              $data[] = implode(', ', array_map('s',$userlist_extra[$user->id]['group']));
-              $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
-            }
-          }
-    
-          if ($bulkoperations) {
-            $check_user_permission = array('ejsappid'=>$labid,'userid'=>$user->id);
-      	    $user_permission = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$check_user_permission);
-            if ($user_permission==1) { 
+          $check_user_permission = array('ejsappid'=>$labid,'userid'=>$user->id);
+          $user_permission = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$check_user_permission);
+          if ($user_permission==1) {
               $data[] = '<input type="checkbox" checked="yes" class="usercheckbox" name="user'.$user->id.'" />';
-            } else {
-              $data[] = '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
-            }
+          } else {
+            $data[] = '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
           }
           $table->add_data($data);
-    
         } // foreach ($userlist as $user)
-      } // if ($userlist)
-    
-      $table->print_html();
+    } // if ($userlist)
 
-      /*$filterform = new enrol_users_filter_form('set_permissions.php', array('courseid' => $id),
-            'get', '', array('courseid' => 'filterform'));
-      $filterform->set_data(array('search' => '', 'ifilter' => 0, 'role' => 0));
-      echo $renderer->render_course_enrolment_users_table($table, $filterform);*/
-    
-    } // if ($mode === MODE_USERDETAILS) ... else
-    
-    if ($bulkoperations) {
-      echo '<br /><div class="buttons">
-      <input type="button" id="checkall" value="' . get_string('selectall') . '" /> 
-      <input type="button" id="checknone" value="'. get_string('deselectall'). '" />
-      <input type="submit" id="invite_participants" value="' . get_string('save_changes', 'ejsappbooking') . '" /> </div></div> </form>';
+    $table->print_html();
+
+    echo '<br /><div class="buttons">
+    <input type="button" id="checkall" value="' . get_string('selectall') . '" />
+    <input type="button" id="checknone" value="'. get_string('deselectall'). '" />
+    <input type="submit" id="set_permissions" value="' . get_string('save_changes', 'ejsappbooking') . '" /> </div></div> </form>';
       
-      $module = array('name'=>'core_user', 'fullpath'=>'/user/module.js');
-      $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
-    }
-    
+    $module = array('name'=>'core_user', 'fullpath'=>'/user/module.js');
+    $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
+
     if (has_capability('moodle/site:viewparticipants', $context) && $totalcount > ($perpage*3)) {
       echo '<form action="collaborative_index.php" class="searchform"><div><input type="hidden" name="id" value="'.$course->id.'" />'.get_string('search').':&nbsp;'."\n";
       echo '<input type="text" name="search" value="'.s($search).'" />&nbsp;<input type="submit" value="'.get_string('search').'" /></div></form>'."\n";

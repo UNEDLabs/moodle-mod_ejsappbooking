@@ -15,28 +15,6 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
-//
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
-
-// This file is part of the Moodle module "EJSApp booking system"
-//
-// EJSApp booking system is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// EJSApp booking system is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
-//
-// EJSApp booking system has been developed by:
 //  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
@@ -92,7 +70,7 @@ if ($id) {
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
-if ($CFG->version < 2013111800) { //Moodle 2.5 or inferior
+if ($CFG->version < 2013111899) { //Moodle 2.6 or inferior
     add_to_log($course->id, 'ejsappbooking', 'view', "view.php?id={$cm->id}", $ejsappbooking->name, $cm->id);
 } else {
     $event = \mod_ejsappbooking\event\course_module_viewed::create(array(
@@ -747,8 +725,8 @@ $row->cells[0]->text = $out;
 $table->data[0] = $row;
 echo html_writer::table($table);
 
-// Check wether the user has teacher or admin privileges. If so, let him grant his students access to make bookings for the remote labs in the course
-if (has_capability('moodle/course:viewhiddensections', $context, $USER->id, true)) {
+// Check whether the user can add EJSApp activities. If so, let him grant his students access to make bookings for the remote labs in the course
+if (has_capability('mod/ejsapp:addinstance', $context, $USER->id, true)) {
     $set_permissions = $CFG->wwwroot . '/mod/ejsappbooking/set_permissions.php';
     echo $OUTPUT->heading('<form action="' . $set_permissions . '" method="get"><input type="hidden" name="id" value="' . $cm->id . '"><input type="hidden" name="courseid" value="' . $course->id . '"><input type="hidden" name="contextid" value="' . $context->id . '"><input type=submit id="manage_access" value="' . get_string('manage_access_but', 'ejsappbooking') . '"></form>');
 }

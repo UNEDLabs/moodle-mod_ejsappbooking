@@ -34,8 +34,9 @@ M.ejsappbooking.hello = function (Y) {
     alert('Hello World!');
 };
 
+YUI.GlobalConfig =  { lang: '' + Y.one("html").get("lang") + ''};
 // Start
-YUI({lang: "es,en"}).use("node-base", "datatype-number", "event-base", "overlay", "event-mouseenter",  "calendar", "panel", "io-base", "json-parse", function (Y) {
+YUI().use("node-base", "datatype-number", "event-base", "overlay", "event-mouseenter",  "calendar", "panel", "io-base", "json-parse", function (Y) {
 
     // confirm reservation
     var dialog = new Y.Panel({

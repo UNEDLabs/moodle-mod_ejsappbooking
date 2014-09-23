@@ -1,26 +1,26 @@
 <?php
 
-// This file is part of the Moodle module "EJSApp"
+// This file is part of the Moodle module "EJSApp booking system"
 //
-// EJSApp is free software: you can redistribute it and/or modify
+// EJSApp booking system is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// EJSApp is distributed in the hope that it will be useful,
+// EJSApp booking system is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
-// EJSApp has been developed by:
+// EJSApp booking system has been developed by:
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
-//  - Francisco José Calvillo Muñoz: ji92camuf@gmail.com
+//  - Francisco José Calvillo: ji92camuf@gmail.com
 //
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
+// at the Computer Science and Automatic Control, Spanish Open University
+// (UNED), Madrid, Spain
 
 /**
  * Tasks file to perform the EJSAppBooking restore

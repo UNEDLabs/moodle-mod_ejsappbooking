@@ -15,28 +15,6 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Javier Pavon: javi.pavon@gmail.com
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
-//
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
-
-// This file is part of the Moodle module "EJSApp booking system"
-//
-// EJSApp booking system is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// EJSApp booking system is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
-//
-// EJSApp booking system has been developed by:
 //  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
@@ -78,7 +56,7 @@ $string['select_users_but'] = 'Set users rights for this lab';
 $string['no_rem_labs'] = 'There are no remote labs in this course';
 
 //select_users.php
-$string['selectUsers_pageTitle'] = 'Users selection';
+$string['bookingRights_pageTitle'] = 'Booking rights';
 $string['users_selection'] = 'Select users to give them booking rights over the selected remote lab';
 $string['accept_users_but'] = 'Accept';
 $string['save_changes'] = 'Save changes';
