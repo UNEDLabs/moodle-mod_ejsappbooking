@@ -33,6 +33,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
@@ -45,7 +46,7 @@ class mod_ejsappbooking_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-        global $DB, $OUTPUT;
+        global $DB, $OUTPUT, $CFG;
         
         $mform = $this->_form;
         $ejsappbooking = $DB->record_exists('ejsappbooking', array('course'=>$this->current->course));

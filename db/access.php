@@ -36,6 +36,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
+
     'mod/ejsappbooking:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -60,5 +61,16 @@ $capabilities = array(
         ),
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ),
-    );
+
+    'mod/ejsappbooking:managerights' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        ),
+    ),
+
+);
 

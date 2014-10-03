@@ -34,7 +34,7 @@
 
 require_once('../../config.php');
 require_login();
-global $CFG, $DB;
+global $DB, $USER;
 
 $selectDay = optional_param('dateActual', 0, PARAM_RAW);
 

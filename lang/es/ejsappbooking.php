@@ -106,3 +106,4 @@ $string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún la
 //Capabilities
 $string['ejsappbooking:addinstance'] = 'Añadir un nuevo sistema de reservas';
 $string['ejsappbooking:view'] = 'Ver el sistema de reservas';
+$string['ejsappbooking:managerights'] = 'Gestionar permisos de reservas de los usuarios';

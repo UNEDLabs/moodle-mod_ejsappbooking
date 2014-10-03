@@ -34,7 +34,9 @@
  
 require_once('../../config.php');
 require_login();
-global $CFG, $DB;
+
+global $CFG, $DB, $PAGE, $OUTPUT, $USER;
+
 require_once($CFG->dirroot.'/message/lib.php');
 require_once($CFG->dirroot.'/filter/multilang/filter.php');
 
@@ -186,5 +188,3 @@ EOD;
   }
 
 echo $OUTPUT->footer();
-
-?>
