@@ -156,15 +156,20 @@ if(!$rem_labs) {
     $conf_labs = $DB->get_record('ejsapp_remlab_conf', array('ejsappid' => $labid));
 
     // It checks if the laboratory is active
-    if($conf_labs->active) $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_success_44x44.png';
-    else $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_error_44x44.png';
+    if($conf_labs->active) {
+        $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_success_44x44.png';
+        $plant_state_info_string = get_string('active_plant','ejsappbooking');
+    } else {
+        $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_error_44x44.png';
+        $plant_state_info_string = get_string('inactive_plant','ejsappbooking');
+    }
 
     //  user data and control the calendar
     echo html_writer::start_tag('div', array('id' => 'container', 'align' => 'center'));
     $user_picture = $OUTPUT->user_picture($USER, array('size' => 100, 'courseid'=>$course->id));
     $user_fullname = $OUTPUT->container('<p align="center">' . fullname($USER, has_capability('moodle/site:viewfullnames', $context)). '</strong></p>', 'username');
     $date_active = $OUTPUT->container('<p align="center"> <strong> <span id="ActiveDate">' . $sDate->format("Y-m-d") . '</span> </strong></p>');
-    $plant_name = $OUTPUT->container('<p align="center">'. get_string('plantActive','ejsappbooking').'</p>');
+    $plant_name = $OUTPUT->container('<p align="center">'. $plant_state_info_string .'</p>');
     $plant_state = $OUTPUT->container('<p align="center"><img src="' . $plantico. '" width="44px" height="44px"></p>');
     $calendar = html_writer::start_tag('div', array('id' => 'calendar', 'align' => 'center'));
     $calendar .= html_writer::end_tag('div')  . '<br>';
@@ -720,12 +725,6 @@ if(!$rem_labs) {
     $row->cells[0]->text = $out;
     $table->data[0] = $row;
     echo html_writer::table($table);
-
-    // Check whether the user can manage booking rights. If so, let him grant his students access to make bookings for the remote labs in the course
-    if (has_capability('mod/ejsappbooking:managerights', $context, $USER->id, true)) {
-        $set_permissions = $CFG->wwwroot . '/mod/ejsappbooking/set_permissions.php';
-        echo $OUTPUT->heading('<form action="' . $set_permissions . '" method="get"><input type="hidden" name="id" value="' . $cm->id . '"><input type="hidden" name="courseid" value="' . $course->id . '"><input type="hidden" name="contextid" value="' . $context->id . '"><input type=submit id="manage_access" value="' . get_string('manage_access_but', 'ejsappbooking') . '"></form>');
-    }
 
     echo html_writer::end_tag('div');
 

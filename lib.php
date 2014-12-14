@@ -104,7 +104,7 @@ function ejsappbooking_add_instance($ejsappbooking) {
     foreach ($users as $user) {
       $ejsappbooking_usersaccess->userid = $user->id;
       if ($user->id != 2) {
-        if (!has_capability('mod/ejsapp:addinstance', $context, $user->id, true)) {
+        if (!has_capability('mod/ejsapp:accessremotelabs', $context, $user->id, true)) {
           $ejsappbooking_usersaccess->allowremaccess = 0;
         } else {
           $ejsappbooking_usersaccess->allowremaccess = 1;
@@ -251,12 +251,15 @@ function ejsappbooking_print_recent_mod_activity($activity, $courseid, $detail, 
 
 /**
  * Function to be run periodically according to the moodle cron
- * This function checks whether all users and all ejsapps are in the ejsappbooking_usersaccess database. If not, it add them. It is necessary when a ejsappbooking instance has already been added to a course and then new ejsapp are added or new users are enrolled to that course. Also, the function checks if there are users and ejsapps in the ejsappbooking_usersaccess database that no longer exist. In that case, it deletes them.
+ * This function checks whether all users and all ejsapps are in the ejsappbooking_usersaccess database. If not, it adds
+ * them. It is necessary when a ejsappbooking instance has already been added to a course and then new ejsapp are added
+ * or new users are enrolled to that course. Also, the function checks if there are users and ejsapps in the
+ * ejsappbooking_usersaccess database that no longer exist. In that case, it deletes them.
  *
  * @return boolean
  **/
 function ejsappbooking_cron () {
-    global $DB, $CFG;
+    global $DB;
     
     $ejsappbooking_usersaccess = new stdClass();
     
@@ -278,7 +281,7 @@ function ejsappbooking_cron () {
           $ejsappbooking_usersaccess->ejsappid = $course_ejsapp->id;
           foreach ($users as $user) {
             $ejsappbooking_usersaccess->userid = $user->id;
-            if (!has_capability('mod/ejsapp:addinstance', $context, $user->id, true)) {
+            if (!has_capability('mod/ejsapp:accessremotelabs', $context, $user->id, true)) {
               $ejsappbooking_usersaccess->allowremaccess = 0;
             } else {
               $ejsappbooking_usersaccess->allowremaccess = 1;
@@ -338,44 +341,7 @@ function ejsappbooking_cron () {
         }
       }
     }
-    
-    //CHECKING WHETHER REMOTE LABS PCS ARE ON OR NOT:
-    function ping($host,$port=80,$timeout=3) {
-      $fsock = fsockopen($host, $port, $errno, $errstr, $timeout);
-      if (!$fsock ) {
-        return FALSE;
-      }
-      else {
-        return TRUE;
-      }
-    }
-    
-    $ejsapp_remlabs_conf = $DB->get_records('ejsapp_remlab_conf');
-    foreach ($ejsapp_remlabs_conf as $ejsapp_remlab_conf) {
-      $up = ping($ejsapp_remlab_conf->ip, $ejsapp_remlab_conf->port);
-      // Send mail to teachers if the remote lab has passed from active to inactive:
-      if ($ejsapp_remlab_conf->active == 1 && !$up) {
-        $rem_lab_down = $DB->get_record('ejsapp', array('id' => $ejsapp_remlab_conf->ejsappid));
-        $role = $DB->get_record('role', array('shortname' => 'editingteacher'));
-        $context = context_course::instance($rem_lab_down->course);
-        $teachers = get_role_users($role->id, $context);
-        require_once($CFG->dirroot . '/filter/multilang/filter.php');
-        $multilang = new filter_multilang($context, array('filter_multilang_force_old'=>0));
-        $subject = get_string('mail_subject', 'ejsappbooking');
-        $messagebody = get_string('mail_content1', 'ejsappbooking') . $multilang->filter($rem_lab_down->name) . 
-        get_string('mail_content2', 'ejsappbooking') . $ejsapp_remlab_conf->ip . get_string('mail_content3', 'ejsappbooking');
-        foreach ($teachers as $teacher) { 
-          email_to_user($teacher, $teacher, $subject, $messagebody);
-        }
-      }
-      if($up) {
-        $ejsapp_remlab_conf->active = 1;
-      } else {
-        $ejsapp_remlab_conf->active = 0;
-      }
-      $DB->update_record('ejsapp_remlab_conf',$ejsapp_remlab_conf);
-    }
-    
+
     return true;
 }
 
@@ -473,13 +439,33 @@ function ejsappbooking_extend_navigation($navref, $course, $module, $cm) {
 }
 
 /**
- * Extends the settings navigation with the ejsappbooking settings
+ * This function extends the settings navigation block for the site.
  *
- * This function is called when the context for the page is a ejsappbooking module. This is not called by AJAX
- * so it is safe to rely on the $PAGE.
+ * It is safe to rely on PAGE here as we will only ever be within the module
+ * context when this is called
  *
- * @param settings_navigation $settingsnav {@link settings_navigation}
- * @param navigation_node $ejsappbookingnode {@link navigation_node}
+ * @param settings_navigation $settings
+ * @param navigation_node $ejsappnode
+ * @return void
  */
-function ejsappbooking_extend_settings_navigation($settingsnav, $ejsappbookingnode=null) {
+function ejsappbooking_extend_settings_navigation($settings, $ejsappbookingnode) {
+    global $PAGE;
+
+    // We want to add these new nodes after the Edit settings node, and before the
+    // Locally assigned roles node. Of course, both of those are controlled by capabilities.
+    $keys = $ejsappbookingnode->get_children_key_list();
+    $beforekey = null;
+    $i = array_search('modedit', $keys);
+    if ($i === false and array_key_exists(0, $keys)) {
+        $beforekey = $keys[0];
+    } else if (array_key_exists($i + 1, $keys)) {
+        $beforekey = $keys[$i + 1];
+    }
+
+    if (has_capability('mod/ejsappbooking:managerights', $PAGE->cm->context)) {
+        $url = new moodle_url('/mod/ejsappbooking/set_permissions.php', array('id'=>$PAGE->cm->id, 'courseid'=>$PAGE->course->id, 'contextid'=>$PAGE->context->id));
+        $node = navigation_node::create(get_string('manage_access_but', 'ejsappbooking'),
+            $url, navigation_node::TYPE_SETTING, null, 'mod_ejsappbooking_manage_rights');
+        $ejsappbookingnode->add_node($node, $beforekey);
+    }
 }

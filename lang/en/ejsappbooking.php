@@ -66,11 +66,6 @@ $string['booking_rights'] = 'Booking rights';
 $string['allow_remlabaccess'] = 'You were granted permission to make bookings for a new remote lab: ';
 $string['sending_message'] = 'Sending info messages';
 
-//lin.php
-$string['mail_subject'] = 'Lab Down Alert';
-$string['mail_content1'] = 'One of your previously operative remote labs (';
-$string['mail_content2'] = ' - IP: ';
-$string['mail_content3'] = ') has ceased to be accessible.';
 
 $string['already_enabled'] = 'You already have a booking system in this course.';
 
@@ -95,7 +90,8 @@ $string['book'] = 'Book';
 $string['book_message'] = 'Booking';
 $string['messageDelete'] = 'Are you sure you want to delete';
 $string['cancel'] = 'Cancel';
-$string['plantActive'] = 'Plant availability';
+$string['active_plant'] = 'Plant available';
+$string['inactive_plant'] = 'Plant not available';
 $string['iyear'] = 'Year';
 $string['imonth'] = 'Month';
 $string['availability_booking'] = 'Number of available reserves';

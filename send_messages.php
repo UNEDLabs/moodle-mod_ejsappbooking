@@ -35,7 +35,7 @@
 require_once('../../config.php');
 require_login();
 
-global $CFG, $DB, $PAGE, $OUTPUT, $USER;
+global $CFG, $DB, $PAGE, $OUTPUT, $USER, $SESSION;
 
 require_once($CFG->dirroot.'/message/lib.php');
 require_once($CFG->dirroot.'/filter/multilang/filter.php');
@@ -109,6 +109,8 @@ if (empty($CFG->messaging)) {
   echo $OUTPUT->notification(get_string('messagingdisabled','message'));
 }
 
+
+// <UPDATE BOOKING RIGHTS AND ALREADY MADE BOOKINGS>
 if (count($SESSION->emailto[$mycourseid])) {
   $good = true;
   if (!empty($CFG->noemailever)) {
@@ -168,6 +170,7 @@ foreach ($users_no_remaccess as $user_no_remaccess) {
     }
   }
 }
+// </UPDATE BOOKING RIGHTS AND ALREADY MADE BOOKINGS>
 
   $good = true;
   if ($good) {
