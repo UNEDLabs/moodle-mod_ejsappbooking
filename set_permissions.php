@@ -252,7 +252,6 @@ if ($i>1) { // If there is at least one remote lab
     /// Print settings and things in a table across the top
     $controlstable = new html_table();
     $controlstable->attributes['class'] = 'controls';
-    $controlstable->cellspacing = 0;
     $controlstable->data[] = new html_table_row();
     
     /// Print my course menus
@@ -659,7 +658,7 @@ if ($i>1) { // If there is at least one remote lab
         } // foreach ($userlist as $user)
     } // if ($userlist)
 
-    $table->print_html();
+    $table->finish_html();
 
     echo '<br /><div class="buttons">
     <input type="button" id="checkall" value="' . get_string('selectall') . '" />

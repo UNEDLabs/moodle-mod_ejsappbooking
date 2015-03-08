@@ -585,9 +585,11 @@ if(!$rem_labs) {
                 $bookingcell->text = html_writer::checkbox($name, $value, false, null, $visible);
                 $bookingtable->data[$i]->cells[] = $bookingcell;
 
+
+                $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
                 $bookingcell = new html_table_cell();
                 $bookingcell->attributes['class'] = 'center';
-                $bookingcell->text = $event->name . '. ' . $event->practiceintro;
+                $bookingcell->text = $multilang->filter($event->name) . '. ' . $event->practiceintro;
                 $bookingtable->data[$i]->cells[] = $bookingcell;
 
                 $bookingcell = new html_table_cell();
@@ -636,8 +638,18 @@ if(!$rem_labs) {
 
     // show slots in selected day
     } else {
+        $practiceintro = $DB->get_field('ejsapp_expsyst2pract', 'practiceintro', array('ejsappid'=>$labid, 'practiceid'=>$practid));
+        $labids = $DB->get_fieldset_select('ejsapp_expsyst2pract', 'ejsappid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
+        $practiceids = $DB->get_fieldset_select('ejsapp_expsyst2pract', 'practiceid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
 
-        $events = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE DATE_FORMAT(starttime, '%Y-%m-%d') = ? AND ejsappid = ? AND $practid = ? ORDER BY starttime ASC", array($sDate->format('Y-m-d'), $labid, $practid));
+        $events = array();
+        $i = 0;
+        foreach($labids as $labid) {
+            $practid = $practiceids[$i];
+            $temp_events = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE DATE_FORMAT(starttime, '%Y-%m-%d') = ? AND ejsappid = ? AND practiceid = ? ORDER BY starttime ASC", array($sDate->format('Y-m-d'), $labid, $practid));
+            if (!empty($temp_events)) $events[] = $temp_events;
+            $i++;
+        }
 
         for ($i = 0; $i < 6; $i++) {
 
@@ -674,11 +686,13 @@ if(!$rem_labs) {
 
                 // reserved slot
                 foreach ($events as $event) {
-                    $date = $event->starttime;
-                    if ($initTime->format('H:i') == date("H:i", strtotime($date))) {
-                        $checked = true;
-                        $visible = array('disabled' => 'disable');
-                        $url = 'busy.png';
+                    foreach ($event as $bookinginfo) {
+                        $date = $bookinginfo->starttime;
+                        if ($initTime->format('H:i') == date("H:i", strtotime($date))) {
+                            $checked = true;
+                            $visible = array('disabled' => 'disable');
+                            $url = 'busy.png';
+                        }
                     }
                 }
                 $bookingcell = new html_table_cell();
