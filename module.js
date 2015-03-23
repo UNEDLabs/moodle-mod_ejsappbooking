@@ -101,7 +101,7 @@ YUI().use("node-base", "datatype-number", "event-base", "overlay", "event-mousee
     if(btn != null) {
         btn.on('click', function (ev) {
             // set the content you want in the message
-            Y.one('#dialog .message').setHTML(M.str.ejsappbooking.messageDelete + '?');
+            Y.one('#dialog .message').setHTML(M.str.ejsappbooking.messageDelete);
 
             // set the icon (or none) that appears next to the message.
             // the Class 'message' also needs to be maintained.

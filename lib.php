@@ -160,7 +160,6 @@ function ejsappbooking_delete_instance($id) {
     $ejsappbooking_usersaccess_delete = $DB->get_records('ejsappbooking_usersaccess', array('bookingid'=>$ejsappbooking->id));   
 
     # Delete dependent records #
-
     $DB->delete_records('ejsappbooking', array('id' => $ejsappbooking->id));
     foreach ($ejsappbooking_usersaccess_delete as $ejsappbooking_delete) {
       $DB->delete_records('ejsappbooking_usersaccess', array('id' => $ejsappbooking_delete->id));
@@ -352,7 +351,9 @@ function ejsappbooking_cron () {
  * @return array
  */
 function ejsappbooking_get_extra_capabilities() {
-    return array();
+    return array('moodle/role:assign', 'moodle/site:accessallgroups', 'moodle/course:viewhiddenuserfields',
+        'moodle/site:viewparticipants', 'moodle/course:managegroups', 'moodle/course:enrolreview',
+        'moodle/user:viewdetails');
 }
 
 ////////////////////////////////////////////////////////////////////////////////

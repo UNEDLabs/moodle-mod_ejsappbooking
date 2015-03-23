@@ -81,8 +81,6 @@ if ($CFG->version < 2013111899) { //Moodle 2.6 or inferior
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
     $event->add_record_snapshot('ejsappbooking', $ejsappbooking);
-    // In the next line you can use $PAGE->activityrecord if you have set it, or skip this line if you don't have a record.
-    //$event->add_record_snapshot($PAGE->cm->modname, $activityrecord);
     $event->trigger();
 }
 
@@ -91,7 +89,7 @@ $PAGE->set_title(format_string($ejsappbooking->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_url('/mod/ejsappbooking/view.php', array('id' => $cm->id));
 $PAGE->set_context($context);
-$PAGE->set_button(update_module_button($cm->id, $course->id, get_string('modulename', 'ejsappbooking')));
+$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'ejsappbooking'));
 $PAGE->requires->string_for_js('messageDelete', 'ejsappbooking');
 $PAGE->requires->string_for_js('book_message', 'ejsappbooking');
 $PAGE->requires->string_for_js('cancel', 'ejsappbooking');
@@ -104,16 +102,15 @@ if ($ejsappbooking->intro) { // If some text was written, show the intro
     echo $OUTPUT->box(format_module_intro('ejsappbooking', $ejsappbooking, $cm->id), 'generalbox mod_introbox', 'ejsappbookingintro');
 }
 
-// Get remote laboratories authorized user
+// Get the remote laboratories in which the user is authorized to make bookings
 $rem_labs = $DB->get_records_sql("SELECT DISTINCT (a.id), a.name FROM {ejsapp} a INNER JOIN {ejsappbooking_usersaccess} b ON a.id = b.ejsappid WHERE b.userid = ? AND a.course = ? AND a.is_rem_lab = 1 AND b.allowremaccess = 1", array($USER->id, $course->id));
 
 
-if(!$rem_labs) {
-    // No labs
-    echo $OUTPUT->box_start();
+if(!$rem_labs) { // No labs
     echo $OUTPUT->heading(get_string('no_labs_rem', 'ejsappbooking'));
-} else {
+} else { // At least one remote lab
 
+    // Obtain the name of the remote lab considering the language filter
     $i = 1;
     $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
     foreach ($rem_labs as $rem_lab) {
@@ -146,16 +143,14 @@ if(!$rem_labs) {
         }
     }
 
-    // Started building the website
+    // Star building the website
     $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
     echo $OUTPUT->box_start();
     echo $OUTPUT->heading(get_string('makereservation', 'ejsappbooking'));
     $iconurl = $CFG->wwwroot . '/mod/ejsappbooking/pix/selected.png';
 
-    // Check the configuration of the lab
+    // Check the configuration of the lab (whether it is active or not)
     $conf_labs = $DB->get_record('ejsapp_remlab_conf', array('ejsappid' => $labid));
-
-    // It checks if the laboratory is active
     if($conf_labs->active) {
         $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_success_44x44.png';
         $plant_state_info_string = get_string('active_plant','ejsappbooking');
@@ -164,7 +159,7 @@ if(!$rem_labs) {
         $plant_state_info_string = get_string('inactive_plant','ejsappbooking');
     }
 
-    //  user data and control the calendar
+    //  User data and control the calendar
     echo html_writer::start_tag('div', array('id' => 'container', 'align' => 'center'));
     $user_picture = $OUTPUT->user_picture($USER, array('size' => 100, 'courseid'=>$course->id));
     $user_fullname = $OUTPUT->container('<p align="center">' . fullname($USER, has_capability('moodle/site:viewfullnames', $context)). '</strong></p>', 'username');
@@ -256,12 +251,12 @@ if(!$rem_labs) {
     $bookingtable->id = 'tablabooking';
     $bookingtable->align[1] = 'center';
 
-    // start the program logic
+    // <Program logic>
 
-    // reservation functionality
+    // Reservation functionality
     if ($bookingbutton) {
 
-        // checks if there are reservations on request
+        // Checks if there are reservations on request
         if ($booking) {
 
             $bookingtable->head = array(get_string('plant', 'ejsappbooking'), get_string('date', 'ejsappbooking'), get_string('hour', 'ejsappbooking'));
@@ -273,7 +268,7 @@ if(!$rem_labs) {
             $user_access = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE username = ? AND ejsappid = ? ORDER BY starttime ASC", array($USER->username, $labid));
             $userBooks = count($user_access);
 
-                // bookings at the request
+            // bookings at the request
             $pre_booking = count($booking);
 
             $message = false;
@@ -354,7 +349,7 @@ if(!$rem_labs) {
             if ($message) {
                 $out .= '<p align="center"><strong>' . $message . '</strong></p><br>';
             } else {
-                // booking save
+                // save the booking
                 if ($save) {
                     $i = 0;
                     // booking info
@@ -636,7 +631,7 @@ if(!$rem_labs) {
         }
         // End - Manage user´s bookings
 
-    // show slots in selected day
+    // Show slots in selected day
     } else {
         $practiceintro = $DB->get_field('ejsapp_expsyst2pract', 'practiceintro', array('ejsappid'=>$labid, 'practiceid'=>$practid));
         $labids = $DB->get_fieldset_select('ejsapp_expsyst2pract', 'ejsappid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
@@ -708,6 +703,8 @@ if(!$rem_labs) {
         $out .= '<br><p align="center"><button name="bookingbutton" value="1" type="submit">' . get_string('book', 'ejsappbooking') . '</button></p>';
     }
 
+    // </Program logic>
+
     $out .= html_writer::end_tag('div');
 
     // hidden parameters
@@ -716,11 +713,10 @@ if(!$rem_labs) {
 
     // show my bookings
      if (!$Mybookingsbutton) {
-            $out .= '<p align="center"><button name="Mybookingsbutton" value="1" type="submit">' . get_string('mybookings', 'ejsappbooking') . '</button></p>';
-        }
+        $out .= '<p align="center"><button name="Mybookingsbutton" value="1" type="submit">' . get_string('mybookings', 'ejsappbooking') . '</button></p>';
+     }
 
     $out .= html_writer::end_tag('form');
-
 
     // delete button
     if ($deletebutton) {
@@ -742,9 +738,9 @@ if(!$rem_labs) {
 
     echo html_writer::end_tag('div');
 
-}
+    echo $OUTPUT->box_end();
 
-echo $OUTPUT->box_end();
+}
 
 // Finish the page
 echo $OUTPUT->footer();
