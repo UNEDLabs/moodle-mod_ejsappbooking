@@ -291,6 +291,8 @@ if ($i>1) { // If there is at least one remote lab
       $now = usergetmidnight(time());
       $timeaccess = array();
       $baseurl->remove_params('accesssince');
+      $baseurl->remove_params('labid');
+      $baseurl->param('labid', $labid);
     
       // makes sense for this to go first.
       $timeoptions[0] = get_string('selectperiod');
@@ -674,6 +676,8 @@ if ($i>1) { // If there is at least one remote lab
     }
     
     $perpageurl = clone($baseurl);
+    $perpageurl->remove_params('labid');
+    $perpageurl->param('labid', $labid);
     $perpageurl->remove_params('perpage');
     if ($perpage == SHOW_ALL_PAGE_SIZE) {
       $perpageurl->param('perpage', DEFAULT_PAGE_SIZE);
@@ -682,7 +686,7 @@ if ($i>1) { // If there is at least one remote lab
       $perpageurl->param('perpage', SHOW_ALL_PAGE_SIZE);
       echo $OUTPUT->container(html_writer::link($perpageurl, get_string('showall', '', $matchcount)), array(), 'showall');
     }
-    
+
     echo '</div>';  // userlist
     
     echo $OUTPUT->footer();
