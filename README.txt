@@ -1,5 +1,5 @@
 ﻿######################
-# EJSAppBooking 2.1  #
+# EJSAppBooking 2.2  #
 ######################
 
 1. Content
