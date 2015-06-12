@@ -63,44 +63,39 @@ $url = new moodle_url('/mod/ejsappbooking/send_messages.php', array('id'=>$mycou
 $url->param('messagebody', $messagebody);
 $url->param('format', $format);
 
+require_login($mycourseid);
+
+$title = get_string('sending_message', 'ejsappbooking');
+
 $PAGE->set_url($url);
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(context_course::instance($mycourseid));
+$PAGE->set_title($title);
+$PAGE->set_heading($title);
+$PAGE->set_pagelayout('incourse');
+$PAGE->navbar->add($title);
 
 if (!$course = $DB->get_record('course', array('id'=>$mycourseid))) {
   print_error('invalidcourseid');
 }
-
-require_login();
-
-$coursecontext = context_course::instance($mycourseid);   // Course context
-$systemcontext = context_system::instance();   // SYSTEM context
 
 $SESSION->emailto = array();
 $SESSION->emailto[$mycourseid] = array();
 $SESSION->emailselect[$mycourseid] = array('messagebody' => $messagebody);
 
 $count = 0;
+$user_list = array();
 
-foreach ($_POST as $k => $v) { 
-	if (preg_match('/^(user|teacher)(\d+)$/',$k,$m)) {
-    if (!array_key_exists($m[2],$SESSION->emailto[$mycourseid])) {
-      if ($user = $DB->get_record_select('user', "id = ?", array($m[2]), 'id,firstname,lastname,idnumber,email,mailformat,lastaccess,lang')) {
-        $SESSION->emailto[$mycourseid][$m[2]] = $user;
-        $count++;
-      }
+foreach ($_POST as $k => $v) {
+    if (preg_match('/^(user|teacher)(\d+)$/',$k,$m)) {
+        if (!array_key_exists($m[2],$SESSION->emailto[$mycourseid])) {
+            if ($user = $DB->get_record('user', array('id'=>$m[2]))) {
+                $user_list[] = $user;
+                $SESSION->emailto[$mycourseid][$m[2]] = $user;
+                $count++;
+            }
+        }
     }
-  }
 }
-
-$title = get_string('sending_message', 'ejsappbooking');
-
-require_login($mycourseid);
-
-$PAGE->set_context($coursecontext);
-$PAGE->set_title($title);
-$PAGE->set_heading($title);
-$PAGE->set_pagelayout('incourse');
-$PAGE->navbar->add($title);
 
 echo $OUTPUT->header();
 
@@ -122,12 +117,13 @@ if (count($SESSION->emailto[$mycourseid])) {
   foreach ($allrecords as $onerecord) {
     $allusers[] = $onerecord->userid;
   }
-  foreach ($SESSION->emailto[$mycourseid] as $user) { 
+
+  for ($i = 0; $i < count($SESSION->emailto[$mycourseid]); $i++) {
     $selectedusers[] =  $user->id;
-    $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user->id,'ejsappid'=>$labid);
+    $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_list[$i]->id,'ejsappid'=>$labid);
     $prev_access = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$update_conditions);
     if ($prev_access == 0) {
-      $good = $good && @message_post_message($USER,$user,$messagebody,$format);
+      $good = $good && @message_post_message($USER,$user_list[$i],$messagebody,$format);
     }
     // Grant booking rights to the selected users
   	$update_id = $DB->get_field('ejsappbooking_usersaccess','id',$update_conditions);
@@ -135,7 +131,7 @@ if (count($SESSION->emailto[$mycourseid])) {
   	  $allowremaccess = array('id'=>$update_id, 'allowremaccess'=>'1');
   	  $DB->update_record('ejsappbooking_usersaccess',$allowremaccess);
     } else {
-      $allowremaccess = array('bookingid'=>$bookingid,'userid'=>$user->id,'ejsappid'=>$labid,'allowremaccess'=>'1');
+      $allowremaccess = array('bookingid'=>$bookingid,'userid'=>$user_list[$i]->id,'ejsappid'=>$labid,'allowremaccess'=>'1');
   	  $DB->insert_record('ejsappbooking_usersaccess',$allowremaccess);
     }	
   }
@@ -176,7 +172,6 @@ foreach ($users_no_remaccess as $user_no_remaccess) {
   if ($good) {
   $contextid = $context->id;
 	$redirection = <<<EOD
-<center>
 <script>
 	location.href='{$CFG->wwwroot}/mod/ejsappbooking/set_permissions.php?id=$id&courseid=$mycourseid&contextid=$contextid';
 </script>

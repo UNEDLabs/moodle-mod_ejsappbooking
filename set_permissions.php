@@ -32,6 +32,9 @@
  */
 
 require_once('../../config.php');
+
+global $CFG, $PAGE, $DB, $OUTPUT, $USER;
+
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->dirroot . '/filter/multilang/filter.php');
@@ -49,7 +52,6 @@ $cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
 $labid = optional_param('labid', 0, PARAM_INT);
 $page = optional_param('page', 0, PARAM_INT);                       // which page to show
 $perpage = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT); // how many per page
-$mode = optional_param('mode', NULL, PARAM_INT);                    // use the MODE_ constants
 $accesssince = optional_param('accesssince',0,PARAM_INT);           // filter by last access. -1 = never
 $search = optional_param('search','',PARAM_RAW);                    // make sure it is processed with p() or s() when sending to output!
 $roleid = optional_param('roleid', 0, PARAM_INT);                   // optional roleid, 0 means all enrolled users (or all on the frontpage)
@@ -142,12 +144,6 @@ $datestring->mins  = get_string('mins');
 $datestring->sec   = get_string('sec');
 $datestring->secs  = get_string('secs');
 
-if ($mode !== NULL) {
-  $mode = (int)$mode;
-  $SESSION->userindexmode = $mode;
-} else if (isset($SESSION->userindexmode)) {
-  $mode = (int)$SESSION->userindexmode;
-}
 /// Check to see if groups are being used in this course
 /// and if so, set $currentgroup to reflect the current group
 
@@ -365,16 +361,16 @@ if ($i>1) { // If there is at least one remote lab
     $tablecolumns = array('userpic', 'fullname');
     $tableheaders = array(get_string('userpic'), get_string('fullnameuser'));
     if (!isset($hiddenfields['city'])) {
-      $tablecolumns[] = 'city';
-      $tableheaders[] = get_string('city');
+        $tablecolumns[] = 'city';
+        $tableheaders[] = get_string('city');
     }
     if (!isset($hiddenfields['country'])) {
-      $tablecolumns[] = 'country';
-      $tableheaders[] = get_string('country');
+        $tablecolumns[] = 'country';
+        $tableheaders[] = get_string('country');
     }
     if (!isset($hiddenfields['lastaccess'])) {
-      $tablecolumns[] = 'lastaccess';
-      $tableheaders[] = get_string('lastaccess');
+        $tablecolumns[] = 'lastaccess';
+        $tableheaders[] = get_string('lastaccess');
     }
 
     $tablecolumns[] = 'select';
@@ -387,7 +383,7 @@ if ($i>1) { // If there is at least one remote lab
     $table->define_baseurl($baseurl->out());
     
     if (!isset($hiddenfields['lastaccess'])) {
-      $table->sortable(true, 'lastaccess', SORT_DESC);
+        $table->sortable(true, 'lastaccess', SORT_DESC);
     }
     
     $table->no_sorting('roles');
@@ -407,7 +403,7 @@ if ($i>1) { // If there is at least one remote lab
                 TABLE_VAR_IFIRST  => 'sifirst',
                 TABLE_VAR_ILAST   => 'silast',
                 TABLE_VAR_PAGE    => 'spage'
-                ));
+    ));
     $table->setup();
     
     // we are looking for all users with this role assigned in this context or higher
@@ -419,29 +415,27 @@ if ($i>1) { // If there is at least one remote lab
     $wheres = array();
     
     if ($isfrontpage) {
-      $select = "SELECT u.id, u.username, u.firstname, u.lastname,
+        $select = "SELECT u.id, u.username, u.firstname, u.lastname,
                         u.email, u.city, u.country, u.picture,
                         u.lang, u.timezone, u.maildisplay, u.imagealt,
                         u.lastaccess";
-      $joins[] = "JOIN ($esql) e ON e.id = u.id"; // everybody on the frontpage usually
-      if ($accesssince) {
-        $wheres[] = get_user_lastaccess_sql($accesssince);
-      }
+        $joins[] = "JOIN ($esql) e ON e.id = u.id"; // everybody on the frontpage usually
+        if ($accesssince) {
+            $wheres[] = get_user_lastaccess_sql($accesssince);
+        }
     } else {
-      $select = "SELECT u.id, u.username, u.firstname, u.lastname,
+        $select = "SELECT u.id, u.username, u.firstname, u.lastname,
                         u.email, u.city, u.country, u.picture,
                         u.lang, u.timezone, u.maildisplay, u.imagealt,
                         COALESCE(ul.timeaccess, 0) AS lastaccess";
-      $joins[] = "JOIN ($esql) e ON e.id = u.id"; // course enrolled users only
-      $joins[] = "LEFT JOIN {user_lastaccess} ul ON (ul.userid = u.id AND ul.courseid = :courseid)"; // not everybody accessed course yet
-      $params['courseid'] = $course->id;
-      if ($accesssince) {
-        $wheres[] = get_course_lastaccess_sql($accesssince);
-      }
+        $joins[] = "JOIN ($esql) e ON e.id = u.id"; // course enrolled users only
+        $joins[] = "LEFT JOIN {user_lastaccess} ul ON (ul.userid = u.id AND ul.courseid = :courseid)"; // not everybody accessed course yet
+        $params['courseid'] = $course->id;
+        if ($accesssince) {
+            $wheres[] = get_course_lastaccess_sql($accesssince);
+        }
     }
     
-    // performance hacks - we preload user contexts together with accounts
-    //list($ccselect, $ccjoin) = context_instance_preload_sql('u.id', CONTEXT_USER, 'ctx');
     $joinon = 'u.id';
     $contextlevel = CONTEXT_USER;
     $tablealias = 'ctx';
@@ -452,46 +446,46 @@ if ($i>1) { // If there is at least one remote lab
     
     // limit list to users with some role only
     if ($roleid) {
-      $wheres[] = "u.id IN (SELECT userid FROM {role_assignments} WHERE roleid = :roleid AND contextid IN (" . implode(',',$contextlist) . "))";
-      $params['roleid'] = $roleid;
+        $wheres[] = "u.id IN (SELECT userid FROM {role_assignments} WHERE roleid = :roleid AND contextid IN (" . implode(',',$contextlist) . "))";
+        $params['roleid'] = $roleid;
     }
     
     $from = implode("\n", $joins);
     if ($wheres) {
-      $where = "WHERE " . implode(" AND ", $wheres);
+        $where = "WHERE " . implode(" AND ", $wheres);
     } else {
-      $where = "";
+        $where = "";
     }
     
     $totalcount = $DB->count_records_sql("SELECT COUNT(u.id) $from $where", $params);
     
     if (!empty($search)) {
-      $fullname = $DB->sql_fullname('u.firstname','u.lastname');
-      $wheres[] = "(". $DB->sql_like($fullname, ':search1', false, false) .
+        $fullname = $DB->sql_fullname('u.firstname','u.lastname');
+        $wheres[] = "(". $DB->sql_like($fullname, ':search1', false, false) .
                   " OR ". $DB->sql_like('email', ':search2', false, false) .
                   " OR ". $DB->sql_like('idnumber', ':search3', false, false) .") ";
-      $params['search1'] = "%$search%";
-      $params['search2'] = "%$search%";
-      $params['search3'] = "%$search%";
+        $params['search1'] = "%$search%";
+        $params['search2'] = "%$search%";
+        $params['search3'] = "%$search%";
     }
     
     list($twhere, $tparams) = $table->get_sql_where();
     if ($twhere) {
-      $wheres[] = $twhere;
-      $params = array_merge($params, $tparams);
+        $wheres[] = $twhere;
+        $params = array_merge($params, $tparams);
     }
     
     $from = implode("\n", $joins);
     if ($wheres) {
-      $where = "WHERE " . implode(" AND ", $wheres);
+        $where = "WHERE " . implode(" AND ", $wheres);
     } else {
-      $where = "";
+        $where = "";
     }
     
     if ($table->get_sql_sort()) {
-      $sort = ' ORDER BY '.$table->get_sql_sort();
+        $sort = ' ORDER BY ' . $table->get_sql_sort();
     } else {
-      $sort = '';
+        $sort = '';
     }
     
     $matchcount = $DB->count_records_sql("SELECT COUNT(u.id) $from $where", $params);
@@ -504,17 +498,16 @@ if ($i>1) { // If there is at least one remote lab
     
     /// If there are multiple Roles in the course, then show a drop down menu for switching
     if (count($rolenames) > 1) {
-      echo '<div class="rolesform">
-      <label for="rolesform_jump">'.get_string('currentrole', 'role').'&nbsp;</label>';
-      echo $OUTPUT->single_select($rolenamesurl, 'roleid', $rolenames, $roleid, null, 'rolesform');
-      echo '</div>';
-    
+        echo '<div class="rolesform">
+        <label for="rolesform_jump">' . get_string('currentrole', 'role') . '&nbsp;</label>';
+        echo $OUTPUT->single_select($rolenamesurl, 'roleid', $rolenames, $roleid, null, 'rolesform');
+        echo '</div>';
     } else if (count($rolenames) == 1) {
-      // when all users with the same role - print its name
-      echo '<div class="rolesform">';
-      echo get_string('role').get_string('labelsep', 'langconfig');
-      $rolename = reset($rolenames);
-      echo $rolename . '</div>';
+        // when all users with the same role - print its name
+        echo '<div class="rolesform">';
+        echo get_string('role') . get_string('labelsep', 'langconfig');
+        $rolename = reset($rolenames);
+        echo $rolename . '</div>';
     }
 
     // <Select rem lab pulldown menu>
@@ -529,43 +522,43 @@ if ($i>1) { // If there is at least one remote lab
     // </Select rem lab pulldown menu>
     
     if ($roleid > 0) {
-      $a = new stdClass();
-      $a->number = $totalcount;
-      $a->role = $rolenames[$roleid];
-      $heading = format_string(get_string('xuserswiththerole', 'role', $a));
-    
-      if ($currentgroup and $group) {
-        $a->group = $group->name;
-        $heading .= ' ' . format_string(get_string('ingroup', 'role', $a));
-      }
-    
-      if ($accesssince) {
-        $a->timeperiod = $timeoptions[$accesssince];
-        $heading .= ' ' . format_string(get_string('inactiveformorethan', 'role', $a));
-      }
-    
-      $heading .= ": $a->number";
-      if (user_can_assign($context, $roleid)) {
-        $heading .= ' <a href="'.$CFG->wwwroot.'/'.$CFG->admin.'/roles/assign.php?roleid='.$roleid.'&amp;contextid='.$context->id.'">';
-        $heading .= '<img src="'.$OUTPUT->pix_url('i/edit') . '" class="icon" alt="" /></a>';
-      }
-      echo $OUTPUT->heading($heading, 3);
+        $a = new stdClass();
+        $a->number = $totalcount;
+        $a->role = $rolenames[$roleid];
+        $heading = format_string(get_string('xuserswiththerole', 'role', $a));
+
+        if ($currentgroup and $group) {
+            $a->group = $group->name;
+            $heading .= ' ' . format_string(get_string('ingroup', 'role', $a));
+        }
+
+        if ($accesssince) {
+            $a->timeperiod = $timeoptions[$accesssince];
+            $heading .= ' ' . format_string(get_string('inactiveformorethan', 'role', $a));
+        }
+
+        $heading .= ": $a->number";
+        if (user_can_assign($context, $roleid)) {
+            $heading .= ' <a href="'.$CFG->wwwroot.'/'.$CFG->admin.'/roles/assign.php?roleid='.$roleid.'&amp;contextid='.$context->id.'">';
+            $heading .= '<img src="'.$OUTPUT->pix_url('i/edit') . '" class="icon" alt="" /></a>';
+        }
+        echo $OUTPUT->heading($heading, 3);
     } else {
-      if ($course->id != SITEID && has_capability('moodle/course:enrolreview', $context)) {
-        $editlink = $OUTPUT->action_icon(new moodle_url('/enrol/users.php', array('id' => $course->id)), new pix_icon('i/edit', get_string('edit')));
-      } else {
-        $editlink = '';
-      }
-      if ($course->id == SITEID and $roleid < 0) {
-        $strallparticipants = get_string('allsiteusers', 'role');
-      } else {
-        $strallparticipants = get_string('allparticipants');
-      }
-      if ($matchcount < $totalcount) {
-        echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount.'/'.$totalcount . $editlink, 3);
-      } else {
-        echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount . $editlink, 3);
-      }
+        if ($course->id != SITEID && has_capability('moodle/course:enrolreview', $context)) {
+            $editlink = $OUTPUT->action_icon(new moodle_url('/enrol/users.php', array('id' => $course->id)), new pix_icon('i/edit', get_string('edit')));
+        } else {
+            $editlink = '';
+        }
+        if ($course->id == SITEID and $roleid < 0) {
+            $strallparticipants = get_string('allsiteusers', 'role');
+        } else {
+            $strallparticipants = get_string('allparticipants');
+        }
+        if ($matchcount < $totalcount) {
+            echo $OUTPUT->heading($strallparticipants . get_string('labelsep', 'langconfig') . $matchcount . '/' . $totalcount . $editlink, 3);
+        } else {
+            echo $OUTPUT->heading($strallparticipants . get_string('labelsep', 'langconfig') . $matchcount . $editlink, 3);
+        }
     }
 
 
@@ -611,12 +604,12 @@ if ($i>1) { // If there is at least one remote lab
             if(!isset($user->alternatename)) $user->alternatename = '';
 
             if ($piclink = ($USER->id == $user->id || has_capability('moodle/user:viewdetails', $context) || has_capability('moodle/user:viewdetails', $usercontext))) {
-                $profilelink = '<strong><a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
+                $profilelink = '<strong><a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a></strong>';
             } else {
-            $profilelink = '<strong>'.fullname($user).'</strong>';
+                $profilelink = '<strong>' . fullname($user) . '</strong>';
             }
 
-            $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid'=>$course->id)), $profilelink);
+            $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid' => $course->id)), $profilelink);
 
             if (!isset($hiddenfields['city'])) {
                 $data[] = $user->city;
@@ -628,35 +621,35 @@ if ($i>1) { // If there is at least one remote lab
                 $data[] = $lastaccess;
             }
 
-          if (isset($userlist_extra) && isset($userlist_extra[$user->id])) {
-              $ras = $userlist_extra[$user->id]['ra'];
-              $rastring = '';
-              foreach ($ras AS $key=>$ra) {
-                  $rolename = $allrolenames[$ra['roleid']] ;
-                  if ($ra['ctxlevel'] == CONTEXT_COURSECAT) {
-                      $rastring .= $rolename. ' @ ' . '<a href="'.$CFG->wwwroot.'/course/category.php?id='.$ra['ctxinstanceid'].'">'.s($ra['ccname']).'</a>';
-                  } elseif ($ra['ctxlevel'] == CONTEXT_SYSTEM) {
-                      $rastring .= $rolename. ' - ' . get_string('globalrole','role');
-                  } else {
-                      $rastring .= $rolename;
-                  }
-              }
-              $data[] = $rastring;
-              if ($groupmode != 0) {
-                  // htmlescape with s() and implode the array
-                  $data[] = implode(', ', array_map('s',$userlist_extra[$user->id]['group']));
-                  $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
-              }
-          }
+            if (isset($userlist_extra) && isset($userlist_extra[$user->id])) {
+                $ras = $userlist_extra[$user->id]['ra'];
+                $rastring = '';
+                foreach ($ras AS $key=>$ra) {
+                    $rolename = $allrolenames[$ra['roleid']] ;
+                    if ($ra['ctxlevel'] == CONTEXT_COURSECAT) {
+                        $rastring .= $rolename . ' @ ' . '<a href="' . $CFG->wwwroot . '/course/category.php?id=' . $ra['ctxinstanceid'] . '">' . s($ra['ccname']) . '</a>';
+                    } elseif ($ra['ctxlevel'] == CONTEXT_SYSTEM) {
+                        $rastring .= $rolename . ' - ' . get_string('globalrole','role');
+                    } else {
+                        $rastring .= $rolename;
+                    }
+                }
+                $data[] = $rastring;
+                if ($groupmode != 0) {
+                    // htmlescape with s() and implode the array
+                    $data[] = implode(', ', array_map('s',$userlist_extra[$user->id]['group']));
+                    $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
+                }
+            }
 
-          $check_user_permission = array('ejsappid'=>$labid,'userid'=>$user->id);
-          $user_permission = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$check_user_permission);
-          if ($user_permission==1) {
-              $data[] = '<input type="checkbox" checked="yes" class="usercheckbox" name="user'.$user->id.'" />';
-          } else {
-            $data[] = '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
-          }
-          $table->add_data($data);
+            $check_user_permission = array('ejsappid'=>$labid,'userid'=>$user->id);
+            $user_permission = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$check_user_permission);
+            if ($user_permission==1) {
+                $data[] = '<input type="checkbox" checked="yes" class="usercheckbox" name="user'.$user->id.'" />';
+            } else {
+                $data[] = '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
+            }
+            $table->add_data($data);
         } // foreach ($userlist as $user)
     } // if ($userlist)
 
@@ -688,12 +681,12 @@ if ($i>1) { // If there is at least one remote lab
     }
 
     echo '</div>';  // userlist
-    
-    echo $OUTPUT->footer();
-    
+
     if ($userlist) {
-      $userlist->close();
+        $userlist->close();
     }
+
+    echo $OUTPUT->footer();
 } else { // If there are no remote labs
   echo  get_string('no_rem_labs', 'ejsappbooking');
 }
