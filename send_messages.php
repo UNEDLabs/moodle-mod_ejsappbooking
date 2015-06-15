@@ -101,70 +101,62 @@ echo $OUTPUT->header();
 
 // if messaging is disabled on site, we can still allow users with capabilities to send emails instead
 if (empty($CFG->messaging)) {
-  echo $OUTPUT->notification(get_string('messagingdisabled','message'));
+    echo $OUTPUT->notification(get_string('messagingdisabled','message'));
 }
 
+$listedusers_id = unserialize($_SESSION['encoded_listed_users']);
 
 // <UPDATE BOOKING RIGHTS AND ALREADY MADE BOOKINGS>
 if (count($SESSION->emailto[$mycourseid])) {
-  $good = true;
-  if (!empty($CFG->noemailever)) {
-    $temp_cfg = $CFG->noemailever;
-    $CFG->noemailever = true;
-  }
-
-  $allrecords = $DB->get_records('ejsappbooking_usersaccess');
-  foreach ($allrecords as $onerecord) {
-    $allusers[] = $onerecord->userid;
-  }
-
-  for ($i = 0; $i < count($SESSION->emailto[$mycourseid]); $i++) {
-    $selectedusers[] =  $user->id;
-    $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_list[$i]->id,'ejsappid'=>$labid);
-    $prev_access = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$update_conditions);
-    if ($prev_access == 0) {
-      $good = $good && @message_post_message($USER,$user_list[$i],$messagebody,$format);
+    $good = true;
+    if (!empty($CFG->noemailever)) {
+        $temp_cfg = $CFG->noemailever;
+        $CFG->noemailever = true;
     }
-    // Grant booking rights to the selected users
-  	$update_id = $DB->get_field('ejsappbooking_usersaccess','id',$update_conditions);
-  	if ($update_id != null) {
-  	  $allowremaccess = array('id'=>$update_id, 'allowremaccess'=>'1');
-  	  $DB->update_record('ejsappbooking_usersaccess',$allowremaccess);
-    } else {
-      $allowremaccess = array('bookingid'=>$bookingid,'userid'=>$user_list[$i]->id,'ejsappid'=>$labid,'allowremaccess'=>'1');
-  	  $DB->insert_record('ejsappbooking_usersaccess',$allowremaccess);
-    }	
-  }
-  
-  // Create the list of non-selected users in order to delete their booking rights
-  $users_no_remaccess = array_diff($allusers,$selectedusers);
-  $users_no_remaccess = array_unique($users_no_remaccess);
+
+    for ($i = 0; $i < count($SESSION->emailto[$mycourseid]); $i++) {
+        $selectedusers[] =  $user_list[$i]->id;
+        $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_list[$i]->id,'ejsappid'=>$labid);
+        $prev_access = $DB->get_field('ejsappbooking_usersaccess','allowremaccess',$update_conditions);
+        if ($prev_access == 0) {
+            $good = $good && @message_post_message($USER,$user_list[$i],$messagebody,$format);
+        }
+        // Grant booking rights to the selected users
+        $update_id = $DB->get_field('ejsappbooking_usersaccess','id',$update_conditions);
+        if ($update_id != null) {
+            $allowremaccess = array('id'=>$update_id, 'allowremaccess'=>'1');
+            $DB->update_record('ejsappbooking_usersaccess',$allowremaccess);
+        } else {
+            $allowremaccess = array('bookingid'=>$bookingid,'userid'=>$user_list[$i]->id,'ejsappid'=>$labid,'allowremaccess'=>'1');
+            $DB->insert_record('ejsappbooking_usersaccess',$allowremaccess);
+        }
+    }
+
+    // Create the list of non-selected users in order to delete their booking rights
+    $users_no_remaccess = array_diff($listedusers_id,$selectedusers);
+    $users_no_remaccess = array_unique($users_no_remaccess);
 } else {
-  // Create the list of non-selected users in order to delete their booking rights
-  $allrecords = $DB->get_records('ejsappbooking_usersaccess');
-  foreach ($allrecords as $onerecord) {
-    $allusers[] = $onerecord->userid;
-  }
-  $users_no_remaccess = $allusers;
+    // Create the list of non-selected users in order to delete their booking rights
+    $users_no_remaccess = $listedusers_id;
 }
 
 // Delete booking rights and already made bookings of non-selected users
 foreach ($users_no_remaccess as $user_no_remaccess) {
-  if (has_capability('moodle/course:viewhiddensections', $context, $user_no_remaccess, true) == false) {
-    $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid);      
-  	$update_id = $DB->get_field('ejsappbooking_usersaccess','id',$update_conditions);
-   	if ($update_id != null) {
-      $forbidremaccess = array('id'=>$update_id, 'allowremaccess'=>'0');
-      $DB->update_record('ejsappbooking_usersaccess',$forbidremaccess);
-    } else {
-      $forbidremaccess = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid,'allowremaccess'=>'0');
-	  $DB->insert_record('ejsappbooking_usersaccess',$forbidremaccess);
+    if (has_capability('moodle/course:viewhiddensections', $context, $user_no_remaccess, true) == false) {
+        $update_conditions = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid);
+        $update_id = $DB->get_field('ejsappbooking_usersaccess','id',$update_conditions);
+        if ($update_id != null) {
+            $forbidremaccess = array('id'=>$update_id, 'allowremaccess'=>'0');
+            $DB->update_record('ejsappbooking_usersaccess',$forbidremaccess);
+        } else {
+            $forbidremaccess = array('bookingid'=>$bookingid,'userid'=>$user_no_remaccess,'ejsappid'=>$labid,'allowremaccess'=>'0');
+            $DB->insert_record('ejsappbooking_usersaccess',$forbidremaccess);
+        }
+        $username = $DB->get_field('user', 'username', array('id'=>$user_no_remaccess));
+        if ($username != null) {
+            $DB->delete_records('ejsappbooking_remlab_access', array('username'=>$username,'ejsappid'=>$labid));
+        }
     }
-    $username = $DB->get_field('user', 'username', array('id'=>$user_no_remaccess));
-    if ($username != null) {
-      $DB->delete_records('ejsappbooking_remlab_access', array('username'=>$username,'ejsappid'=>$labid));
-    }
-  }
 }
 // </UPDATE BOOKING RIGHTS AND ALREADY MADE BOOKINGS>
 

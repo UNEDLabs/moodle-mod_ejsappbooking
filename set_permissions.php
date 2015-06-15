@@ -460,10 +460,10 @@ if ($i>1) { // If there is at least one remote lab
     $totalcount = $DB->count_records_sql("SELECT COUNT(u.id) $from $where", $params);
     
     if (!empty($search)) {
-        $fullname = $DB->sql_fullname('u.firstname','u.lastname');
-        $wheres[] = "(". $DB->sql_like($fullname, ':search1', false, false) .
-                  " OR ". $DB->sql_like('email', ':search2', false, false) .
-                  " OR ". $DB->sql_like('idnumber', ':search3', false, false) .") ";
+        $fullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+        $wheres[] = "(" . $DB->sql_like($fullname, ':search1', false, false) .
+                    " OR " . $DB->sql_like('email', ':search2', false, false) .
+                    " OR " . $DB->sql_like('idnumber', ':search3', false, false) . ") ";
         $params['search1'] = "%$search%";
         $params['search2'] = "%$search%";
         $params['search3'] = "%$search%";
@@ -495,7 +495,7 @@ if ($i>1) { // If there is at least one remote lab
     
     // list of users at the current visible page - paging makes it relatively short
     $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
-    
+
     /// If there are multiple Roles in the course, then show a drop down menu for switching
     if (count($rolenames) > 1) {
         echo '<div class="rolesform">
@@ -650,7 +650,9 @@ if ($i>1) { // If there is at least one remote lab
                 $data[] = '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
             }
             $table->add_data($data);
+            $userlist_ids[] = $user->id;
         } // foreach ($userlist as $user)
+        $_SESSION['encoded_listed_users'] = serialize($userlist_ids);
     } // if ($userlist)
 
     $table->finish_html();
