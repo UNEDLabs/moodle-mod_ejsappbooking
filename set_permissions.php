@@ -73,11 +73,11 @@ $i = 1;
 
 $multilang = new filter_multilang($context, array('filter_multilang_force_old'=>0));
 foreach ($rem_labs as $rem_lab) {
-  $lab_name[$rem_lab->id] = $multilang->filter($rem_lab->name);
-  if ($i == 1 && $labid == 0) {
-    $labid = $rem_lab->id;
-  }
-  $i++;
+    $lab_name[$rem_lab->id] = $multilang->filter($rem_lab->name);
+    if ($i == 1 && $labid == 0) {
+        $labid = $rem_lab->id;
+    }
+    $i++;
 }
 // </Check whether there is at least one remote laboratory in the course>
 
@@ -89,9 +89,9 @@ $isfrontpage = ($course->id == SITEID);
 $frontpagectx = context_course::instance(SITEID);
 
 if ($isfrontpage) {
-  $PAGE->set_pagelayout('admin');
+    $PAGE->set_pagelayout('admin');
 } else {
-  $PAGE->set_pagelayout('incourse');
+    $PAGE->set_pagelayout('incourse');
 }
 
 $rolenamesurl = new moodle_url("$CFG->wwwroot/mod/ejsappbooking/set_permissions.php?id=$id&courseid=$courseid&contextid=$contextmodid&labid=$labid&sifirst=&silast=");
@@ -100,32 +100,32 @@ $allroles = get_all_roles();
 $roles = get_profile_roles($context);
 $allrolenames = array();
 if ($isfrontpage) {
-  $rolenames = array(0=>get_string('allsiteusers', 'role'));
+    $rolenames = array(0=>get_string('allsiteusers', 'role'));
 } else {
-  $rolenames = array(0=>get_string('allparticipants'));
+    $rolenames = array(0=>get_string('allparticipants'));
 }
 
 
 foreach ($allroles as $role) {
-  $allrolenames[$role->id] = strip_tags(role_get_name($role, $context));   // Used in menus etc later on
-  if (isset($roles[$role->id])) {
-    $rolenames[$role->id] = $allrolenames[$role->id];
-  }
+      $allrolenames[$role->id] = strip_tags(role_get_name($role, $context));   // Used in menus etc later on
+      if (isset($roles[$role->id])) {
+          $rolenames[$role->id] = $allrolenames[$role->id];
+      }
 }
 
 // make sure other roles may not be selected by any means
 if (empty($rolenames[$roleid])) {
-  print_error('noparticipants');
+    print_error('noparticipants');
 }
 
 // no roles to display yet?
 // frontpage course is an exception, on the front page course we should display all users
 if (empty($rolenames) && !$isfrontpage) {
-  if (has_capability('moodle/role:assign', $context)) {
-    redirect($CFG->wwwroot.'/'.$CFG->admin.'/roles/assign.php?contextid='.$context->id);
-  } else {
-    print_error('noparticipants');
-  }
+    if (has_capability('moodle/role:assign', $context)) {
+        redirect($CFG->wwwroot.'/'.$CFG->admin.'/roles/assign.php?contextid='.$context->id);
+    } else {
+        print_error('noparticipants');
+    }
 }
 
 $countries = get_string_manager()->get_list_of_countries();
@@ -151,13 +151,13 @@ $groupmode    = groups_get_course_groupmode($course);   // Groups are being used
 $currentgroup = groups_get_course_group($course, true);
 
 if (!$currentgroup) {      // To make some other functions work better later
-  $currentgroup  = NULL;
+    $currentgroup  = NULL;
 }
 
 $isseparategroups = ($course->groupmode == SEPARATEGROUPS and !has_capability('moodle/site:accessallgroups', $context));
 
 if ($course->id===SITEID) {
-  $PAGE->navbar->ignore_active();
+    $PAGE->navbar->ignore_active();
 }
 
 echo $OUTPUT->header();
@@ -171,14 +171,14 @@ echo $OUTPUT->heading(get_string('users_selection','ejsappbooking'));
  * @return string
  */
 function get_course_lastaccess_sql($accesssince='') {
-  if (empty($accesssince)) {
-    return '';
-  }
-  if ($accesssince == -1) { // never
-    return 'ul.timeaccess = 0';
-  } else {
-    return 'ul.timeaccess != 0 AND ul.timeaccess < '.$accesssince;
-  }
+    if (empty($accesssince)) {
+        return '';
+    }
+    if ($accesssince == -1) { // never
+        return 'ul.timeaccess = 0';
+    } else {
+        return 'ul.timeaccess != 0 AND ul.timeaccess < '.$accesssince;
+    }
 }
 
 /**
@@ -190,24 +190,24 @@ function get_course_lastaccess_sql($accesssince='') {
  *
  */
 function get_user_lastaccess_sql($accesssince='') {
-  if (empty($accesssince)) {
-    return '';
-  }
-  if ($accesssince == -1) { // never
-    return 'u.lastaccess = 0';
-  } else {
-    return 'u.lastaccess != 0 AND u.lastaccess < '.$accesssince;
-  }
+    if (empty($accesssince)) {
+        return '';
+    }
+    if ($accesssince == -1) { // never
+        return 'u.lastaccess = 0';
+    } else {
+        return 'u.lastaccess != 0 AND u.lastaccess < '.$accesssince;
+    }
 }
 
 if ($i>1) { // If there is at least one remote lab
     echo '<div class="userlist">';
     
     if ($isseparategroups and (!$currentgroup) ) {
-      // The user is not in the group so show message and exit
-      echo $OUTPUT->heading(get_string("notingroup"));
-      echo $OUTPUT->footer();
-      exit;
+        // The user is not in the group so show message and exit
+        echo $OUTPUT->heading(get_string("notingroup"));
+        echo $OUTPUT->footer();
+        exit;
     }
     
     
@@ -223,26 +223,26 @@ if ($i>1) { // If there is at least one remote lab
     
     /// setting up tags
     if ($course->id == SITEID) {
-      $filtertype = 'site';
+        $filtertype = 'site';
     } else if ($course->id && !$currentgroup) {
-      $filtertype = 'course';
-      $filterselect = $course->id;
+        $filtertype = 'course';
+        $filterselect = $course->id;
     } else {
-      $filtertype = 'group';
-      $filterselect = $currentgroup;
+        $filtertype = 'group';
+        $filterselect = $currentgroup;
     }
     
     
     /// Get the hidden field list
     if (has_capability('moodle/course:viewhiddenuserfields', $context)) {
-      $hiddenfields = array();  // teachers and admins are allowed to see everything
+        $hiddenfields = array();  // teachers and admins are allowed to see everything
     } else {
-      $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
+        $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
     }
     
     if (isset($hiddenfields['lastaccess'])) {
-      // do not allow access since filtering
-      $accesssince = 0;
+        // do not allow access since filtering
+        $accesssince = 0;
     }
     
     /// Print settings and things in a table across the top
@@ -252,108 +252,108 @@ if ($i>1) { // If there is at least one remote lab
     
     /// Print my course menus
     if ($mycourses = enrol_get_my_courses()) {
-      $courselist = array();
-    	$popupurl = new moodle_url('/mod/ejsappbooking/set_permissions.php?id='.$id.'&courseid='.$courseid.'&contextid='.$contextmodid.'&roleid='.$roleid.'&labid='.$labid.'&sifirst=&silast=');
-      foreach ($mycourses as $mycourse) {
-        $courselist[$mycourse->id] = format_string($mycourse->shortname);
-      }
-      if (has_capability('moodle/site:viewparticipants', $systemcontext)) {
-    	  unset($courselist[SITEID]);
-        $courselist = array(SITEID => format_string($SITE->shortname)) + $courselist;
-      }
-      $select = new single_select($popupurl, 'id', $courselist, $course->id, array(''=>'choosedots'), 'courseform');
-      $select->set_label(get_string('mycourses'));
-      $controlstable->data[0]->cells[] = $OUTPUT->render($select);
+        $courselist = array();
+        $popupurl = new moodle_url('/mod/ejsappbooking/set_permissions.php?id='.$id.'&courseid='.$courseid.'&contextid='.$contextmodid.'&roleid='.$roleid.'&labid='.$labid.'&sifirst=&silast=');
+        foreach ($mycourses as $mycourse) {
+            $courselist[$mycourse->id] = format_string($mycourse->shortname);
+        }
+        if (has_capability('moodle/site:viewparticipants', $systemcontext)) {
+            unset($courselist[SITEID]);
+            $courselist = array(SITEID => format_string($SITE->shortname)) + $courselist;
+        }
+        $select = new single_select($popupurl, 'id', $courselist, $course->id, array(''=>'choosedots'), 'courseform');
+        $select->set_label(get_string('mycourses'));
+        $controlstable->data[0]->cells[] = $OUTPUT->render($select);
     } /// Print my course menus
     
     $controlstable->data[0]->cells[] = groups_print_course_menu($course, $baseurl->out(), true);
     
     if (!isset($hiddenfields['lastaccess'])) {
-      // get minimum lastaccess for this course and display a dropbox to filter by lastaccess going back this far.
-      // we need to make it diferently for normal courses and site course
-      if (!$isfrontpage) {
-        $minlastaccess = $DB->get_field_sql('SELECT min(timeaccess)
+        // get minimum lastaccess for this course and display a dropbox to filter by lastaccess going back this far.
+        // we need to make it diferently for normal courses and site course
+        if (!$isfrontpage) {
+            $minlastaccess = $DB->get_field_sql('SELECT min(timeaccess)
                                              FROM {user_lastaccess}
                                              WHERE courseid = ?
                                              AND timeaccess != 0', array($course->id));
-        $lastaccess0exists = $DB->record_exists('user_lastaccess', array('courseid'=>$course->id, 'timeaccess'=>0));
-      } else {
-        $minlastaccess = $DB->get_field_sql('SELECT min(lastaccess)
+            $lastaccess0exists = $DB->record_exists('user_lastaccess', array('courseid'=>$course->id, 'timeaccess'=>0));
+        } else {
+            $minlastaccess = $DB->get_field_sql('SELECT min(lastaccess)
                                              FROM {user}
                                              WHERE lastaccess != 0');
-        $lastaccess0exists = $DB->record_exists('user', array('lastaccess'=>0));
-      }
-    
-      $now = usergetmidnight(time());
-      $timeaccess = array();
-      $baseurl->remove_params('accesssince');
-      $baseurl->remove_params('labid');
-      $baseurl->param('labid', $labid);
-    
-      // makes sense for this to go first.
-      $timeoptions[0] = get_string('selectperiod');
-    
-      // days
-      for ($i = 1; $i < 7; $i++) {
-        if (strtotime('-'.$i.' days',$now) >= $minlastaccess) {
-          $timeoptions[strtotime('-'.$i.' days',$now)] = get_string('numdays','moodle',$i);
+            $lastaccess0exists = $DB->record_exists('user', array('lastaccess'=>0));
         }
-      }
-      // weeks
-      for ($i = 1; $i < 10; $i++) {
-        if (strtotime('-'.$i.' weeks',$now) >= $minlastaccess) {
-          $timeoptions[strtotime('-'.$i.' weeks',$now)] = get_string('numweeks','moodle',$i);
+
+        $now = usergetmidnight(time());
+        $timeaccess = array();
+        $baseurl->remove_params('accesssince');
+        $baseurl->remove_params('labid');
+        $baseurl->param('labid', $labid);
+
+        // makes sense for this to go first.
+        $timeoptions[0] = get_string('selectperiod');
+
+        // days
+        for ($i = 1; $i < 7; $i++) {
+            if (strtotime('-'.$i.' days',$now) >= $minlastaccess) {
+                $timeoptions[strtotime('-'.$i.' days',$now)] = get_string('numdays','moodle',$i);
+            }
         }
-      }
-      // months
-      for ($i = 2; $i < 12; $i++) {
-        if (strtotime('-'.$i.' months',$now) >= $minlastaccess) {
-          $timeoptions[strtotime('-'.$i.' months',$now)] = get_string('nummonths','moodle',$i);
+        // weeks
+        for ($i = 1; $i < 10; $i++) {
+            if (strtotime('-'.$i.' weeks',$now) >= $minlastaccess) {
+                $timeoptions[strtotime('-'.$i.' weeks',$now)] = get_string('numweeks','moodle',$i);
+            }
         }
-      }
-      // try a year
-      if (strtotime('-1 year',$now) >= $minlastaccess) {
-        $timeoptions[strtotime('-1 year',$now)] = get_string('lastyear');
-      }
+        // months
+        for ($i = 2; $i < 12; $i++) {
+            if (strtotime('-'.$i.' months',$now) >= $minlastaccess) {
+                $timeoptions[strtotime('-'.$i.' months',$now)] = get_string('nummonths','moodle',$i);
+            }
+        }
+        // try a year
+        if (strtotime('-1 year',$now) >= $minlastaccess) {
+            $timeoptions[strtotime('-1 year',$now)] = get_string('lastyear');
+        }
+
+        if (!empty($lastaccess0exists)) {
+            $timeoptions[-1] = get_string('never');
+        }
     
-      if (!empty($lastaccess0exists)) {
-        $timeoptions[-1] = get_string('never');
-      }
-    
-      if (count($timeoptions) > 1) {
-        $select = new single_select($baseurl, 'accesssince', $timeoptions, $accesssince, null, 'timeoptions');
-        $select->set_label(get_string('usersnoaccesssince'));
-        $controlstable->data[0]->cells[] = $OUTPUT->render($select);
-      }
+        if (count($timeoptions) > 1) {
+            $select = new single_select($baseurl, 'accesssince', $timeoptions, $accesssince, null, 'timeoptions');
+            $select->set_label(get_string('usersnoaccesssince'));
+            $controlstable->data[0]->cells[] = $OUTPUT->render($select);
+        }
     } // if (!isset($hiddenfields['lastaccess']))
     
     if ($currentgroup and (!$isseparategroups or has_capability('moodle/site:accessallgroups', $context))) {    /// Display info about the group
-    	if ($group = groups_get_group($currentgroup)) {
-        if (!empty($group->description) or (!empty($group->picture) and empty($group->hidepicture))) {
-          $groupinfotable = new html_table();
-          $groupinfotable->attributes['class'] = 'groupinfobox';
-          $picturecell = new html_table_cell();
-          $picturecell->attributes['class'] = 'left side picture';
-          $picturecell->text = print_group_picture($group, $course->id, true, true, false);
-    
-          $contentcell = new html_table_cell();
-          $contentcell->attributes['class'] = 'content';
-    
-          $contentheading = $group->name;
-          if (has_capability('moodle/course:managegroups', $context)) {
-            $aurl = new moodle_url('/group/group.php', array('id' => $group->id, 'courseid' => $group->courseid));
-            $contentheading .= '&nbsp;' . $OUTPUT->action_icon($aurl, new pix_icon('t/edit', get_string('editgroupprofile')));
-          }
-    
-          $group->description = file_rewrite_pluginfile_urls($group->description, 'pluginfile.php', $context->id, 'group', 'description', $group->id);
-          if (!isset($group->descriptionformat)) {
-            $group->descriptionformat = FORMAT_MOODLE;
-          }
-          $options = array('overflowdiv'=>true);
-          $contentcell->text = $OUTPUT->heading($contentheading, 3) . format_text($group->description, $group->descriptionformat, $options);
-          $groupinfotable->data[] = new html_table_row(array($picturecell, $contentcell));
-          echo html_writer::table($groupinfotable);
-        }
+        if ($group = groups_get_group($currentgroup)) {
+            if (!empty($group->description) or (!empty($group->picture) and empty($group->hidepicture))) {
+                $groupinfotable = new html_table();
+                $groupinfotable->attributes['class'] = 'groupinfobox';
+                $picturecell = new html_table_cell();
+                $picturecell->attributes['class'] = 'left side picture';
+                $picturecell->text = print_group_picture($group, $course->id, true, true, false);
+
+                $contentcell = new html_table_cell();
+                $contentcell->attributes['class'] = 'content';
+
+                $contentheading = $group->name;
+                if (has_capability('moodle/course:managegroups', $context)) {
+                    $aurl = new moodle_url('/group/group.php', array('id' => $group->id, 'courseid' => $group->courseid));
+                    $contentheading .= '&nbsp;' . $OUTPUT->action_icon($aurl, new pix_icon('t/edit', get_string('editgroupprofile')));
+                }
+
+                $group->description = file_rewrite_pluginfile_urls($group->description, 'pluginfile.php', $context->id, 'group', 'description', $group->id);
+                if (!isset($group->descriptionformat)) {
+                    $group->descriptionformat = FORMAT_MOODLE;
+                }
+                $options = array('overflowdiv' => true);
+                $contentcell->text = $OUTPUT->heading($contentheading, 3) . format_text($group->description, $group->descriptionformat, $options);
+                $groupinfotable->data[] = new html_table_row(array($picturecell, $contentcell));
+                echo html_writer::table($groupinfotable);
+            }
       }
     }
     
@@ -376,7 +376,7 @@ if ($i>1) { // If there is at least one remote lab
     $tablecolumns[] = 'select';
     $tableheaders[] = get_string('booking_rights','ejsappbooking');
 
-    $table = new flexible_table('user-index-participants-'.$course->id);
+    $table = new flexible_table('user-index-participants-' . $course->id);
     
     $table->define_columns($tablecolumns);
     $table->define_headers($tableheaders);
@@ -397,12 +397,12 @@ if ($i>1) { // If there is at least one remote lab
     $table->set_attribute('class', 'generaltable generalbox');
     
     $table->set_control_variables(array(
-                TABLE_VAR_SORT    => 'ssort',
-                TABLE_VAR_HIDE    => 'shide',
-                TABLE_VAR_SHOW    => 'sshow',
-                TABLE_VAR_IFIRST  => 'sifirst',
-                TABLE_VAR_ILAST   => 'silast',
-                TABLE_VAR_PAGE    => 'spage'
+                TABLE_VAR_SORT      => 'ssort',
+                TABLE_VAR_HIDE      => 'shide',
+                TABLE_VAR_SHOW      => 'sshow',
+                TABLE_VAR_IFIRST    => 'sifirst',
+                TABLE_VAR_ILAST     => 'silast',
+                TABLE_VAR_PAGE      => 'spage'
     ));
     $table->setup();
     
