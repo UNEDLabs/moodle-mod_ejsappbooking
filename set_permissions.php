@@ -666,7 +666,7 @@ if ($i>1) { // If there is at least one remote lab
     $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
 
     if (has_capability('moodle/site:viewparticipants', $context) && $totalcount > ($perpage*3)) {
-      echo '<form action="collaborative_index.php" class="searchform"><div><input type="hidden" name="id" value="'.$course->id.'" />'.get_string('search').':&nbsp;'."\n";
+      echo '<form action="set_permissions.php" class="searchform"><div><input type="hidden" name="id" value="'.$id.'" /><input type="hidden" name="courseid" value="'.$courseid.'" /><input type="hidden" name="contextid" value="'.$contextmodid.'" />'.get_string('search').':&nbsp;'."\n";
       echo '<input type="text" name="search" value="'.s($search).'" />&nbsp;<input type="submit" value="'.get_string('search').'" /></div></form>'."\n";
     }
     
