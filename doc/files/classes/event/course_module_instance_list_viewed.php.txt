@@ -15,28 +15,35 @@
 // The GNU General Public License is available on <http://www.gnu.org/licenses/>
 //
 // EJSApp booking system has been developed by:
-//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
 //  - Luis de la Torre: ldelatorre@dia.uned.es
 //	- Ruben Heradio: rheradio@issi.uned.es
+//  - Francisco José Calvillo: ji92camuf@gmail.com
 //
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
+// at the Computer Science and Automatic Control, Spanish Open University
+// (UNED), Madrid, Spain
 
 /**
- * Defines the version of ejsappbooking
+ * Class for logging the view all event of an EJSApp Booking System
  *
- * @package    mod
+ * @package    block
  * @subpackage ejsappbooking
- * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
+ * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_ejsappbooking\event;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015082700;      // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2013111800;      // Requires this Moodle version
-$plugin->cron      = 86400;           // Period for cron to check this module (secs)
-$plugin->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.3 (Build: 2015082700)';
-$plugin->dependencies = array('mod_ejsapp' => 2015082700, 'block_remlab_manager' => 2015082700);
+/**
+ * The mod_forum instance list viewed event class.
+ *
+ * @package    mod_forum
+ * @since      Moodle 2.7
+ * @copyright  2014 Dan Poltawski <dan@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+    // No need for any code here as everything is handled by the parent class.
+}
+

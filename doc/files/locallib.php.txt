@@ -23,7 +23,10 @@
 //  (UNED), Madrid, Spain
 
 /**
- * Defines the version of ejsappbooking
+ * Internal library of functions for module ejsappbooking
+ *
+ * All the ejsappbooking specific functions, needed to implement the module
+ * logic, are here.
  *
  * @package    mod
  * @subpackage ejsappbooking
@@ -32,11 +35,3 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2015082700;      // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2013111800;      // Requires this Moodle version
-$plugin->cron      = 86400;           // Period for cron to check this module (secs)
-$plugin->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.3 (Build: 2015082700)';
-$plugin->dependencies = array('mod_ejsapp' => 2015082700, 'block_remlab_manager' => 2015082700);

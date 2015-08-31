@@ -23,7 +23,9 @@
 //  (UNED), Madrid, Spain
 
 /**
- * Defines the version of ejsappbooking
+ * Capability definitions for the ejsappbooking module
+ *
+ * The variable name for the capability definitions array is $capabilities
  *
  * @package    mod
  * @subpackage ejsappbooking
@@ -33,10 +35,43 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015082700;      // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2013111800;      // Requires this Moodle version
-$plugin->cron      = 86400;           // Period for cron to check this module (secs)
-$plugin->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.3 (Build: 2015082700)';
-$plugin->dependencies = array('mod_ejsapp' => 2015082700, 'block_remlab_manager' => 2015082700);
+$capabilities = array(
+
+    'mod/ejsappbooking:view' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'guest' => CAP_ALLOW,
+            'user' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        ),
+    ),
+
+    'mod/ejsappbooking:addinstance' => array(
+        'riskbitmask' => RISK_XSS,
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ),
+
+    'mod/ejsappbooking:managerights' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        ),
+    ),
+
+);
+
+

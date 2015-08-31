@@ -23,7 +23,9 @@
 //  (UNED), Madrid, Spain
 
 /**
- * Defines the version of ejsappbooking
+ * Definition of log events
+ *
+ * NOTE: this is an example how to insert log event during installation/update.
  *
  * @package    mod
  * @subpackage ejsappbooking
@@ -33,10 +35,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015082700;      // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2013111800;      // Requires this Moodle version
-$plugin->cron      = 86400;           // Period for cron to check this module (secs)
-$plugin->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.3 (Build: 2015082700)';
-$plugin->dependencies = array('mod_ejsapp' => 2015082700, 'block_remlab_manager' => 2015082700);
+global $DB;
+
+$logs = array(
+    array('module'=>'ejsappbooking', 'action'=>'add', 'mtable'=>'ejsappbooking', 'field'=>'name'),
+    array('module'=>'ejsappbooking', 'action'=>'update', 'mtable'=>'ejsappbooking', 'field'=>'name'),
+    array('module'=>'ejsappbooking', 'action'=>'view', 'mtable'=>'ejsappbooking', 'field'=>'name'),
+    array('module'=>'ejsappbooking', 'action'=>'view all', 'mtable'=>'ejsappbooking', 'field'=>'name')
+);
