@@ -2,6 +2,9 @@
 # EJSAppBooking 2.2  #
 ######################
 
+http://dx.doi.org/10.5281/zenodo.32776
+DOI: 10.5281/zenodo.32776
+
 1. Content
 ==========
 
