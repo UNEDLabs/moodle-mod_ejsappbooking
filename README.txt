@@ -1,5 +1,5 @@
 ﻿######################
-# EJSAppBooking 2.2  #
+# EJSAppBooking 2.3  #
 ######################
 
 http://dx.doi.org/10.5281/zenodo.32776
