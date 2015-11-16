@@ -2,8 +2,8 @@
 # EJSAppBooking 2.3  #
 ######################
 
-http://dx.doi.org/10.5281/zenodo.32776
-DOI: 10.5281/zenodo.32776
+https://zenodo.org/badge/latestdoi/18948/UNEDLabs/moodle-mod_ejsappbooking
+DOI: 10.5281/zenodo.33840
 
 1. Content
 ==========
