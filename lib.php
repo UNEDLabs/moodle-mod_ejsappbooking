@@ -425,20 +425,6 @@ function ejsappbooking_pluginfile($course, $cm, $context, $filearea, array $args
 ////////////////////////////////////////////////////////////////////////////////
 // Navigation API                                                             //
 ////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Extends the global navigation tree by adding ejsappbooking nodes if there is a relevant content
- *
- * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
- *
- * @param navigation_node $navref An object representing the navigation tree node of the ejsappbooking module instance
- * @param stdClass $course
- * @param stdClass $module
- * @param cm_info $cm
- */
-function ejsappbooking_extend_navigation($navref, $course, $module, $cm) {
-}
-
 /**
  * This function extends the settings navigation block for the site.
  *
