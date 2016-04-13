@@ -368,50 +368,50 @@ if(!$rem_labs) { // No labs
                         $event->timeduration = 3540;
                         $event->eventtype = 'user';
 
-						$slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
-						$slotMultiplo = 1;
-						$min = 0;
-						switch ($slotDuration){
-							case 0: //60 min
-								$slotMultiplo = 1;
-								$min = 0;
-								break;
-							case 1: //30 min
-								$slotMultiplo = 2;
-								$min = 30;
-								break;
-							case 2: //15 min
-								$slotMultiplo = 4;
-								$min = 15;
-								break;
-							case 3: //5 min
-								$slotMultiplo = 12;
-								$min = 5;
-								break;
-							case 4: //2 min
-								$slotMultiplo = 30;
-								$min = 2;
-								break;
-							
-						}
-						$hourStart = ($book - $book % $slotMultiplo)/$slotMultiplo;
-						$hourEnd = ($book +1 - ($book+1) % $slotMultiplo)/$slotMultiplo;
-						$minStart = $book % $slotMultiplo * $min;
-						$minEnd = ($book+1) % $slotMultiplo * $min - 1;
-						if ($minEnd < 0){
-							$hourEnd--;
-							$minEnd += 60;
-						}
-						$dateStart = $sDate->format("Y-m-d") . ' ' . $hourStart . ':' . $minStart . ':00';
-						$dateEnd = $sDate->format("Y-m-d") . ' ' . $hourEnd . ':' . $minEnd . ':59';
+                        $slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
+                        $slotMultiplo = 1;
+                        $min = 0;
+                        switch ($slotDuration){
+                            case 0: //60 min
+                                $slotMultiplo = 1;
+                                $min = 0;
+                                break;
+                            case 1: //30 min
+                                $slotMultiplo = 2;
+                                $min = 30;
+                                break;
+                            case 2: //15 min
+                                $slotMultiplo = 4;
+                                $min = 15;
+                                break;
+                            case 3: //5 min
+                                $slotMultiplo = 12;
+                                $min = 5;
+                                break;
+                            case 4: //2 min
+                                $slotMultiplo = 30;
+                                $min = 2;
+                                break;
+                            
+                        }
+                        $hourStart = ($book - $book % $slotMultiplo)/$slotMultiplo;
+                        $hourEnd = ($book +1 - ($book+1) % $slotMultiplo)/$slotMultiplo;
+                        $minStart = $book % $slotMultiplo * $min;
+                        $minEnd = ($book+1) % $slotMultiplo * $min - 1;
+                        if ($minEnd < 0){
+                            $hourEnd--;
+                            $minEnd += 60;
+                        }
+                        $dateStart = $sDate->format("Y-m-d") . ' ' . $hourStart . ':' . $minStart . ':00';
+                        $dateEnd = $sDate->format("Y-m-d") . ' ' . $hourEnd . ':' . $minEnd . ':59';
 
                         $bk = new stdClass();
                         $bk->username = $USER->username;
                         $bk->ejsappid = $labid;
                         $bk->practiceid = $practid;
-						$bk->starttime = date("Y-m-d H:i:00", strtotime($dateStart));
+                        $bk->starttime = date("Y-m-d H:i:00", strtotime($dateStart));
                         $bk->endtime = date("Y-m-d H:i:59", strtotime($dateEnd));
-						$bk->valid = 1;					
+                        $bk->valid = 1;                    
                         $initTime = new DateTime($bk->starttime);
                         $finishTime = new DateTime($bk->endtime);
 
@@ -588,10 +588,10 @@ if(!$rem_labs) { // No labs
                 $value = $event->id;
 
                 $time = new DateTime($event->starttime);
-				$timeEnd = new DateTime($event->endtime);
+                $timeEnd = new DateTime($event->endtime);
                 $visible = array(null);
-				
-				if ($today->format("Y-m-d H:i") < $time->format("Y-m-d H:i") || $today->format("Y-m-d H:i") < $timeEnd->format("Y-m-d H:i")) {
+                
+                if ($today->format("Y-m-d H:i") < $time->format("Y-m-d H:i") || $today->format("Y-m-d H:i") < $timeEnd->format("Y-m-d H:i")) {
                 //if ($today->format("Y-m-d H:i:s") < $time->format("Y-m-d H:i:s") || $today->format("Y-m-d H:i:s") < $timeEnd->format("Y-m-d H:i:s")) {
                     $url = 'available.png';
                 } else {
@@ -617,20 +617,20 @@ if(!$rem_labs) { // No labs
                 $bookingcell->text = html_writer::checkbox($name, $value, false, null, $visible);
                 $bookingtable->data[$i]->cells[] = $bookingcell;
 
-				//Add link to access the lab if the current time is within the booking slot
-				$currentSlot = false;
-				if ($today->format("Y-m-d H:i:s") > $time->format("Y-m-d H:i:s") && $today->format("Y-m-d H:i:s") < $timeEnd->format("Y-m-d H:i:s")) {
-					$currentSlot = true;
-				}
-				
+                //Add link to access the lab if the current time is within the booking slot
+                $currentSlot = false;
+                if ($today->format("Y-m-d H:i:s") > $time->format("Y-m-d H:i:s") && $today->format("Y-m-d H:i:s") < $timeEnd->format("Y-m-d H:i:s")) {
+                    $currentSlot = true;
+                }
+                
                 $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
                 $bookingcell = new html_table_cell();
                 $bookingcell->attributes['class'] = 'center';
-				if ($currentSlot){ //Add link to access the lab if the current time is within the booking slot
-					$bookingcell->text = "<a href='../ejsapp/view.php?n=" . $event->ejsappid . "'>" . $multilang->filter($event->name) . '. ' . $event->practiceintro . "</a>";
+                if ($currentSlot){ //Add link to access the lab if the current time is within the booking slot
+                    $bookingcell->text = "<a href='../ejsapp/view.php?n=" . $event->ejsappid . "'>" . $multilang->filter($event->name) . '. ' . $event->practiceintro . "</a>";
                 } else {
-					$bookingcell->text = $multilang->filter($event->name) . '. ' . $event->practiceintro;
-				}
+                    $bookingcell->text = $multilang->filter($event->name) . '. ' . $event->practiceintro;
+                }
 
                 $bookingtable->data[$i]->cells[] = $bookingcell;
                 $bookingcell = new html_table_cell();
@@ -691,44 +691,44 @@ if(!$rem_labs) { // No labs
             $i++;
         }
 
-		$slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
-		$slotMultiplo = 1;
-		$min = 60;
-		switch ($slotDuration){
-			case 0: //60 min
-				$slotMultiplo = 1;
-				$min = 0;
-				break;
-			case 1: //30 min
-				$slotMultiplo = 2;
-				$min = 30;
-				break;
-			case 2: //15 min
-				$slotMultiplo = 4;
-				$min = 15;
-				break;
-			case 3: //5 min
-				$slotMultiplo = 12;
-				$min = 5;
-				break;
-			case 4: //2 min
-				$slotMultiplo = 30;
-				$min = 2;
-				break;
-			
-		}
-		$height = 6*$slotMultiplo;
-		
+        $slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
+        $slotMultiplo = 1;
+        $min = 60;
+        switch ($slotDuration){
+            case 0: //60 min
+                $slotMultiplo = 1;
+                $min = 0;
+                break;
+            case 1: //30 min
+                $slotMultiplo = 2;
+                $min = 30;
+                break;
+            case 2: //15 min
+                $slotMultiplo = 4;
+                $min = 15;
+                break;
+            case 3: //5 min
+                $slotMultiplo = 12;
+                $min = 5;
+                break;
+            case 4: //2 min
+                $slotMultiplo = 30;
+                $min = 2;
+                break;
+            
+        }
+        $height = 6*$slotMultiplo;
+        
         for ($i = 0; $i < $height; $i++) {
             $bookingtable->data[] = new html_table_row();
 
             for ($j = 0; $j < 4; $j++) {
                 $index = ($j * $height) + $i;
-				
-				$hourStart = ($index - $index % $slotMultiplo)/$slotMultiplo;
-				$hourEnd = ($index +1 - ($index+1) % $slotMultiplo)/$slotMultiplo;
-				$minStart = $index % $slotMultiplo * $min;
-				$minEnd = ($index+1) % $slotMultiplo * $min;
+                
+                $hourStart = ($index - $index % $slotMultiplo)/$slotMultiplo;
+                $hourEnd = ($index +1 - ($index+1) % $slotMultiplo)/$slotMultiplo;
+                $minStart = $index % $slotMultiplo * $min;
+                $minEnd = ($index+1) % $slotMultiplo * $min;
 
                 $initTime = new DateTime('2000-01-01');
                 $finishTime = new DateTime('2000-01-01');
@@ -749,7 +749,7 @@ if(!$rem_labs) { // No labs
                     $checked = false;
                     $url = 'no_available.png';
                 } else if (($finishTime->format('H:i') <= $today->format('H:i')) && ($initTime->format('H:i') < $today->format('H:i')) && $now) {
-					$visible = array('disabled' => 'disable');
+                    $visible = array('disabled' => 'disable');
                     $checked = false;
                     $url = 'no_available.png';
                 }
