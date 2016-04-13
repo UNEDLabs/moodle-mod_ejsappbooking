@@ -368,16 +368,50 @@ if(!$rem_labs) { // No labs
                         $event->timeduration = 3540;
                         $event->eventtype = 'user';
 
-                        $date = $sDate->format("Y-m-d") . ' ' . $book . ':00:00';
+						$slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
+						$slotMultiplo = 1;
+						$min = 0;
+						switch ($slotDuration){
+							case 0: //60 min
+								$slotMultiplo = 1;
+								$min = 0;
+								break;
+							case 1: //30 min
+								$slotMultiplo = 2;
+								$min = 30;
+								break;
+							case 2: //15 min
+								$slotMultiplo = 4;
+								$min = 15;
+								break;
+							case 3: //5 min
+								$slotMultiplo = 12;
+								$min = 5;
+								break;
+							case 4: //2 min
+								$slotMultiplo = 30;
+								$min = 2;
+								break;
+							
+						}
+						$hourStart = ($book - $book % $slotMultiplo)/$slotMultiplo;
+						$hourEnd = ($book +1 - ($book+1) % $slotMultiplo)/$slotMultiplo;
+						$minStart = $book % $slotMultiplo * $min;
+						$minEnd = ($book+1) % $slotMultiplo * $min - 1;
+						if ($minEnd < 0){
+							$hourEnd--;
+							$minEnd += 60;
+						}
+						$dateStart = $sDate->format("Y-m-d") . ' ' . $hourStart . ':' . $minStart . ':00';
+						$dateEnd = $sDate->format("Y-m-d") . ' ' . $hourEnd . ':' . $minEnd . ':59';
 
                         $bk = new stdClass();
                         $bk->username = $USER->username;
                         $bk->ejsappid = $labid;
                         $bk->practiceid = $practid;
-                        $bk->starttime = date("Y-m-d H:00:00", strtotime($date));
-                        $bk->endtime = date("Y-m-d H:59:59", strtotime($date));
-                        $bk->valid = 1;
-
+						$bk->starttime = date("Y-m-d H:i:00", strtotime($dateStart));
+                        $bk->endtime = date("Y-m-d H:i:59", strtotime($dateEnd));
+						$bk->valid = 1;					
                         $initTime = new DateTime($bk->starttime);
                         $finishTime = new DateTime($bk->endtime);
 
@@ -401,7 +435,7 @@ if(!$rem_labs) { // No labs
                             $bookingcell = new html_table_cell();
                             $bookingcell->attributes['class'] = 'center';
 
-                            $timeActual = $initTime->format('H:00:00') . '-' . $finishTime->format('H:59:59');
+                            $timeActual = $initTime->format('H:i:00') . '-' . $finishTime->format('H:i:59');
                             $bookingcell->text = $timeActual;
                             $bookingtable->data[$i]->cells[] = $bookingcell;
 
@@ -425,7 +459,7 @@ if(!$rem_labs) { // No labs
                             $bookingcell = new html_table_cell();
                             $bookingcell->attributes['class'] = 'center';
 
-                            $timeActual = $initTime->format('H:00:00') . '-' . $finishTime->format('H:59:59');
+                            $timeActual = $initTime->format('H:i:00') . '-' . $finishTime->format('H:i:59');
                             $bookingcell->text = $timeActual;
                             $bookingtable->data[$i]->cells[] = $bookingcell;
 
@@ -434,12 +468,12 @@ if(!$rem_labs) { // No labs
                             // Booking information - Message
                             $messagebody = $messagebody . get_string('plant', 'ejsappbooking') . ': ' . $currentLab . '. ' . $practActual . '<br>';
                             $messagebody = $messagebody . get_string('date', 'ejsappbooking') . ': ' . $initTime->format("Y-m-d") . '<br>';
-                            $messagebody = $messagebody . get_string('hour', 'ejsappbooking') . ': ' . $initTime->format('H:00:00') . '-' . $finishTime->format('H:59:59') . '<br><br>';
+                            $messagebody = $messagebody . get_string('hour', 'ejsappbooking') . ': ' . $initTime->format('H:i:s') . '-' . $finishTime->format('H:i:s') . '<br><br>';
 
                             // Booking information - Event
                             $event->description = $event->description . get_string('plant', 'ejsappbooking') . ': ' . $currentLab . '. ' . $practActual . '<br>';
                             $event->description = $event->description . get_string('date', 'ejsappbooking') . ': ' . $initTime->format("Y-m-d") . '<br>';
-                            $event->description = $event->description . get_string('hour', 'ejsappbooking') . ': ' . $initTime->format('H:00:00') . '-' . $finishTime->format('H:59:59');
+                            $event->description = $event->description . get_string('hour', 'ejsappbooking') . ': ' . $initTime->format('H:i:s') . '-' . $finishTime->format('H:i:s');
 
                             // create the event on the calendar
                             calendar_event::create($event);
@@ -554,9 +588,11 @@ if(!$rem_labs) { // No labs
                 $value = $event->id;
 
                 $time = new DateTime($event->starttime);
+				$timeEnd = new DateTime($event->endtime);
                 $visible = array(null);
-
-                if ($today->format("Y-m-d") < $time->format("Y-m-d")) {
+				
+				if ($today->format("Y-m-d H:i") < $time->format("Y-m-d H:i") || $today->format("Y-m-d H:i") < $timeEnd->format("Y-m-d H:i")) {
+                //if ($today->format("Y-m-d H:i:s") < $time->format("Y-m-d H:i:s") || $today->format("Y-m-d H:i:s") < $timeEnd->format("Y-m-d H:i:s")) {
                     $url = 'available.png';
                 } else {
                     $url = 'busy.png';
@@ -581,13 +617,22 @@ if(!$rem_labs) { // No labs
                 $bookingcell->text = html_writer::checkbox($name, $value, false, null, $visible);
                 $bookingtable->data[$i]->cells[] = $bookingcell;
 
-
+				//Add link to access the lab if the current time is within the booking slot
+				$currentSlot = false;
+				if ($today->format("Y-m-d H:i:s") > $time->format("Y-m-d H:i:s") && $today->format("Y-m-d H:i:s") < $timeEnd->format("Y-m-d H:i:s")) {
+					$currentSlot = true;
+				}
+				
                 $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
                 $bookingcell = new html_table_cell();
                 $bookingcell->attributes['class'] = 'center';
-                $bookingcell->text = $multilang->filter($event->name) . '. ' . $event->practiceintro;
-                $bookingtable->data[$i]->cells[] = $bookingcell;
+				if ($currentSlot){ //Add link to access the lab if the current time is within the booking slot
+					$bookingcell->text = "<a href='../ejsapp/view.php?n=" . $event->ejsappid . "'>" . $multilang->filter($event->name) . '. ' . $event->practiceintro . "</a>";
+                } else {
+					$bookingcell->text = $multilang->filter($event->name) . '. ' . $event->practiceintro;
+				}
 
+                $bookingtable->data[$i]->cells[] = $bookingcell;
                 $bookingcell = new html_table_cell();
                 $bookingcell->attributes['class'] = 'center';
                 $bookingcell->text = $time->format("Y-m-d");
@@ -637,7 +682,6 @@ if(!$rem_labs) { // No labs
         $practiceintro = $DB->get_field('remlab_manager_expsyst2pract', 'practiceintro', array('ejsappid'=>$labid, 'practiceid'=>$practid));
         $labids = $DB->get_fieldset_select('remlab_manager_expsyst2pract', 'ejsappid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
         $practiceids = $DB->get_fieldset_select('remlab_manager_expsyst2pract', 'practiceid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
-
         $events = array();
         $i = 0;
         foreach($labids as $labid) {
@@ -647,18 +691,49 @@ if(!$rem_labs) { // No labs
             $i++;
         }
 
-        for ($i = 0; $i < 6; $i++) {
-
+		$slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
+		$slotMultiplo = 1;
+		$min = 60;
+		switch ($slotDuration){
+			case 0: //60 min
+				$slotMultiplo = 1;
+				$min = 0;
+				break;
+			case 1: //30 min
+				$slotMultiplo = 2;
+				$min = 30;
+				break;
+			case 2: //15 min
+				$slotMultiplo = 4;
+				$min = 15;
+				break;
+			case 3: //5 min
+				$slotMultiplo = 12;
+				$min = 5;
+				break;
+			case 4: //2 min
+				$slotMultiplo = 30;
+				$min = 2;
+				break;
+			
+		}
+		$height = 6*$slotMultiplo;
+		
+        for ($i = 0; $i < $height; $i++) {
             $bookingtable->data[] = new html_table_row();
 
-
             for ($j = 0; $j < 4; $j++) {
+                $index = ($j * $height) + $i;
+				
+				$hourStart = ($index - $index % $slotMultiplo)/$slotMultiplo;
+				$hourEnd = ($index +1 - ($index+1) % $slotMultiplo)/$slotMultiplo;
+				$minStart = $index % $slotMultiplo * $min;
+				$minEnd = ($index+1) % $slotMultiplo * $min;
 
-                $index = ($j * 6) + $i;
                 $initTime = new DateTime('2000-01-01');
                 $finishTime = new DateTime('2000-01-01');
-                $initTime->add(new DateInterval('PT' . $index . 'H'));
-                $finishTime->add(new DateInterval('PT' . ($index + 1) . 'H'));
+                $initTime->add(new DateInterval('PT' . $hourStart . 'H' . $minStart . 'M'));
+                $finishTime->add(new DateInterval('PT' . $hourEnd . 'H' . $minEnd . 'M'));
 
                 $name = 'booking[' . $index . ']';
                 $value = $index;
@@ -669,13 +744,12 @@ if(!$rem_labs) { // No labs
 
                 // hours not valid
                 //$actual = new DateTime("now");
-
                 if ($previous_day) {
                     $visible = array('disabled' => 'disable');
                     $checked = false;
                     $url = 'no_available.png';
-                } else if (($initTime->format('H') < $today->format('H')) && $now) {
-                    $visible = array('disabled' => 'disable');
+                } else if (($finishTime->format('H:i') <= $today->format('H:i')) && ($initTime->format('H:i') < $today->format('H:i')) && $now) {
+					$visible = array('disabled' => 'disable');
                     $checked = false;
                     $url = 'no_available.png';
                 }
@@ -695,8 +769,6 @@ if(!$rem_labs) { // No labs
                 $bookingcell->attributes['class'] = 'center';
                 $bookingcell->text = '<img id=bookimg' . $value . ' src="' . $CFG->wwwroot . '/mod/ejsappbooking/pix/' . $url . '" width="12px" height="12px">&nbsp;' . html_writer::checkbox($name, $value, $checked, $tag, $visible);
                 $bookingtable->data[$i]->cells[] = $bookingcell;
-
-
             }
         }
         $out .=  '<p align="center"><strong>' . get_string('availability', 'ejsappbooking') . ' ' . $sDate->format('d-m-Y') . '</strong></p>';
