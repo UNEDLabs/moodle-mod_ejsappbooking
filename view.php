@@ -150,8 +150,8 @@ if(!$rem_labs) { // No labs
     $iconurl = $CFG->wwwroot . '/mod/ejsappbooking/pix/selected.png';
 
     // Check the configuration of the lab (whether it is active or not)
-    $practiceintro = $DB->get_field('remlab_manager_expsyst2pract', 'practiceintro', array('ejsappid' => $labid));
-    $conf_labs = $DB->get_record('remlab_manager_conf', array('practiceintro' => $practiceintro));
+    $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));
+    $conf_labs = $DB->get_record('block_remlab_manager_conf', array('practiceintro' => $practiceintro));
     if($conf_labs->active) {
         $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_success_44x44.png';
         $plant_state_info_string = get_string('active_plant','ejsappbooking');
@@ -214,7 +214,7 @@ if(!$rem_labs) { // No labs
     $out .= '</select>';
 
     // Select practices
-    $rem_practices = $DB->get_records_sql("SELECT id, ejsappid, practiceid, practiceintro FROM {remlab_manager_expsyst2pract} WHERE ejsappid = ? ", array($labid));
+    $rem_practices = $DB->get_records_sql("SELECT id, ejsappid, practiceid, practiceintro FROM {block_remlab_manager_exp2prc} WHERE ejsappid = ? ", array($labid));
     $i = 1;
     $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
     foreach ($rem_practices as $practice_lab) {
@@ -368,7 +368,7 @@ if(!$rem_labs) { // No labs
                         $event->timeduration = 3540;
                         $event->eventtype = 'user';
 
-                        $slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
+                        $slotDuration = $DB->get_field('block_remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
                         $slotMultiplo = 1;
                         $min = 0;
                         switch ($slotDuration){
@@ -521,7 +521,7 @@ if(!$rem_labs) { // No labs
 
                 $record = $DB->get_record('ejsappbooking_remlab_access', array('id' => $book));
                 $labs = $DB->get_record('ejsapp', array('id' => $record->ejsappid));
-                $prac = $DB->get_record('remlab_manager_expsyst2pract', array('practiceid' => $record->practiceid, 'ejsappid'=>$record->ejsappid));
+                $prac = $DB->get_record('block_remlab_manager_exp2prc', array('practiceid' => $record->practiceid, 'ejsappid'=>$record->ejsappid));
                 $initTime = new DateTime($record->starttime);
                 $error = $DB->delete_records('ejsappbooking_remlab_access', array('id' => $book));
                 $messagebody = $messagebody . get_string('plant', 'ejsappbooking') . ': ' . $labs->name . '<br>';
@@ -573,7 +573,7 @@ if(!$rem_labs) { // No labs
         $initBook = ($currentPage - 1) * $bookingPage;
 
         // check bookings
-        $sql = 'SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, a.valid, b.name, c.practiceintro FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id  INNER JOIN {remlab_manager_expsyst2pract} c ON a.practiceid = c.practiceid  WHERE a.ejsappid = c.ejsappid AND a.username = "' . $username . '" AND DATE_FORMAT(starttime, "%Y-%m-%d") >= "'. $today->format('Y-m-d') .'"ORDER BY a.starttime ASC LIMIT ' . $initBook . ', ' . $bookingPage . '';
+        $sql = 'SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, a.valid, b.name, c.practiceintro FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id  INNER JOIN {block_remlab_manager_exp2prc} c ON a.practiceid = c.practiceid  WHERE a.ejsappid = c.ejsappid AND a.username = "' . $username . '" AND DATE_FORMAT(starttime, "%Y-%m-%d") >= "'. $today->format('Y-m-d') .'"ORDER BY a.starttime ASC LIMIT ' . $initBook . ', ' . $bookingPage . '';
         $events2 = $DB->get_records_sql($sql);
         $result2 = count($events2);
 
@@ -679,9 +679,9 @@ if(!$rem_labs) { // No labs
 
     // Show slots in selected day
     } else {
-        $practiceintro = $DB->get_field('remlab_manager_expsyst2pract', 'practiceintro', array('ejsappid'=>$labid, 'practiceid'=>$practid));
-        $labids = $DB->get_fieldset_select('remlab_manager_expsyst2pract', 'ejsappid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
-        $practiceids = $DB->get_fieldset_select('remlab_manager_expsyst2pract', 'practiceid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
+        $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid'=>$labid, 'practiceid'=>$practid));
+        $labids = $DB->get_fieldset_select('block_remlab_manager_exp2prc', 'ejsappid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
+        $practiceids = $DB->get_fieldset_select('block_remlab_manager_exp2prc', 'practiceid', 'practiceintro = :practiceintro', array('practiceintro'=>$practiceintro));
         $events = array();
         $i = 0;
         foreach($labids as $labid) {
@@ -691,7 +691,7 @@ if(!$rem_labs) { // No labs
             $i++;
         }
 
-        $slotDuration = $DB->get_field('remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
+        $slotDuration = $DB->get_field('block_remlab_manager_conf', 'slotsduration', array('practiceintro'=>$practiceintro) );
         $slotMultiplo = 1;
         $min = 60;
         switch ($slotDuration){
