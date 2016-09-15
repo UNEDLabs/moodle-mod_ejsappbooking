@@ -47,12 +47,11 @@ class backup_ejsappbooking_activity_structure_step extends backup_activity_struc
      * Define the complete structure for backup, with file and id annotations
      */
     protected function define_structure() {
-        global $DB;
-
         $ejsappbooking = new backup_nested_element('ejsappbooking', array('id'),
             array('course', 'name', 'intro', 'introformat', 'timecreated', 'timemodified'));
 
         $ejsappbooking->set_source_table('ejsappbooking', array('id' => backup::VAR_ACTIVITYID));
+
         return $this->prepare_activity_structure($ejsappbooking);
     }
     

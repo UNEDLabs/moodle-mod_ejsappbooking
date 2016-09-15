@@ -56,17 +56,16 @@ class restore_ejsappbooking_activity_structure_step extends restore_activity_str
     protected function process_ejsappbooking($data)
     {
         global $DB;
+
         $data = (object) $data;
         $data->course = $this->get_courseid();
 
-        $ejsappbooking_has_been_restored_by_EJSApp = $DB->get_record('ejsappbooking',array('course'=>$data->course));
-        if (!$ejsappbooking_has_been_restored_by_EJSApp) {
+        $ejsappbooking_already_exists_in_course = $DB->get_record('ejsappbooking',array('course'=>$data->course));
+        if (empty($ejsappbooking_already_exists_in_course)) {
             $newitemid = $DB->insert_record('ejsappbooking', $data);
         } else {
-            xdebug_var_dump($ejsappbooking_has_been_restored_by_EJSApp);
-            $newitemid = $ejsappbooking_has_been_restored_by_EJSApp->id;
+            $newitemid = $ejsappbooking_already_exists_in_course->id;
         }
-        // immediately after inserting "activity" record, call this
         $this->apply_activity_instance($newitemid);
     }//process_ejsappbooking_remlab_access
 

@@ -89,7 +89,10 @@ $PAGE->set_title(format_string($ejsappbooking->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_url('/mod/ejsappbooking/view.php', array('id' => $cm->id));
 $PAGE->set_context($context);
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'ejsappbooking'));
+if ($CFG->version > 2016090100) {
+    $PAGE->set_button($OUTPUT->update_module_button($cm->id, 'ejsappbooking'));
+}
+
 $PAGE->requires->string_for_js('messageDelete', 'ejsappbooking');
 $PAGE->requires->string_for_js('book_message', 'ejsappbooking');
 $PAGE->requires->string_for_js('cancel', 'ejsappbooking');
