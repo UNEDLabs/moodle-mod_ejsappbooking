@@ -146,7 +146,7 @@ if(!$rem_labs) { // No labs
         }
     }
 
-    // Star building the website
+    // Start building the website
     $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
     echo $OUTPUT->box_start();
     echo $OUTPUT->heading(get_string('makereservation', 'ejsappbooking'));
@@ -173,10 +173,10 @@ if(!$rem_labs) { // No labs
     $calendar = html_writer::start_tag('div', array('id' => 'calendar', 'align' => 'center'));
     $calendar .= html_writer::end_tag('div')  . '<br>';
     $selectDate = html_writer::start_tag('div', array('id' => 'control', 'align' => 'center'));
-    $selectDate .= '<button id="subyear">&lt;' . get_string('iyear','ejsappbooking') . '</button>';
-    $selectDate .= '<button id="submonth">&lt;' . get_string('imonth','ejsappbooking') . '</button>';
-    $selectDate .= '<button id="addmonth">' . get_string('imonth','ejsappbooking') . '&gt;</button>';
-    $selectDate .= '<button id="addyear">' . get_string('iyear','ejsappbooking') . '&gt;</button>';
+    $selectDate .= '<button id="subyear" class="booking_button">&lt;' . get_string('iyear','ejsappbooking') . '</button>';
+    $selectDate .= '<button id="submonth" class="booking_button">&lt;' . get_string('imonth','ejsappbooking') . '</button>';
+    $selectDate .= '<button id="addmonth" class="booking_button">' . get_string('imonth','ejsappbooking') . '&gt;</button>';
+    $selectDate .= '<button id="addyear" class="booking_button">' . get_string('iyear','ejsappbooking') . '&gt;</button>';
     $selectDate .= html_writer::end_tag('div') . '<br>';
     $table = new html_table();
     $table->attributes['class'] = 'userinfobox';
@@ -197,7 +197,7 @@ if(!$rem_labs) { // No labs
     $out = html_writer::start_tag('form', array('id' => 'bookingform', 'method' => 'get', 'action' => $baseurl));
     $out .= html_writer::start_tag('div', array('id' => 'controls', 'align' => 'center'));
     $out .= get_string('rem_lab_selection', 'ejsappbooking');
-    $out .= '&nbsp;&nbsp;<select name="labid" data-previousindex="0" onchange="this.form.submit()"> ';
+    $out .= '&nbsp;&nbsp;<select name="labid" class="booking_select" data-previousindex="0" onchange="this.form.submit()"> ';
     $currentLab = '';
     $i = 1;
     foreach ($rem_labs as $rem_lab) {
@@ -230,7 +230,7 @@ if(!$rem_labs) { // No labs
     $practActual = '';
     $out .= '<br>';
     $out .= get_string('rem_prac_selection', 'ejsappbooking');
-    $out .= '&nbsp;&nbsp;<select name="practid" data-previousindex="0" onchange="this.form.submit()"> ';
+    $out .= '&nbsp;&nbsp;<select name="practid" class="booking_select" data-previousindex="0" onchange="this.form.submit()"> ';
     $i = 1;
     foreach ($rem_practices as $practice_lab) {
         $lab_name[$practice_lab->practiceid] = $multilang->filter($practice_lab->practiceintro);
@@ -776,7 +776,7 @@ if(!$rem_labs) { // No labs
         }
         $out .=  '<p align="center"><strong>' . get_string('availability', 'ejsappbooking') . ' ' . $sDate->format('d-m-Y') . '</strong></p>';
         $out .= html_writer::table($bookingtable);
-        $out .= '<br><p align="center"><button name="bookingbutton" value="1" type="submit">' . get_string('book', 'ejsappbooking') . '</button></p>';
+        $out .= '<br><p align="center"><button name="bookingbutton" class="booking_button" value="1" type="submit">' . get_string('book', 'ejsappbooking') . '</button></p>';
     }
 
     // </Program logic>
@@ -789,7 +789,7 @@ if(!$rem_labs) { // No labs
 
     // show my bookings
      if (!$Mybookingsbutton) {
-        $out .= '<p align="center"><button name="Mybookingsbutton" value="1" type="submit">' . get_string('mybookings', 'ejsappbooking') . '</button></p>';
+        $out .= '<p align="center"><button name="Mybookingsbutton" class="booking_button" value="1" type="submit">' . get_string('mybookings', 'ejsappbooking') . '</button></p>';
      }
 
     $out .= html_writer::end_tag('form');

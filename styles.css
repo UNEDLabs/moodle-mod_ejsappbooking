@@ -7,12 +7,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
-/*body#page-mod-ejsappbooking-view {
-    min-width: 1000px;
-}*/
-
-.modtype_ejsappbooking .editing_duplicate {
+.path-mod-ejsappbooking .editing_duplicate {
     display:none;
+}
+
+.path-mod-ejsappbooking .booking_button {
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 5px;
+    box-shadow: none;
+    border: 1px solid lightgrey;
+    margin-right: 2px;
+}
+
+.path-mod-ejsappbooking .booking_select {
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.path-mod-ejsappbooking .booking_button:hover {
+    background-color: rgba(24, 24, 24, 0.1);
 }
 
 .yui3-skin-sam .yui3-panel .yui3-button{
