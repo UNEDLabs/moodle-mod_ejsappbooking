@@ -153,17 +153,13 @@ function ejsappbooking_update_instance($ejsappbooking) {
 function ejsappbooking_delete_instance($id) {
     global $DB;
 
-    if (! $ejsappbooking = $DB->get_record('ejsappbooking', array('id' => $id))) {
+    if (!$DB->get_record('ejsappbooking', array('id' => $id))) {
         return false;
     }
-    
-    $ejsappbooking_usersaccess_delete = $DB->get_records('ejsappbooking_usersaccess', array('bookingid'=>$ejsappbooking->id));   
 
     # Delete dependent records #
-    $DB->delete_records('ejsappbooking', array('id' => $ejsappbooking->id));
-    foreach ($ejsappbooking_usersaccess_delete as $ejsappbooking_delete) {
-      $DB->delete_records('ejsappbooking_usersaccess', array('id' => $ejsappbooking_delete->id));
-    }
+    $DB->delete_records('ejsappbooking', array('id' => $id));
+    $DB->delete_records('ejsappbooking_usersaccess', array('bookingid'=>$id));
 
     return true;
 }
