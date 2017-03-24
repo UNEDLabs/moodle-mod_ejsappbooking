@@ -7,10 +7,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
-.path-mod-ejsappbooking .editing_duplicate {
-    display:none;
-}
-
 .path-mod-ejsappbooking .booking_button {
     border-radius: 5px;
     background-color: transparent;

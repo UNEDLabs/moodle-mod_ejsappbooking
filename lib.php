@@ -264,6 +264,10 @@ function ejsappbooking_cron () {
     
     //Get all ejsappbooking instances' ids from the ejsappbooking data table.
     $ejsappbookings = $DB->get_records('ejsappbooking');
+
+    //Delete stored Sarlab keys:
+    //TODO: Deletion of records should only be done for those remote labs and users that do not have an active booking
+    $DB->delete_records_list('block_remlab_manager_sb_keys', 'labmanager', array(0));
  
     foreach ($ejsappbookings as $ejsappbooking) { 
       $ejsappbooking_usersaccess->bookingid = $ejsappbooking->id;

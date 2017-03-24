@@ -78,7 +78,7 @@ class mod_ejsappbooking_mod_form extends moodleform_mod {
           // add standard buttons, common to all modules
           $this->add_action_buttons();
         } else{
-            //An email activity is already set for this course.
+            //A booking system is already set for this course.
             $mform->addElement('html', $OUTPUT->error_text(get_string('already_enabled', 'ejsappbooking')));
             $mform->addElement($mform->createElement('cancel'));
             $this->standard_hidden_coursemodule_elements();
