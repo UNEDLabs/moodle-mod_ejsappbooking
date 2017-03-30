@@ -326,7 +326,6 @@ if(!$rem_labs) { // No labs
                         $message = get_string('dailyslots', 'ejsappbooking')  . ': ' . $conf_labs->dailyslots ;
                     }
                 } else {
-
                     foreach ($user_access as $access) {
 
                         $convert = date("Y-m-d", strtotime($access->starttime));
@@ -480,6 +479,7 @@ if(!$rem_labs) { // No labs
 
                             // create the event on the calendar
                             calendar_event::create($event);
+
                         }
                         $i++;
                     }
