@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Moodle module "EJSApp booking system"
 //
 // EJSApp booking system is free software: you can redistribute it and/or modify
@@ -12,22 +11,24 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 //
 // EJSApp booking system has been developed by:
-//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
+// - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+// - Luis de la Torre: ldelatorre@dia.uned.es
+// - Ruben Heradio: rheradio@issi.uned.es
 //
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
+// at the Computer Science and Automatic Control, Spanish Open University
+// (UNED), Madrid, Spain.
 
 /**
+ * Prints the overview of all ejsappbookings included into the current course
+ *
  * This page is used by Moodle when listing all the instances of your module that are in a
  * particular course with the course id being passed to this script
  *
- * @package    mod
- * @subpackage ejsappbooking
+ * @package    mod_ejsappbooking
  * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,13 +36,13 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
-$id = required_param('id', PARAM_INT);   // course
+$id = required_param('id', PARAM_INT);   // Course.
 
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
 require_course_login($course);
 
-if ($CFG->version < 2013111899) { //Moodle 2.6 or inferior
+if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
     add_to_log($course->id, 'ejsappbooking', 'view all', "index.php?id=$course->id", '');
 } else {
     $params = array(

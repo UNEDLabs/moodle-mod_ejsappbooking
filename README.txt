@@ -1,6 +1,6 @@
-######################
-# EJSAppBooking 2.3  #
-######################
+#################
+# EJSAppBooking #
+#################
 
 https://zenodo.org/badge/latestdoi/18948/UNEDLabs/moodle-mod_ejsappbooking
 DOI: 10.5281/zenodo.33840
@@ -31,8 +31,6 @@ it from Moodle.org, then you are fine.
 
 This is a module plugin for Moodle so you should place the ejsappbooking folder in your /mod folder, inside your Moodle
 installation directory.
-
-This module has been tested in Moodle 2.7, 2.8 and 2.9.
 
 4. Dependencies
 ===============

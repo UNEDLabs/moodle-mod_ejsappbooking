@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Moodle module "EJSApp booking system"
 //
 // EJSApp booking system is free software: you can redistribute it and/or modify
@@ -12,15 +11,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 //
 // EJSApp booking system has been developed by:
-//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
+// - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+// - Luis de la Torre: ldelatorre@dia.uned.es
+// - Ruben Heradio: rheradio@issi.uned.es
 //
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
+// at the Computer Science and Automatic Control, Spanish Open University
+// (UNED), Madrid, Spain.
 
 /**
  * This file keeps track of upgrades to the ejsappbooking module
@@ -32,8 +32,7 @@
  * it cannot do itself, it will tell you what you need to do.  The commands in
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
- * @package    mod
- * @subpackage ejsappbooking
+ * @package    mod_ejsappbooking
  * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -49,7 +48,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_ejsappbooking_upgrade($oldversion) {
     global $DB;
 
-    $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
+    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     return true;
 }

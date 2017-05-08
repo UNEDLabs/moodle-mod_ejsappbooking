@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Moodle module "EJSApp booking system"
 //
 // EJSApp booking system is free software: you can redistribute it and/or modify
@@ -12,25 +11,27 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 //
 // EJSApp booking system has been developed by:
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
-//  - Francisco José Calvillo: ji92camuf@gmail.com
+// - Luis de la Torre: ldelatorre@dia.uned.es
+// - Ruben Heradio: rheradio@issi.uned.es
+// - Francisco José Calvillo: ji92camuf@gmail.com
 //
 // at the Computer Science and Automatic Control, Spanish Open University
-// (UNED), Madrid, Spain
+// (UNED), Madrid, Spain.
 
 /**
  * custom settings to be used by EJSAppBooking backup
  *
- * @package    mod
- * @subpackage ejsappbooking
+ * @package    mod_ejsappbooking
  * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
+
 // This activity has not particular settings but the inherited from the generic
 // backup_activity_task so here there isn't any class definition, like the ones
-// existing in /backup/moodle2/backup_settingslib.php (activities section)
+// existing in /backup/moodle2/backup_settingslib.php (activities section).

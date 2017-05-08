@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Moodle module "EJSApp booking system"
 //
 // EJSApp booking system is free software: you can redistribute it and/or modify
@@ -12,32 +11,34 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 //
 // EJSApp booking system has been developed by:
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
-//  - Francisco José Calvillo: ji92camuf@gmail.com
+// - Luis de la Torre: ldelatorre@dia.uned.es
+// - Ruben Heradio: rheradio@issi.uned.es
+// - Francisco José Calvillo: ji92camuf@gmail.com
 //
 // at the Computer Science and Automatic Control, Spanish Open University
-// (UNED), Madrid, Spain
+// (UNED), Madrid, Spain.
 
 /**
  * Tasks file to perform the EJSAppBooking restore
  *
- * @package    mod
- * @subpackage ejsappbooking
+ * @package    mod_ejsappbooking
  * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/ejsappbooking/backup/moodle2/restore_ejsappbooking_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/ejsappbooking/backup/moodle2/restore_ejsappbooking_stepslib.php'); // Because it exists (must).
 
 /**
- * ejsappbooking restore task that provides all the settings and steps to perform one
- * complete restore of the activity
+ * ejsappbooking restore task that provides all the settings and steps to perform one complete restore of the activity
+ *
+ * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_ejsappbooking_activity_task extends restore_activity_task {
 
@@ -45,7 +46,7 @@ class restore_ejsappbooking_activity_task extends restore_activity_task {
      * Define (add) particular settings this activity can have
      */
     protected function define_my_settings() {
-        // No particular settings for this activity
+        // No particular settings for this activity.
     }
 
     /**
@@ -113,7 +114,7 @@ class restore_ejsappbooking_activity_task extends restore_activity_task {
     static public function define_restore_log_rules_for_course() {
         $rules = array();
 
-        // Fix old wrong uses (missing extension)
+        // Fix old wrong uses (missing extension).
         $rules[] = new restore_log_rule('ejsappbooking', 'view all', 'index?id={course}', null,
             null, null, 'index.php?id={course}');
 
@@ -121,4 +122,5 @@ class restore_ejsappbooking_activity_task extends restore_activity_task {
 
         return $rules;
     }
+
 }

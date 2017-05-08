@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Moodle module "EJSApp booking system"
 //
 // EJSApp booking system is free software: you can redistribute it and/or modify
@@ -12,21 +11,21 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 //
 // EJSApp booking system has been developed by:
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
-//  - Francisco José Calvillo: ji92camuf@gmail.com
+// - Luis de la Torre: ldelatorre@dia.uned.es
+// - Ruben Heradio: rheradio@issi.uned.es
+// - Francisco José Calvillo: ji92camuf@gmail.com
 //
 // at the Computer Science and Automatic Control, Spanish Open University
-// (UNED), Madrid, Spain
+// (UNED), Madrid, Spain.
 
 /**
  * Class for logging the view event of an EJSApp Booking System
  *
- * @package    block
- * @subpackage ejsappbooking
+ * @package    mod_ejsappbooking
  * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,7 +34,17 @@ namespace mod_ejsappbooking\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * The mod_feedback course module viewed event class.
+ *
+ * @package    mod_ejsappbooking
+ * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class course_module_viewed extends \core\event\course_module_viewed {
+    /**
+     * Init method.
+     */
     protected function init() {
         $this->data['objecttable'] = 'ejsappbooking';
         parent::init();
@@ -59,4 +68,4 @@ class course_module_viewed extends \core\event\course_module_viewed {
         return array($this->courseid, 'ejsappbooking', 'view ejsappbooking', 'view.php?n=' . $this->objectid,
             $this->objectid, $this->contextinstanceid);
     }
-} 
+}

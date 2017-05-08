@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Moodle module "EJSApp booking system"
 //
 // EJSApp booking system is free software: you can redistribute it and/or modify
@@ -12,29 +11,32 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 //
 // EJSApp booking system has been developed by:
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
-//  - Francisco José Calvillo: ji92camuf@gmail.com
+// - Luis de la Torre: ldelatorre@dia.uned.es
+// - Ruben Heradio: rheradio@issi.uned.es
+// - Francisco José Calvillo: ji92camuf@gmail.com
 //
 // at the Computer Science and Automatic Control, Spanish Open University
-// (UNED), Madrid, Spain
-
+// (UNED), Madrid, Spain.
 
 /**
  * Steps file to perform the EJSAppBooking restore
  *
- * @package    mod
- * @subpackage ejsappbooking
+ * @package    mod_ejsappbooking
  * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Structure step to restore one EJSAppBooking activity
+ *
+ * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_ejsappbooking_activity_structure_step extends restore_activity_structure_step {
 
@@ -45,35 +47,33 @@ class restore_ejsappbooking_activity_structure_step extends restore_activity_str
         $paths = array();
         $paths[] = new restore_path_element('ejsappbooking', '/activity/ejsappbooking');
 
-        // Return the paths wrapped into standard activity structure
+        // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
-    }//define_structure
+    }
 
     /**
      * Process table process_ejsappbooking
      * @param stdClass $data
      */
-    protected function process_ejsappbooking($data)
-    {
+    protected function process_ejsappbooking($data) {
         global $DB;
 
         $data = (object) $data;
         $data->course = $this->get_courseid();
 
-        $ejsappbooking_already_exists_in_course = $DB->get_record('ejsappbooking',array('course'=>$data->course));
-        if (empty($ejsappbooking_already_exists_in_course)) {
+        $ejsappbooking = $DB->get_record('ejsappbooking', array('course' => $data->course));
+        if (empty($ejsappbooking)) {
             $newitemid = $DB->insert_record('ejsappbooking', $data);
         } else {
-            $newitemid = $ejsappbooking_already_exists_in_course->id;
+            $newitemid = $ejsappbooking->id;
         }
         $this->apply_activity_instance($newitemid);
-    }//process_ejsappbooking_remlab_access
-
+    }
 
     /**
      * Do nothing
      */
     protected function after_execute() {
-    } //after_execute
-    
-} //class
+    }
+
+}

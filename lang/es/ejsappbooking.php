@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of the Moodle module "EJSApp booking system"
 //
 // EJSApp booking system is free software: you can redistribute it and/or modify
@@ -12,21 +11,21 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// The GNU General Public License is available on <http://www.gnu.org/licenses/>
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 //
 // EJSApp booking system has been developed by:
-//  - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
-//  - Luis de la Torre: ldelatorre@dia.uned.es
-//	- Ruben Heradio: rheradio@issi.uned.es
+// - Francisco José Calvillo Muñoz: fcalvillo9@alumno.uned.es
+// - Luis de la Torre: ldelatorre@dia.uned.es
+// - Ruben Heradio: rheradio@issi.uned.es
 //
-//  at the Computer Science and Automatic Control, Spanish Open University
-//  (UNED), Madrid, Spain
+// at the Computer Science and Automatic Control, Spanish Open University
+// (UNED), Madrid, Spain.
 
 /**
  * English strings for ejsappbooking
  *
- * @package    mod
- * @subpackage ejsappbooking
+ * @package    mod_ejsappbooking
  * @copyright  2012 Javier Pavon, Luis de la Torre and Ruben Heradio
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -49,20 +48,20 @@ $string['pluginname'] = 'EJSAppBooking';
 
 $string['manage_access_but'] = 'Gestionar el acceso de usuarios';
 
-//select_rem_lab.php
+// Strings in select_rem_lab.php.
 $string['selectRemLab_pageTitle'] = 'Selecci&oacute;n de laboratorio remoto';
 $string['rem_lab_selection'] = 'Seleccione un laboratorio remoto';
 $string['select_users_but'] = 'Fijar permisos de usuarios para este laboratorio';
 $string['no_rem_labs'] = 'No hay laboratorios remotos en este curso';
 
-//select_users.php
+// Strings in select_users.php.
 $string['bookingRights_pageTitle'] = 'Permisos de reserva';
 $string['users_selection'] = 'Seleccione los usuarios a los que dar&aacute; permisos de reserva en el laboratorio remoto seleccionado';
 $string['accept_users_but'] = 'Aceptar';
 $string['save_changes'] = 'Guardar cambios';
 $string['booking_rights'] = 'Permiso de reserva';
 
-//Send_messages.php:
+// Strings in send_messages.php.
 $string['allow_remlabaccess'] = 'Ha recibido permisos para realizar reservas en un nuevo laboratorio remoto: ';
 $string['sending_message'] = 'Enviando mensajes de aviso';
 
@@ -99,7 +98,7 @@ $string['rem_prac_selection'] = 'Seleccione una practica';
 $string['messageOccupied'] = 'El slot esta ocupado';
 $string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún laboratorio remoto configurado';
 
-//Capabilities
+// Capabilities.
 $string['ejsappbooking:addinstance'] = 'Añadir un nuevo sistema de reservas';
 $string['ejsappbooking:view'] = 'Ver el sistema de reservas';
 $string['ejsappbooking:managerights'] = 'Gestionar permisos de reservas de los usuarios';
