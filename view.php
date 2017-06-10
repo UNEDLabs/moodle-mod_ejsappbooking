@@ -131,12 +131,10 @@ if (!$remlabs) {
     // Check the selected day.
     if (!$selectday) {
         $sdate = $today;
-        $sdate->add(new DateInterval('P1D'));
         $previousday = false;
         $now = true;
     } else {
         $sdate = DateTime::createFromFormat("Y-m-d", $selectday);
-        $sdate->add(new DateInterval('P1D'));
         // Used to clear days in the calendar.
         if ($today->format("Y-m-d") == $sdate->format("Y-m-d")) {
             $previousday = false;
@@ -179,10 +177,14 @@ if (!$remlabs) {
     $calendar = html_writer::start_tag('div', array('id' => 'calendar', 'align' => 'center'));
     $calendar .= html_writer::end_tag('div')  . '<br>';
     $selectdate = html_writer::start_tag('div', array('id' => 'control', 'align' => 'center'));
-    $selectdate .= '<button id="subyear" class="booking_button">&lt;' . get_string('iyear', 'ejsappbooking') . '</button>';
-    $selectdate .= '<button id="submonth" class="booking_button">&lt;' . get_string('imonth','ejsappbooking') . '</button>';
-    $selectdate .= '<button id="addmonth" class="booking_button">' . get_string('imonth','ejsappbooking') . '&gt;</button>';
-    $selectdate .= '<button id="addyear" class="booking_button">' . get_string('iyear', 'ejsappbooking') . '&gt;</button>';
+    $selectdate .= html_writer::tag('button', '&lt;' . get_string('iyear', 'ejsappbooking'),
+        array('class' => 'booking_button', 'id' => 'subyear'));
+    $selectdate .= html_writer::tag('button', '&lt;' . get_string('imonth','ejsappbooking'),
+        array('class' => 'booking_button', 'id' => 'submonth'));
+    $selectdate .= html_writer::tag('button', get_string('imonth','ejsappbooking') . '&gt;',
+        array('class' => 'booking_button', 'id' => 'addmonth'));
+    $selectdate .= html_writer::tag('button', get_string('iyear', 'ejsappbooking') . '&gt;',
+        array('class' => 'booking_button', 'id' => 'addyear'));
     $selectdate .= html_writer::end_tag('div') . '<br>';
     $table = new html_table();
     $table->attributes['class'] = 'userinfobox';

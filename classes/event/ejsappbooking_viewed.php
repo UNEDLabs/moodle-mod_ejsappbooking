@@ -41,13 +41,33 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_module_viewed extends \core\event\course_module_viewed {
+class ejsappbooking_viewed extends \core\event\course_module_viewed {
+
     /**
      * Init method.
      */
     protected function init() {
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'ejsappbooking';
-        parent::init();
+    }
+
+    /**
+     * Get event's name
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string('event_working', 'ejsapp');
+    }
+
+    /**
+     * Get event description
+     *
+     * @return string
+     */
+    public function get_description() {
+        return "The user with id '{$this->userid}' viewed the EJSApp Bookins System resource with id '{$this->objectid}'.";
     }
 
     /**
@@ -65,7 +85,8 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @return array|null
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'ejsappbooking', 'view ejsappbooking', 'view.php?n=' . $this->objectid,
+        return array($this->courseid, 'ejsappbooking', 'view', 'view.php?n=' . $this->objectid,
             $this->objectid, $this->contextinstanceid);
     }
+
 }

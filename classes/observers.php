@@ -22,26 +22,39 @@
 // at the Computer Science and Automatic Control, Spanish Open University
 // (UNED), Madrid, Spain.
 
+
 /**
- * Class for logging the view all event of an EJSApp Booking System
+ * Event observers used in ejsapp
  *
  * @package    mod_ejsappbooking
- * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
+ * @copyright  2012 Luis de la Torre and Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_ejsappbooking\event;
+namespace mod_ejsappbooking;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_ejsappbooking course module viewed event class.
+ * Event observers used in ejsapp
  *
  * @package    mod_ejsappbooking
- * @since      Moodle 2.7
- * @copyright  2014 Dan Poltawski <dan@moodle.com>
+ * @copyright  2012 Luis de la Torre
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
-    // No need for any code here as everything is handled by the parent class.
+class observers {
+
+    /**
+     * A user accessed an EJSApp booking system.
+     *
+     * @param \core\event\base $event The event.
+     * @return void
+     */
+    public static function ejsappbooking_viewed($event) {
+        // Write info in the db.
+        global $DB;
+        $record = $event->get_record_snapshot('ejsappbooking_log', $event->objectid);
+        $DB->insert_record('ejsappbooking_log', $record);
+    }
+
 }
