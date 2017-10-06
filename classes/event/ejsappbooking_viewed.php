@@ -41,7 +41,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2012 Luis de la Torre, Ruben Heradio and Francisco José Calvillo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class ejsappbooking_viewed extends \core\event\course_module_viewed {
+class ejsappbooking_viewed extends \core\event\base {
 
     /**
      * Init method.

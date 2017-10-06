@@ -73,7 +73,7 @@ $context = context_module::instance($cm->id);
 if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
     add_to_log($course->id, 'ejsappbooking', 'view', "view.php?id={$cm->id}", $ejsappbooking->name, $cm->id);
 } else {
-    $event = \mod_ejsappbooking\event\course_module_viewed::create(array(
+    $event = \mod_ejsappbooking\event\ejsappbooking_viewed::create(array(
         'objectid' => $ejsappbooking->id,
         'context' => $context
     ));
@@ -88,7 +88,7 @@ $PAGE->set_title(format_string($ejsappbooking->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_url('/mod/ejsappbooking/view.php', array('id' => $cm->id));
 $PAGE->set_context($context);
-if ($CFG->version > 2016090100) {
+if ($CFG->version < 2016090100) {
     $PAGE->set_button($OUTPUT->update_module_button($cm->id, 'ejsappbooking'));
 }
 
