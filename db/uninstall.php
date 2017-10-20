@@ -34,8 +34,6 @@ defined('MOODLE_INTERNAL') || die;
 
 /**
  * Custom uninstallation procedure
- *
- * Custom uninstallation procedure
  */
 function xmldb_ejsappbooking_uninstall() {
     return true;
