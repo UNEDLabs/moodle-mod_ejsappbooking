@@ -541,7 +541,7 @@ if ($i > 1) { // If there is at least one remote lab.
         if (user_can_assign($context, $roleid)) {
             $heading .= ' <a href="' . $CFG->wwwroot . '/'.$CFG->admin . '/roles/assign.php?roleid=' . $roleid .
                 '&amp;contextid=' . $context->id . '">';
-            $heading .= '<img src="' . $OUTPUT->pix_url('i/edit') . '" class="icon" alt="" /></a>';
+            $heading .= '<img src="' . $OUTPUT->image_url('i/edit') . '" class="icon" alt="" /></a>';
         }
         echo $OUTPUT->heading($heading, 3);
     } else {
@@ -677,8 +677,8 @@ method=\"post\" id=\"participantsform\">" . '<div>';
     <input type="button" id="checknone" value="'. get_string('deselectall'). '" />
     <input type="submit" id="set_permissions" value="' . get_string('save_changes', 'ejsappbooking') . '" /> </div></div> </form>';
 
-    $module = array('name' => 'core_user', 'fullpath' => '/user/module.js');
-    $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
+    /*$module = array('name' => 'core_user', 'fullpath' => '/user/module.js');
+    $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);*/
 
     if (has_capability('moodle/site:viewparticipants', $context) && $totalcount > ($perpage * 3)) {
         echo '<form action="set_permissions.php" class="searchform"><div><input type="hidden" name="id" value="' . $id .
