@@ -112,7 +112,7 @@ b ON a.id = b.ejsappid WHERE b.userid = ? AND a.course = ? AND a.is_rem_lab = 1 
 
 if (!$remlabs) {
     // No labs.
-    echo $OUTPUT->heading(get_string('no_labs_rem', 'ejsappbooking'));
+    echo $OUTPUT->box(get_string('no_labs_rem', 'ejsappbooking'));
 } else { // At least one remote lab.
 
     // Obtain the name of the remote lab considering the language filter.
