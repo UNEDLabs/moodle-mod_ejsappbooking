@@ -23,18 +23,30 @@
 // (UNED), Madrid, Spain.
 
 /**
- * Defines the version of ejsappbooking
+ * Remlab manager block cron task configuration.
  *
  * @package    mod_ejsappbooking
- * @copyright  2012 Francisco José Calvillo Muñoz, Luis de la Torre and Ruben Heradio
+ * @copyright  2015 Luis de la Torre
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version  = 2018071002;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2013111800;      // Requires this Moodle version.
-$plugin->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.3 (Build: 2018071002)';
-$plugin->dependencies = array('mod_ejsapp' => 2016080400, 'block_remlab_manager' => 2016080400);
+$tasks = array(
+    array(
+        'classname' => 'mod_ejsappbooking\task\update_remlab_table',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '8',
+        'day' => '*',
+        'dayofweek' => '1',
+        'month' => '*'
+    ),
+    array(
+        'classname' => 'mod_ejsappbooking\task\update_users_table',
+        'blocking' => 0,
+        'minute' => '*/10',
+        'hour' => '*',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*'
+    )
+);

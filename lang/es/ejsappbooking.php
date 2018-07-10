@@ -66,6 +66,9 @@ $string['allow_remlabaccess'] = 'Ha recibido permisos para realizar reservas en 
 $string['sending_message'] = 'Enviando mensajes de aviso';
 
 
+$string['update_remlab_table'] = 'Actualizar tabla remlab de ejsapp booking';
+$string['update_users_table'] = 'Actualizar tabla users de ejsapp booking';
+
 $string['already_enabled'] = 'Ya tiene un sistema de reservas en este curso.';
 
 $string['makereservation'] = 'Realizar una reserva';
