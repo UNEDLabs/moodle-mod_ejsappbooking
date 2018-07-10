@@ -51,10 +51,6 @@ class observers {
      * @return void
      */
     public static function ejsappbooking_viewed($event) {
-        // Write info in the db.
-        /*global $DB;
-        $record = $event->get_record_snapshot('ejsappbooking_log', $event->objectid);
-        $DB->insert_record('ejsappbooking_log', $record);*/
     }
 
 }
