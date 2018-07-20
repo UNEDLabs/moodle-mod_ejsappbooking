@@ -1,4 +1,5 @@
 [Zenodo](https://zenodo.org/badge/latestdoi/18948/UNEDLabs/moodle-mod_ejsappbooking)
+
 [DOI](10.5281/zenodo.33840)
 
 ## 1. Content
