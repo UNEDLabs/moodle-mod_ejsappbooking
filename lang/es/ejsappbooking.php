@@ -105,3 +105,6 @@ $string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún la
 $string['ejsappbooking:addinstance'] = 'Añadir un nuevo sistema de reservas';
 $string['ejsappbooking:view'] = 'Ver el sistema de reservas';
 $string['ejsappbooking:managerights'] = 'Gestionar permisos de reservas de los usuarios';
+
+//Privacy
+$string['privacy:metadata'] = 'La actividad EJSApp Booking solo almacena informacion acerca de las reservas hechas por usuarios para las actividades de laboratorios remotos.';

@@ -105,3 +105,6 @@ $string['no_labs_rem'] = 'You are not authorized to book or there is no remote l
 $string['ejsappbooking:addinstance'] = 'Add a new booking system';
 $string['ejsappbooking:view'] = 'View the booking system';
 $string['ejsappbooking:managerights'] = 'Manage users\' rights for making bookings';
+
+//Privacy
+$string['privacy:metadata'] = 'The EJSApp Booking activity only stores information about user\'s bookings for EJSApp remote lab activities.';
