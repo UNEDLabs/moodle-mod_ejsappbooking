@@ -46,7 +46,7 @@ class update_remlab_table extends \core\task\scheduled_task {
      */
     public function get_name() {
         // Shown in admin screens
-        return get_string('update_remlab_table', 'block_remlab_manager');
+        return get_string('update_remlab_table', 'mod_ejsappbooking');
     }
 
     /**

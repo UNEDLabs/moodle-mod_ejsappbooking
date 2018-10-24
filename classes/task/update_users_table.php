@@ -46,7 +46,7 @@ class update_users_table extends \core\task\scheduled_task {
      */
     public function get_name() {
         // Shown in admin screens
-        return get_string('update_users_table', 'block_remlab_manager');
+        return get_string('update_users_table', 'mod_ejsappbooking');
     }
 
     /**
@@ -58,7 +58,7 @@ class update_users_table extends \core\task\scheduled_task {
     public function execute() {
         global $DB;
 
-        $usersaccess = new stdClass();
+        $usersaccess = new \stdClass();
 
         // ADDING NEW USERS AND/OR REMOTE EJSAPP LABS.
         $usersaccess->timecreated = time();
@@ -70,7 +70,7 @@ class update_users_table extends \core\task\scheduled_task {
         foreach ($ejsappbookings as $ejsappbooking) {
             $usersaccess->bookingid = $ejsappbooking->id;
             // Get context of the course to which ejsappbooking belongs to.
-            $context = context_course::instance($ejsappbooking->course);
+            $context = \context_course::instance($ejsappbooking->course);
             $users = get_enrolled_users($context);
             $ejsapps = $DB->get_records('ejsapp', array('course' => $ejsappbooking->course));
             foreach ($ejsapps as $ejsapp) {
@@ -104,7 +104,7 @@ class update_users_table extends \core\task\scheduled_task {
         // DELETING OLD USERS AND/OR REMOTE EJSAPP LABS.
         foreach ($ejsappbookings as $ejsappbooking) {
             // Get context of the course to which ejsappbooking belongs to.
-            $context = context_course::instance($ejsappbooking->course);
+            $context = \context_course::instance($ejsappbooking->course);
             $users = get_enrolled_users($context);
             $usersaccess = $DB->get_records('ejsappbooking_usersaccess');
             foreach ($usersaccess as $useraccess) {
