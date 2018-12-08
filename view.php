@@ -97,10 +97,17 @@ if ($CFG->version < 2016090100) {
     $PAGE->set_button($OUTPUT->update_module_button($cm->id, 'ejsappbooking'));
 }
 
+$PAGE->requires->jquery();
+$PAGE->requires->jquery_plugin('ui', 'core');
+$PAGE->requires->jquery_plugin('ui-css', 'core');
+
 $PAGE->requires->string_for_js('messageDelete', 'ejsappbooking');
 $PAGE->requires->string_for_js('book_message', 'ejsappbooking');
 $PAGE->requires->string_for_js('cancel', 'ejsappbooking');
 $PAGE->requires->js('/mod/ejsappbooking/module.js');
+$PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init');
+
+$CFG->cachejs = false;
 
 // Output starts here.
 echo $OUTPUT->header();
@@ -314,7 +321,7 @@ AND ejsappid = ? ORDER BY starttime ASC", array($USER->username, $labid));
 
             // Determine user´s bookings of the week.
             $weekaccesses = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} 
-WHERE DATE_FORMAT(starttime, '%Y-%m-%d') >= ? AND DATE_FORMAT(starttime, '%Y-%m-%d') <= ? AND username = ? AND 
+WHERE ".$date_convert_func."(starttime, '%Y-%m-%d') >= ? AND ".$date_convert_func."(starttime, '%Y-%m-%d') <= ? AND username = ? AND 
 ejsappid = ? ORDER BY starttime ASC", array($dmonday, $dsunday, $USER->username, $labid));
             $weekbooks = count($weekaccesses);
 
@@ -585,7 +592,7 @@ ejsappid = ? ORDER BY starttime ASC", array($dmonday, $dsunday, $USER->username,
         // Show user´s bookings.
         $events = $DB->get_records_sql("SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, 
 a.valid, b.name FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id WHERE a.username = ? AND 
-DATE_FORMAT(a.starttime, '%Y-%m-%d') >= ?  ORDER BY a.starttime ASC", array($username, $today->format('Y-m-d')));
+".$date_convert_func."(a.starttime, '%Y-%m-%d') >= ?  ORDER BY a.starttime ASC", array($username, $today->format('Y-m-d')));
         $result = count($events);
 
         // Page´s configuration.
@@ -606,12 +613,14 @@ DATE_FORMAT(a.starttime, '%Y-%m-%d') >= ?  ORDER BY a.starttime ASC", array($use
         $initbook = ($currentpage - 1) * $bookingpage;
 
         // Check bookings.
-        $sql = 'SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, a.valid, b.name, c.practiceintro 
-FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id  INNER JOIN {block_remlab_manager_exp2prc} 
-c ON a.practiceid = c.practiceid  WHERE a.ejsappid = c.ejsappid AND a.username = "' . $username . '" AND 
-DATE_FORMAT(starttime, "%Y-%m-%d") >= "' . $today->format('Y-m-d') .'"ORDER BY a.starttime ASC LIMIT ' . $initbook .
-            ', ' . $bookingpage;
-        $events2 = $DB->get_records_sql($sql);
+
+        $events2 = $DB->get_records_sql("SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, 
+        a.valid, b.name, c.practiceintro FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id  
+        INNER JOIN {block_remlab_manager_exp2prc} c ON a.practiceid = c.practiceid  WHERE a.ejsappid = c.ejsappid AND 
+        a.username = ? AND ". $date_convert_func."(starttime, '%Y-%m-%d') >= ? ORDER BY a.starttime  ASC LIMIT ? OFFSET ? ",
+            array($username, $today->format('Y-m-d'), $bookingpage , $initbook)
+        );
+        
         $result2 = count($events2);
 
         // Exists.
@@ -729,7 +738,7 @@ DATE_FORMAT(starttime, "%Y-%m-%d") >= "' . $today->format('Y-m-d') .'"ORDER BY a
         foreach ($labids as $labid) {
             $practid = $practiceids[$i];
             $tempevents = $DB->get_records_sql("SELECT starttime FROM {ejsappbooking_remlab_access} WHERE 
-DATE_FORMAT(starttime, '%Y-%m-%d') = ? AND ejsappid = ? AND practiceid = ? ORDER BY starttime ASC",
+".$date_convert_func."(starttime, '%Y-%m-%d') = ? AND ejsappid = ? AND practiceid = ? ORDER BY starttime ASC",
                 array($sdate->format('Y-m-d'), $labid, $practid));
             if (!empty($tempevents)) {
                 $events[] = $tempevents;
@@ -825,7 +834,6 @@ DATE_FORMAT(starttime, '%Y-%m-%d') = ? AND ejsappid = ? AND practiceid = ? ORDER
     }
 
     // End of program logic.
-
     $out .= html_writer::end_tag('div');
 
     // Hidden parameters.
