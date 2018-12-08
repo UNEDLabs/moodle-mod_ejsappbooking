@@ -83,6 +83,11 @@ if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
     $event->trigger();
 }
 
+if ($CFG->dbtype == "mysql")
+    $date_convert_func="DATE_FORMAT";
+else if ($CFG->dbtype == "pgsql")
+    $date_convert_func="TO_CHAR";
+
 // Print the page header.
 $PAGE->set_title(format_string($ejsappbooking->name));
 $PAGE->set_heading(format_string($course->fullname));
