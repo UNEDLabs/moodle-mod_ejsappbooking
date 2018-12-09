@@ -104,7 +104,7 @@ $PAGE->requires->jquery_plugin('ui-css', 'core');
 $PAGE->requires->string_for_js('messageDelete', 'ejsappbooking');
 $PAGE->requires->string_for_js('book_message', 'ejsappbooking');
 $PAGE->requires->string_for_js('cancel', 'ejsappbooking');
-$PAGE->requires->js('/mod/ejsappbooking/module.js');
+// $PAGE->requires->js('/mod/ejsappbooking/module.js');
 $PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init');
 
 $CFG->cachejs = false;
@@ -186,8 +186,8 @@ if (!$remlabs) {
         '</span> </strong></p>');
     $plantname = $OUTPUT->container('<p align="center">'. $plantstateinfo .'</p>');
     $plantstate = $OUTPUT->container('<p align="center"><img src="' . $plantico. '" width="44px" height="44px"></p>');
-    $calendar = html_writer::start_tag('div', array('id' => 'calendar', 'align' => 'center'));
-    $calendar .= html_writer::end_tag('div')  . '<br>';
+    $calendar = $OUTPUT->container('<div id="datepicker"></div>');    
+/*    
     $selectdate = html_writer::start_tag('div', array('id' => 'control', 'align' => 'center'));
     $selectdate .= html_writer::tag('button', '&lt;' . get_string('iyear', 'ejsappbooking'),
         array('class' => 'booking_button', 'id' => 'subyear'));
@@ -198,6 +198,7 @@ if (!$remlabs) {
     $selectdate .= html_writer::tag('button', get_string('iyear', 'ejsappbooking') . '&gt;',
         array('class' => 'booking_button', 'id' => 'addyear'));
     $selectdate .= html_writer::end_tag('div') . '<br>';
+*/    
     $table = new html_table();
     $table->attributes['class'] = 'userinfobox';
     $row = new html_table_row();
@@ -206,7 +207,8 @@ if (!$remlabs) {
     $row->cells[0]->text = $userpicture .''. $userfullname .''. $activedate .''. $plantname .''. $plantstate . '';
     $row->cells[1] = new html_table_cell();
     $row->cells[1]->attributes['class'] = 'center';
-    $row->cells[1]->text = $calendar .''. $selectdate;
+    $row->cells[1]->text = $calendar ;    
+//  $row->cells[1]->text = $calendar .''. $selectdate;
     $row->cells[2] = new html_table_cell();
     $row->cells[2]->attributes['class'] = 'right';
     $row->cells[2]->text = '';
