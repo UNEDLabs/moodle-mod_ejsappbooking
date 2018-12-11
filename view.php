@@ -88,6 +88,8 @@ if ($CFG->dbtype == "mysql")
 else if ($CFG->dbtype == "pgsql")
     $date_convert_func="TO_CHAR";
 
+$_SERVER['REQUEST_METHOD'];
+
 // Print the page header.
 $PAGE->set_title(format_string($ejsappbooking->name));
 $PAGE->set_heading(format_string($course->fullname));
@@ -106,6 +108,7 @@ $PAGE->requires->string_for_js('book_message', 'ejsappbooking');
 $PAGE->requires->string_for_js('cancel', 'ejsappbooking');
 // $PAGE->requires->js('/mod/ejsappbooking/module.js');
 $PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init');
+$PAGE->requires->css('/mod/ejsappbooking/styles/ui.css');
 
 $CFG->cachejs = false;
 
@@ -160,21 +163,30 @@ if (!$remlabs) {
         }
     }
 
+    
+    
     // Start building the website.
     $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
     echo $OUTPUT->box_start();
+    
     echo $OUTPUT->heading(get_string('makereservation', 'ejsappbooking'));
     $iconurl = $CFG->wwwroot . '/mod/ejsappbooking/pix/selected.png';
 
     // Check the configuration of the lab (whether it is active or not).
     $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));
     $conflabs = $DB->get_record('block_remlab_manager_conf', array('practiceintro' => $practiceintro));
-    if ($conflabs->active) {
-        $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_success_8bit.png';
-        $plantstateinfo = get_string('active_plant', 'ejsappbooking');
+    
+    // No needed.
+    if (! $conflabs->active) {
+        echo html_writer::empty_tag('input', array('type'=>'hidden', 'id'=>'foo','name'=>'plant-status', 'value'=>'disabled'));
+        echo html_writer::tag('div', get_string('inactive_plant', 'ejsappbooking'), array('class'=>'alert alert-warning', 'role'=>'alert'));
+        
+        //$plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_error_8bit.png';
+        //$plantstateinfo = get_string('inactive_plant', 'ejsappbooking');
     } else {
-        $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_error_8bit.png';
-        $plantstateinfo = get_string('inactive_plant', 'ejsappbooking');
+        
+       // $plantico = $CFG->wwwroot . '/mod/ejsappbooking/pix/icon_success_8bit.png';
+       // $plantstateinfo = get_string('active_plant', 'ejsappbooking');
     }
 
     // User data and control the calendar.
@@ -184,9 +196,33 @@ if (!$remlabs) {
             has_capability('moodle/site:viewfullnames', $context)). '</strong></p>', 'username');
     $activedate = $OUTPUT->container('<p align="center"> <strong> <span id="ActiveDate">' . $sdate->format("Y-m-d") .
         '</span> </strong></p>');
-    $plantname = $OUTPUT->container('<p align="center">'. $plantstateinfo .'</p>');
-    $plantstate = $OUTPUT->container('<p align="center"><img src="' . $plantico. '" width="44px" height="44px"></p>');
+    //$plantname = $OUTPUT->container('<p align="center">'. $plantstateinfo .'</p>');
+    // $plantstate = $OUTPUT->container('<p align="center"><img src="' . $plantico. '" width="44px" height="44px"></p>');
     $calendar = $OUTPUT->container('<div id="datepicker"></div>');    
+    
+  $calendar .= $OUTPUT->container ('
+    <div id="timepicker" id="hour" >
+      <div id="hour">
+        <button id="hup" class="btn_up"></button>
+        <label id="h"> 09</label>
+        <button id="hdown" class="btn_down"></button>
+      </div>
+      
+      <div id="sep">
+        <label>:</label>
+      </div>
+
+      <div id="min" >
+        <button id="mup" class="btn_up"></button>
+        <label id="m" >00</label>
+        <button id=mdown" class="btn_down"></button>
+      </div>
+      
+      <div id="mod">
+        <button id="mer">AM</button>
+      </div>
+      
+    </div>');
 /*    
     $selectdate = html_writer::start_tag('div', array('id' => 'control', 'align' => 'center'));
     $selectdate .= html_writer::tag('button', '&lt;' . get_string('iyear', 'ejsappbooking'),
@@ -204,7 +240,7 @@ if (!$remlabs) {
     $row = new html_table_row();
     $row->cells[0] = new html_table_cell();
     $row->cells[0]->attributes['class'] = 'left';
-    $row->cells[0]->text = $userpicture .''. $userfullname .''. $activedate .''. $plantname .''. $plantstate . '';
+    //$row->cells[0]->text = $userpicture .''. $userfullname .''. $activedate .''. $plantname .''. $plantstate . '';
     $row->cells[1] = new html_table_cell();
     $row->cells[1]->attributes['class'] = 'center';
     $row->cells[1]->text = $calendar ;    
@@ -236,7 +272,10 @@ if (!$remlabs) {
         $out .= '>' . $multilang->filter($labname[$remlab->id]) . '</option>';
         $i++;
     }
-    $out .= '</select>';
+    $out .= '</select><br>';
+    
+    $out .= '<div id="lab-status" style="display: none" class="alert alert-warning" role="alert">'
+        .get_string('inactive_plant', 'ejsappbooking')."</div>";
 
     // Select practices.
     $practices = $DB->get_records_sql("SELECT id, ejsappid, practiceid, practiceintro FROM {block_remlab_manager_exp2prc} 
@@ -248,11 +287,13 @@ WHERE ejsappid = ? ", array($labid));
             $practid = $practice->practiceid;
         }
         $i++;
-    }
+    } // Select first practices as default;
     $selectedpractice = '';
     $out .= '<br>';
     $out .= get_string('rem_prac_selection', 'ejsappbooking');
-    $out .= '&nbsp;&nbsp;<select name="practid" class="booking_select" data-previousindex="0" onchange="this.form.submit()"> ';
+    $out .= '&nbsp;&nbsp;<select id="foo" name="practid" class="booking_select" data-previousindex="0" onchange="this.form.submit()"> ';
+    
+    
     $i = 1;
     foreach ($practices as $practice) {
         $labname[$practice->practiceid] = $practice->practiceintro;
@@ -596,7 +637,20 @@ ejsappid = ? ORDER BY starttime ASC", array($dmonday, $dsunday, $USER->username,
 a.valid, b.name FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id WHERE a.username = ? AND 
 ".$date_convert_func."(a.starttime, '%Y-%m-%d') >= ?  ORDER BY a.starttime ASC", array($username, $today->format('Y-m-d')));
         $result = count($events);
-
+/*       
+        $busy=$DB->get_records_sql("
+        SELECT a.starttime
+        FROM {ejsappbooking_remlab_access} a 
+        WHERE TO_CHAR(a.starttime,'%Y-%m-%d') = '2018-12-20' 
+        ORDER BY a.starttime ASC");
+        
+        echo html_writer::start_tag('ul');
+        
+        foreach($busy as $slot){
+            echo html_writer::tag('li',$slot->starttime);
+        }
+        echo html_writer::end_tag('ul');
+*/
         // Page´s configuration.
         $bookingpage = 12;
         $pages = ceil($result / $bookingpage);
@@ -831,8 +885,7 @@ a.valid, b.name FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.
         $out .= '<p align="center"><strong>' . get_string('availability', 'ejsappbooking') . ' ' .
             $sdate->format('d-m-Y') . '</strong></p>';
         $out .= html_writer::table($bookingtable);
-        $out .= '<br><p align="center"><button name="bookingbutton" class="booking_button" value="1" type="submit">' .
-            get_string('book', 'ejsappbooking') . '</button></p>';
+
     }
 
     // End of program logic.
@@ -842,6 +895,10 @@ a.valid, b.name FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.
     $out .= '<input id="id" name="id" value=' . $id . ' type="hidden">';
     $out .= '<input id="selectdate" name="selectDay" value="' . $selectday . '" type="hidden">';
 
+    
+    $out .= '<button name="bookingbutton" class="booking_button" value="1" type="submit">' .
+    get_string('book', 'ejsappbooking') . '</button>';
+    
     // Show my bookings.
     if (!$mybookingsbutton) {
         $out .= '<p align="center"><button name="Mybookingsbutton" class="booking_button" value="1" type="submit">' .

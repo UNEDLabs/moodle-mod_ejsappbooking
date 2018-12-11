@@ -1,0 +1,35 @@
+#timepicker {
+    display: inline-block;
+    border: 1px solid rgb(211, 211, 211);
+    padding: 0.3em;
+    border-radius: 5px;   
+}
+
+#timepicker .btn_up, #timepicker .btn_down, #timepicker #hour label, #timepicker #min label{
+    display: block;
+}
+
+#timepicker label {
+    font-weight: bold; 
+    margin: 1em; 
+    text-align: center;
+}
+
+#timepicker #hour, #timepicker #sep,  #timepicker #min, #timepicker #mod {
+    float: left;
+}
+
+#timepicker #sep, #timepicker #mod {  
+    display: table;
+}
+
+#timepicker #sep label{
+    display: table-cell; 
+    vertical-align: middle;
+    width: 1em
+}
+
+#timepicker #mod #med {
+    display: table-cell !important;
+    vertical-align: middle !important;
+}
