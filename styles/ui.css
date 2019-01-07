@@ -1,35 +1,69 @@
+
+h2 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+div.row.selectores {
+    padding-bottom: 3em;
+}
+
 #timepicker {
     display: inline-block;
-    border: 1px solid rgb(211, 211, 211);
-    padding: 0.3em;
+    padding: 2em;
     border-radius: 5px;   
+    
+    min-width: 200px;
 }
 
-#timepicker .btn_up, #timepicker .btn_down, #timepicker #hour label, #timepicker #min label{
-    display: block;
+#timepicker div#slots{ 
+     display: none !important; 
 }
 
-#timepicker label {
-    font-weight: bold; 
-    margin: 1em; 
+#timepicker div:first-child, 
+#timepicker div:last-child {
     text-align: center;
 }
 
-#timepicker #hour, #timepicker #sep,  #timepicker #min, #timepicker #mod {
-    float: left;
+#timepicker span#time{
+    display: inline-block;
+    margin: 1em 0.5em;
 }
 
-#timepicker #sep, #timepicker #mod {  
-    display: table;
+.pagination {
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
-#timepicker #sep label{
-    display: table-cell; 
-    vertical-align: middle;
-    width: 1em
+.pagination li a {
+    color: rgb(85, 85, 85);
 }
 
-#timepicker #mod #med {
-    display: table-cell !important;
-    vertical-align: middle !important;
+#bookingform {
+    margin-bottom: 2%;
+}
+
+#bookingform #notif {
+    margin: 1em 0;
+    width: 75%
+}
+
+#bookingform #submitwrap{
+    text-align: center;
+}
+
+#bookingform button[name="bookingbutton"]{
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    float: left
+}
+
+.ui-icon {
+  transform: scale(1.25);
+}
+
+div.alert{
+    display: none
 }

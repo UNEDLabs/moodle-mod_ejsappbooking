@@ -65,21 +65,20 @@ $string['booking_rights'] = 'Permiso de reserva';
 $string['allow_remlabaccess'] = 'Ha recibido permisos para realizar reservas en un nuevo laboratorio remoto: ';
 $string['sending_message'] = 'Enviando mensajes de aviso';
 
-
 $string['update_remlab_table'] = 'Actualizar tabla remlab de ejsapp booking';
 $string['update_users_table'] = 'Actualizar tabla users de ejsapp booking';
 
 $string['already_enabled'] = 'Ya tiene un sistema de reservas en este curso.';
 
-$string['makereservation'] = 'Realizar una reserva';
+$string['newreservation'] = 'Realizar una reserva';
 $string['deleteBooking'] = 'Informaci&oacute;n de la reserva eliminada';
 $string['mybookings'] = 'Mis reservas';
 $string['plant'] = 'Planta';
 $string['availability'] = 'Disponibilidad';
 $string['bookinginfo'] = 'Informaci&oacute;n sobre la reserva';
-$string['totalslots'] = 'M&aacute;ximos slots permitidos en este laboratorio';
-$string['weeklyslots'] = 'M&aacute;ximos slots semanales permitidos';
-$string['dailyslots'] = 'M&aacute;ximos slots por dia';
+$string['totalslots'] = 'Alcanzado el m&aacute;ximo de reservas permitidas en este laboratorio';
+$string['weeklyslots'] = 'Alcanzado el mM&aacute;ximo de reservas semanales permitidas';
+$string['dailyslots'] = 'Alcanzado el m&aacute;ximo de reservas por dia';
 $string['bookingexits'] = 'La reserva ya existe';
 $string['selectdate'] = 'Debe seleccionar una fecha y hora disponible en el calendario';
 $string['delete'] = 'Borrar';
@@ -87,6 +86,7 @@ $string['selectbooking'] = 'Si desea anular alguna reserva selecci&oacute;nela y
 $string['nobooking'] = 'No existen reservas';
 $string['date'] = 'Fecha';
 $string['hour'] = 'Hora';
+$string['action'] = 'Acción';
 $string['send_message'] = 'Enviado mensaje de aviso de la acci&oacute;n anterior';
 $string['book'] = 'Reservar';
 $string['book_message'] = 'Reserva';
@@ -98,9 +98,19 @@ $string['iyear'] = 'A&ntilde;o';
 $string['imonth'] = 'Mes';
 $string['availability_booking'] = 'N&uacute;mero de reservas disponibles';
 $string['rem_prac_selection'] = 'Seleccione una practica';
+$string['day_selection'] = 'Seleccione una fecha';
+$string['time_selection'] = 'Seleccione una hora de inicio el';
 $string['messageOccupied'] = 'El slot esta ocupado';
 $string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún laboratorio remoto configurado';
-
+$string['slot-free'] = 'Este hueco está disponible';
+$string['slot-past'] = 'Este hueco ya no está disponible';
+$string['slot-busy'] = 'Este hueco está ocupado';
+$string['plant-inactive'] = 'Esta planta no está disponible en estos momentos';
+$string['submit-error'] = 'Por favor, compruebe los mensajes de error antes de completar su reserva.';
+$string['submit-success'] = 'Su reserva se ha guardado con éxito';
+$string['submit-error-exists'] = 'Esta reserva ya existe en la base de datos';
+$string['delete-confirmation'] = '¿Está seguro de que quiere eliminar este elemento?';
+    
 // Capabilities.
 $string['ejsappbooking:addinstance'] = 'Añadir un nuevo sistema de reservas';
 $string['ejsappbooking:view'] = 'Ver el sistema de reservas';

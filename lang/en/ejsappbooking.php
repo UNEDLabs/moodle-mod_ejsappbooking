@@ -71,7 +71,7 @@ $string['update_users_table'] = 'Update ejsapp booking users table';
 
 $string['already_enabled'] = 'You already have a booking system in this course.';
 
-$string['makereservation'] = 'Make a reservation';
+$string['newreservation'] = 'New reservation';
 $string['deleteBooking'] = 'Booking info deleted';
 $string['mybookings'] = 'My bookings';
 $string['plant'] = 'Plant';
@@ -87,6 +87,7 @@ $string['selectbooking'] = 'To cancel a reservation, select it and then press';
 $string['nobooking'] = 'No bookings';
 $string['date'] = 'Date';
 $string['hour'] = 'Time';
+$string['action'] = 'Action';
 $string['send_message'] = 'Submitted warning message about the prior action';
 $string['book'] = 'Book';
 $string['book_message'] = 'Booking';
@@ -98,8 +99,18 @@ $string['iyear'] = 'Year';
 $string['imonth'] = 'Month';
 $string['availability_booking'] = 'Number of available reserves';
 $string['rem_prac_selection'] = 'Select a practice';
+$string['day_selection'] = 'Select a day';
+$string['time_selection'] = 'Select starting time on';
 $string['messageOccupied'] = 'The slot is occupied';
 $string['no_labs_rem'] = 'You are not authorized to book or there is no remote laboratory set';
+$string['slot-free'] = 'This slot is available';
+$string['slot-past'] = 'This slot has expired';
+$string['slot-busy'] = 'This slot is occupied';
+$string['plant-inactive'] = 'This plant is currently unavailable';
+$string['submit-error'] = 'Please, check error messages before completing your booking.';
+$string['submit-success'] = 'Your booking has been saved successfully';
+$string['submit-error-exists'] = 'This record already exists';
+$string['delete-confirmation'] = 'Are you sure you want to delete this item?';
 
 // Capabilities.
 $string['ejsappbooking:addinstance'] = 'Add a new booking system';
