@@ -66,11 +66,6 @@ if ($id) {
     print_error('You must specify a course_module ID or an instance ID');
 }
 
-if ($CFG->dbtype == "mysql")
-    $date_convert_func="DATE_FORMAT";
-else if ($CFG->dbtype == "pgsql")
-    $date_convert_func="TO_CHAR";
-
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
@@ -87,11 +82,6 @@ if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
     $event->add_record_snapshot('ejsappbooking', $ejsappbooking);
     $event->trigger();
 }
-
-if ($CFG->dbtype == "mysql")
-    $date_convert_func="DATE_FORMAT";
-else if ($CFG->dbtype == "pgsql")
-    $date_convert_func="TO_CHAR";
 
 // Print the page header.
 $PAGE->set_title(format_string($ejsappbooking->name));
@@ -110,7 +100,7 @@ $PAGE->requires->string_for_js('messageDelete', 'ejsappbooking');
 $PAGE->requires->string_for_js('book_message', 'ejsappbooking');
 $PAGE->requires->string_for_js('cancel', 'ejsappbooking');
 // $PAGE->requires->js('/mod/ejsappbooking/module.js');
-$PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init');
+$PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init', array($CFG->wwwroot . '/mod/ejsappbooking/controllers'));
 $PAGE->requires->css('/mod/ejsappbooking/styles/ui.css');
 
 $CFG->cachejs = false;

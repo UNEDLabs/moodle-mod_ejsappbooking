@@ -1,25 +1,24 @@
 define(['jquery', 'jqueryui'], function($) {
     return {
-        init: function() {
-            
+        init: function(controllerspath) {
 		// alert("loading amd module")
             
         // init lab selector    
         $('select').selectmenu();
             
-        $('select[name=labid]').on('selectmenuchange', on_lab_select);
+        $('select[name=labid]').on('selectmenuchange', { urlbase: controllerspath }, on_lab_select );
             
         // select first lab
         firstlab = $('select[name=labid] option:first').val();
-            
+        
         $('select[name=labid]').val(firstlab)
             .selectmenu("refresh")
-            .trigger("selectmenuchange");            
+            .trigger("selectmenuchange");                
             
         // init datepicker 
         var today = new Date(); 
         var current = new Date(getSearchParam('selectDay'));
-            
+        
         $('div#datepicker').datepicker({	
             dateFormat: 'yy-mm-dd',
             changeMonth: false,
@@ -28,10 +27,11 @@ define(['jquery', 'jqueryui'], function($) {
             minDate: today,
             defaultDate: current,
             numberOfMonths: [ 1, 1 ],
-            onSelect: on_day_select,
             altField: "#date"
         });
             
+        $('#datepicker').on('change',  { urlbase: controllerspath }, on_day_select);
+        
         // select current day
         
         init_timepicker();        
@@ -40,7 +40,7 @@ define(['jquery', 'jqueryui'], function($) {
             
         init_submit_btn();
             
-        update_mybookings_table();
+        update_mybookings_table(controllerspath);
             
         }
       }
@@ -114,10 +114,10 @@ function init_submit_btn(){
 
 }
 
-function update_mybookings_table(){
+function update_mybookings_table(controllerspath){
     id=getSearchParam('id');
     
-    url="/mod/ejsappbooking/controllers/get_bookings.php?id="+id;
+    url=controllerspath+"/get_bookings.php?id="+id;
     console.log(url);
     
      $.getJSON({
@@ -128,7 +128,7 @@ function update_mybookings_table(){
                 
                 for (var i=0; i < data['bookings-list'].length ; i++ ){
                     bk = data['bookings-list'][i];
-                    url2="/mod/ejsappbooking/controllers/delete_booking.php?id="+id+"&bookid="+bk['id'];
+                    url2=controllerspath+"/delete_booking.php?id="+id+"&bookid="+bk['id'];
                     
                     dt = new Date(bk['timestamp']);
                     opt1 = { year: '2-digit', month: '2-digit', day: '2-digit'};
@@ -374,10 +374,11 @@ function init_timepicker(){
 
 }
 
-function on_lab_select() {
+function on_lab_select(e) {
         id = getSearchParam('id');
         labid = $(this).val();
-        url = '/mod/ejsappbooking/controllers/get_lab_info.php?'+'id='+id+'&labid='+labid;
+    
+        url = e.data.urlbase+'/get_lab_info.php?'+'id='+id+'&labid='+labid;
     
         console.log(url);
 
@@ -449,7 +450,7 @@ function update_visible_time(){
     
 }
             
-function on_day_select(){
+function on_day_select(e){
 
     id= getSearchParam('id');
     labid=$('select[name=labid]').val();
@@ -464,7 +465,7 @@ function on_day_select(){
     
     $("#current-date").html(date.toLocaleString("en-US", options));
 
-    url2='/mod/ejsappbooking/controllers/get_time_slots.php?'+'id='+id+'&labid='+labid+
+    url2 = e.data.urlbase+'/get_time_slots.php?'+'id='+id+'&labid='+labid+
         '&date='+selectDay+ // non needed
         '&timestamp='+timestamp;
         

@@ -23,19 +23,13 @@ if ($id) {
     $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
 }
 
-if ($CFG->dbtype == "mysql")
-    $date_convert_func="DATE_FORMAT";
-else if ($CFG->dbtype == "pgsql")
-    $date_convert_func="TO_CHAR";
-
 $data="";
-
 
 $sdate=DateTime::createFromFormat('D, d M Y H:i:s T',$timestamp);
 $edate= clone $sdate;
     $edate->add(new DateInterval('PT24H'));
 
-//1 Day = 24*60*60 = 86400
+// 1 Day = 24*60*60 = 86400
 // $nextDay = date('Y-m-d', strtotime($selectDay) + 86400 );
 
 // mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
@@ -47,7 +41,6 @@ $slots_list = $DB->get_records_sql("
     AND starttime >= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' ) AND starttime <= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' )
     ORDER BY starttime ASC", 
     array($USER->username, $labid, $sdate->format("Y-m-d H:i"), $edate->format("Y-m-d H:i")));
-
 
 $busy_starttimes = [];
 
@@ -75,9 +68,9 @@ while ( $date < $edate ){
         $status = "free";    
     }
 
-    $item =  [];
-        $item['timestamp'] = $date->format('D, d M Y H:i:s T');
-        $item['status'] = $status;
+    $item = [];
+    $item['timestamp'] = $date->format('D, d M Y H:i:s T');
+    $item['status'] = $status;
         
    array_push( $data['time-slots'], $item );
     
