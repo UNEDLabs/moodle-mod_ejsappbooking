@@ -24,6 +24,7 @@ define(['jquery', 'jqueryui'], function($) {
             changeMonth: false,
             changeYear: false,
             gotoCurrent: true,
+            firstDay: 1,
             minDate: today,
             defaultDate: current,
             numberOfMonths: [ 1, 1 ],
@@ -38,7 +39,9 @@ define(['jquery', 'jqueryui'], function($) {
             
         $('#datepicker .ui-datepicker-current-day').click();    
             
-        init_submit_btn();
+        // init_submit_btn(controllerspath);
+            
+        $('#bookingform').on('submit',  { urlbase: controllerspath }, on_submit_form);
             
         update_mybookings_table(controllerspath);
             
@@ -46,70 +49,61 @@ define(['jquery', 'jqueryui'], function($) {
       }
 });
 
-function init_submit_btn(){
+function on_submit_form(e){
     
-    $('#bookingform').submit(function(e){
-        e.preventDefault();
-        
-        if ( $('#bookingform div.alert.error').is(":visible") ){
-            alert($('#submit-error').html());     
-            return;
-        }
-        
-        labid=$('select[name="labid"]').val();
-        practid=$('select[name="practid"]').val();
-        
-        date=$('#datepicker').val(); // no needed
-        time=$('#timepicker ul#time-slots li.selected').html(); // delete
-        
-        timestamp = new Date($('#datepicker').val());
-            timestamp.setHours(time.split(':')[0]);
-            timestamp.setMinutes(time.split(':')[1]);
-            timestamp = timestamp.toUTCString();
-        
-        console.log(timestamp);
-        
-        timestamp = encodeURIComponent(timestamp);
-        
-        url=$('#bookingform').attr('action')+"&labid="+labid+"&practid="+practid+
-            "&date="+date+"&time="+time+ // no needed
-            "&timestamp="+timestamp;
-        
-        console.log(url);
-        
-        $.getJSON({
-            method: 'POST',
-            url:  url,
-            dataType: "json",
-            contentType: "application/json",
-            success: function(data){
-                console.log(data);
-                if (data.exitCode >= 0 ){
-                    
-                    // mark as busy and choose skip to next slot
-                    cur = $('#timepicker ul#time-slots li.selected');
-                    cur.removeClass('slot-free').addClass('slot-busy');                    
-                    $('#timepicker #next_slot').click();
-                    
-                    $("#bookingform div#notif").attr('class','alert alert-success');
-                    update_mybookings_table();
-                } else {
-                    $("#bookingform div#notif").attr('class','alert alert-danger');
-                }
-                    $("#bookingform div#notif").html(data.exitMsg);
-            },
-            error: function(xhr, desc, err){
-                console.log(err);
-                // display err
-                $("#bookingform div#notif").html(err);
-                $("#bookingform div#notif").attr('class','alert alert-danger');
-            },
-            complete: function (data){
-                $("#bookingform div.alert").hide();
-                $("#bookingform div#notif").show();   
-            }
-        });
+    e.preventDefault();
 
+    if ( $('#bookingform div.alert.error').is(":visible") ){
+        alert($('#submit-error').html());     
+        return;
+    }
+
+    labid=$('select[name="labid"]').val();
+    practid=$('select[name="practid"]').val();
+
+    date=$('#datepicker').val(); // no needed
+    time=$('#timepicker ul#time-slots li.selected').html(); // delete
+
+    // timestamp = $('#datepicker').val() + ' ' + time;
+    // timestamp = timestamp.toUTCString();
+    // timestamp = encodeURIComponent(timestamp);
+    console.log(date + " " + time);
+
+    url=$('#bookingform').attr('action')+"&labid="+labid+"&practid="+practid+
+        "&date="+date+"&time="+time ;
+
+    console.log(url);
+
+    $.getJSON({
+        method: 'POST',
+        url:  url,
+        dataType: "json",
+        contentType: "application/json",
+        success: function(data){
+            console.log(data);
+            if (data.exitCode >= 0 ){
+                // mark as busy and choose skip to next slot
+                cur = $('#timepicker ul#time-slots li.selected');
+                cur.removeClass('slot-free').addClass('slot-busy');                    
+                $('#timepicker #next_slot').click();
+
+                $("#bookingform div#notif").attr('class','alert alert-success');
+                update_mybookings_table(e.data.urlbase);
+            } else {
+                $("#bookingform div#notif").attr('class','alert alert-danger');
+            }
+                $("#bookingform div#notif").html(data.exitMsg);
+        },
+        error: function(xhr, desc, err){
+            console.log(err);
+            // display err
+            $("#bookingform div#notif").html(err);
+            $("#bookingform div#notif").attr('class','alert alert-danger');
+        },
+        complete: function (data){
+            $("#bookingform div.alert").hide();
+            $("#bookingform div#notif").show();   
+        }
     });
 
 }
@@ -117,33 +111,33 @@ function init_submit_btn(){
 function update_mybookings_table(controllerspath){
     id=getSearchParam('id');
     
-    url=controllerspath+"/get_bookings.php?id="+id;
+    url=controllerspath+"/get_bookings.php?id="+id+'&labid='+$('select[name=labid]').val();
     console.log(url);
     
      $.getJSON({
           url:  url,
           success: function(data){
                 
-                $('#mybookings tbody').html('');    
+                $('#mybookings tbody').html(''); 
                 
                 for (var i=0; i < data['bookings-list'].length ; i++ ){
                     bk = data['bookings-list'][i];
                     url2=controllerspath+"/delete_booking.php?id="+id+"&bookid="+bk['id'];
                     
-                    dt = new Date(bk['timestamp']);
-                    opt1 = { year: '2-digit', month: '2-digit', day: '2-digit'};
-                    day = new Intl.DateTimeFormat( opt1 ).format(dt);
+                    //dt = new Date(bk['timestamp']);
+                    //opt1 = { year: '2-digit', month: '2-digit', day: '2-digit'};
+                    //day = new Intl.DateTimeFormat( opt1 ).format(dt);
+                    day = bk['day'];
                     
-                    day = dt.getFullYear()+"-"+
-                          (( dt.getMonth() + 1 ).toString()).padStart(2, '0')+"-"+
-                          (dt.getDate().toString()).padStart(2, '0');
+                    //day = dt.getFullYear()+"-"+
+                    //     (( dt.getMonth() + 1 ).toString()).padStart(2, '0')+"-"+
+                    //     (dt.getDate().toString()).padStart(2, '0');
                     
                     //starttime= dt.getHours().padStart(2, '0')+":"+dt.getMinutes().padStart(2, '0');
-                    opt2 =  { hour: '2-digit', minute: '2-digit'};
-                    starttime = new Intl.DateTimeFormat('en-US', opt2).format(dt);
+                    //opt2 = { hour: '2-digit', minute: '2-digit' };
+                    //starttime = new Intl.DateTimeFormat('en-US', opt2).format(dt);
+                    starttime = bk['time'];
                     //now.setMinutes(now.getMinutes() + 30);
-
-
 
                     line = '<tr>' +
                         '<td>' + ' &nbsp; '+'</td>' + // ( i + 1 ) 
@@ -174,18 +168,38 @@ function update_mybookings_table(controllerspath){
                         $.getJSON( url, function( data ) { 
                             console.log(url);
                             row.remove();
-                            
+                            update_table_visibility();
                             init_table_pagination();
                         });
                  });
               
-                init_table_pagination();
+                if ( data['bookings-list'].length > 0 ){
+                    init_table_pagination();
+                }
+              
+                update_table_visibility();
               
             },
             error: function(xhr, desc, err){
                 console.log(err);       
             }
         });
+}
+
+function update_table_visibility(){
+    
+    //alert($('#mybookings tbody tr').length );
+    
+    if ( $('table#mybookings > tbody > tr').length > 0 ){
+        $('table#mybookings').show();
+        $('#pagination').show();
+        $('#mybookings_notif').hide();    
+    }else{
+        $('table#mybookings').hide();
+        $('#pagination').hide();
+        $('#mybookings_notif').show();
+    }
+
 }
 
 function init_table_pagination(){
@@ -409,14 +423,19 @@ function on_lab_select(e) {
                 $('#bookingform div.alert.inactive').show();
 
                 // disable booking button
-                $("button[name='bookingbutton']").click(function(e){
+                $('#bookingform').off().on('submit', function(e){
                     e.preventDefault();
-                    alert('This plant is not active at that moment.Unable to book.')
+                    alert('This plant is not active at that moment.Unable to book.'); // TOFIX: translate
                 });
-            } 
-            
-            // else active, 
-            // default behaviour, send form 
+            } else { // default behaviour, send form 
+                
+                    // display message
+                $('#bookingform div.alert.inactive').hide();
+
+                // re-enable booking button
+                $('#bookingform').off().on('submit', { urlbase: e.data.urlbase }, on_submit_form);
+                
+            }
         
         });
             

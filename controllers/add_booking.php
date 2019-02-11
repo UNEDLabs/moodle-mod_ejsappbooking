@@ -4,15 +4,16 @@ require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/lib.php');
 require_once($CFG->dirroot . '/filter/multilang/filter.php');
 require_once($CFG->dirroot . '/calendar/lib.php');
+require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
 
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 $labid = optional_param('labid', 0, PARAM_INT); // Selected laboratory.
 $practid = optional_param('practid',0, PARAM_INT); // 
-//$date = optional_param('date', 0, PARAM_RAW);
-//$time = optional_param('time',0, PARAM_RAW);
-$timestamp = optional_param('timestamp',0, PARAM_RAW); // UTC format: Wed, 14 Jun 2017 07:00:00 GMT
+$date = optional_param('date', 0, PARAM_RAW);
+$time = optional_param('time',0, PARAM_RAW);
+// $timestamp = optional_param('timestamp',0, PARAM_RAW); // UTC format: Wed, 14 Jun 2017 07:00:00 GMT
 
 if ($id) {
     $cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
@@ -26,12 +27,21 @@ if ($id) {
     $conflabs = $DB->get_record('block_remlab_manager_conf', array('practiceintro' => $practiceintro));
 }
 
-//$sdate = DateTime::createFromFormat("Y-m-d H:i", $date.' '.$time );      
-$sdate=DateTime::createFromFormat('D, d M Y H:i:s T',$timestamp);
+profile_load_data($USER); // user profile load
+
+$server_tz = new DateTimeZone(date_default_timezone_get());
+$user_tz = new DateTimeZone($USER->timezone);
+
+
+$sdate = new DateTime();
+    $sdate->setTimeZone($user_tz);
+    $sdate->setDate(substr($date, 0, 4), substr($date, 5, 2), substr($date, 8, 2));
+    $sdate->setTime(substr($time,0,2), substr($time,3,2));
+    $sdate->setTimeZone($server_tz);
 
 $exit = 0;
 $msg = get_string('submit-success', 'ejsappbooking');
-//.$sdate->format('Y-m-d H:i T');
+
     
 // Retrieving user´s bookings at the DB.
 $useraccess = $DB->get_records_sql("
@@ -55,12 +65,20 @@ if ($day == 0) {
 
 $dmonday = strtotime('-' . $monday . 'day', strtotime($sdate->format('Y-m-d')));
 $dsunday = strtotime('+' . $sunday . 'day', strtotime($sdate->format('Y-m-d')));
+
 $dmonday = date('Y-m-d', $dmonday);
 $dsunday = date('Y-m-d', $dsunday);
 
-if ($dmonday < $sdate->format('Y-m-d')) {
+
+if ($dmonday < $sdate->format('Y-m-d')) { // no se tienen en cuenta las reservas pasadas ?
     $dmonday = $sdate->format('Y-m-d');
 }
+
+$week_start =  DateTime::createFromFormat('Y-m-d H:i', $dmonday . ' 00:00', $user_tz);
+    $week_start->setTimeZone($server_tz);
+
+$week_end =  DateTime::createFromFormat('Y-m-d H:i', $dsunday . ' 23:59', $user_tz);
+    $week_end->setTimeZone($server_tz);
 
 // Determine user´s bookings of the week.
 $weekaccesses = $DB->get_records_sql("
@@ -69,10 +87,20 @@ $weekaccesses = $DB->get_records_sql("
     AND starttime >= to_timestamp( ? , 'YYYY-MM-DD HH24:MI')
     AND starttime <= to_timestamp( ? , 'YYYY-MM-DD HH24:MI')
     ORDER BY starttime ASC", 
-    array($USER->username, $labid, $dmonday." 00:00", $dsunday." 23:59")
+    array($USER->username, $labid, $week_start->format('Y-m-d H:i'), $week_end->format('Y-m-d H:i'))
 );
 
 $weekbooks = count($weekaccesses);
+
+//echo $weekbooks .'<br>';
+
+$day_start = clone $sdate;
+    $day_start->setTime(0,0);
+    $day_start->setTimeZone($server_tz);
+
+$day_end = clone $sdate;
+    $day_end->setTime(23,59);
+    $day_end->setTimeZone($server_tz);
 
 $dayaccesses = $DB->get_records_sql("
     SELECT starttime
@@ -81,7 +109,7 @@ $dayaccesses = $DB->get_records_sql("
     AND starttime >= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' )
     AND starttime <= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' )
     ORDER BY starttime ASC", 
-    array($USER->username, $labid, $sdate->format('Y-m-d'). ' 00:00', $sdate->format('Y-m-d').' 23:59'));
+    array($USER->username, $labid, $day_start->format('Y-m-d H:i'), $day_end->format('Y-m-d H:i')));
 
 $daybooks = count($dayaccesses);
 
@@ -133,6 +161,9 @@ if ($DB->record_exists('ejsappbooking_remlab_access',
 
 $data['exitCode']=$exit;
 $data['exitMsg']=$msg;
+$data['dayCount']= $daybooks;
+$data['weekCount']= $weekbooks;
+$data['totalCount']= $userbooks;
 
 echo json_encode($data);
 

@@ -42,6 +42,7 @@ global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 //require_once($CFG->libdir . '/moodlelib.php');
 // require_once($CFG->dirroot . '/calendar/lib.php');
 require_once($CFG->dirroot . '/filter/multilang/filter.php');
+require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
 
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 $n = optional_param('n', 0, PARAM_INT); // ...ejsappbooking instance ID - it should be named as the first character of the module.
@@ -67,8 +68,12 @@ if ($id) {
 }
 
 require_login($course, true, $cm);
+
+profile_load_data($USER); // user profile load
+
 $context = context_module::instance($cm->id);
 $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
+
 
 if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
     add_to_log($course->id, 'ejsappbooking', 'view', "view.php?id={$cm->id}", $ejsappbooking->name, $cm->id);
@@ -155,7 +160,6 @@ if (!$remlabs) {
         echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-2'));
 
            echo get_string('day_selection', 'ejsappbooking'). ':&nbsp;&nbsp;'.'<br>';
-           //echo 'Select a day'. ':&nbsp;&nbsp;'.'<br>'; // TOFIX: translation not working
     
             echo $OUTPUT->container('<div id="datepicker"></div>');   
 
@@ -166,9 +170,13 @@ if (!$remlabs) {
 
             echo get_string('time_selection', 'ejsappbooking'). '  
                <em><label id="current-date"></label></em>: '.'<br>';
-            // echo ''. ':&nbsp;&nbsp;'.'<br>'; // TOFIX: translation not working
             include('views/timepicker.php');  
     
+        $edit_url = $CFG->wwwroot . "/user/editadvanced.php?id=".$USER->id; // ."#id_email"
+    
+        echo '<p>' . get_string('time_zone', 'ejsappbooking') . ' ' . $USER->timezone . '&nbsp; '.
+            		"<a href='$edit_url' target='_blank' title='".get_string('time_zone_help', 'ejsappbooking')."'>".
+                "<span class='ui-icon ui-icon-gear'></span></a></p></br>";
             echo '<div class="alert alert-primary slot-free" role="alert">'.
                 get_string('slot-free', 'ejsappbooking').'</div>';
             echo '<div class="alert alert-dark slot-past error" role="alert">'. 
@@ -194,7 +202,7 @@ if (!$remlabs) {
         echo html_writer::end_tag('div');
     
         echo html_writer::start_tag('div', array('class' => 'col-md-3'));
-            echo '<nav><ul class="pagination">
+            echo '<nav><ul class="pagination" style="display: none">
                 <li class="page-item"><a class="page-link" href="#">
                  	&laquo; </a></li>
                 <li class="page-item"><a class="page-link" href="#">
@@ -205,8 +213,11 @@ if (!$remlabs) {
     
     echo html_writer::start_tag('div', array('class' => 'row'));
         echo html_writer::start_tag('div', array('class' => 'col-md-6 offset-md-2 '));
-            // include('views/mybookings.php');
-        echo '<table id="mybookings" class="table table-hover table-responsive-sm" >
+    
+        echo '<p e id="mybookings_notif" style="display: none">' 
+            . get_string('mybookings_empty','ejsappbooking') . '</p>';
+    
+        echo '<table id="mybookings" class="table table-hover table-responsive-sm" style="display: none">
                 <thead><tr>
                    <th></th>
                    <th>'.get_string('date', 'ejsappbooking').'</th>              

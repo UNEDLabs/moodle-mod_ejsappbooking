@@ -3,14 +3,20 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/lib.php');
 require_once($CFG->dirroot . '/filter/multilang/filter.php');
+require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
+
 
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
+profile_load_data($USER); // user profile load
+
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 $labid = optional_param('labid', 0, PARAM_INT); // Selected laboratory.
-$now = optional_param('now',0, PARAM_RAW); // UTC format: Wed, 14 Jun 2017 07:00:00 GMT
-   
-$sdate=DateTime::createFromFormat('D, d M Y H:i:s T', $now);
+// $now = optional_param('now',0, PARAM_RAW); // UTC format: Wed, 14 Jun 2017 07:00:00 GMT
+
+$sdate = new DateTime();
+    $sdate->setTimeZone(new DateTimeZone($USER->timezone));
+
 
 if ($id) {
     $cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
@@ -22,6 +28,7 @@ if ($id) {
 }
 
 $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));      
+
 
 // $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
 
@@ -48,19 +55,21 @@ $events2 = $DB->get_records_sql("
     WHERE a.ejsappid = c.ejsappid AND a.username = ? 
     AND a.starttime >= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' ) 
     ORDER BY a.starttime",
-    array( $USER->username, $sdate ));
+    array( $USER->username, $sdate->format('Y-m-d H:i') ));
 
 $data['bookings-list'] = [];
 
 foreach ($events2 as $event) {
     
     $ts=DateTime::createFromFormat('Y-m-d H:i:s' , $event->starttime);
-
+    $ts->setTimeZone(new DateTimeZone($USER->timezone));
+    
     array_push( $data['bookings-list'], Array(
          'id' =>  $event->id,
-         'labname' => $multilang->filter($event->name) . '. ' . $event->practiceintro,
-         'timestamp' => $ts->format('D, d M Y H:i:s T')
-     ));
+         'labname' => $multilang->filter($event->name) . '. ' . $event->practiceintro,         
+         'day' => $ts->format('Y-m-d'),
+         'time' => $ts->format('H:i')
+     )); //'timestamp' => $ts->format('D, d M Y H:i:s T')
 }
     
 echo json_encode($data);
