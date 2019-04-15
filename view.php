@@ -105,10 +105,8 @@ if ($ejsappbooking->intro) { // If some text was written, show the intro.
         'ejsappbookingintro');
 }
 
-// Get the remote laboratories in which the user is authorized to make bookings.
-$remlabs = $DB->get_records_sql("SELECT DISTINCT (a.id), a.name FROM {ejsapp} a INNER JOIN {ejsappbooking_usersaccess} 
-b ON a.id = b.ejsappid WHERE b.userid = ? AND a.course = ? AND a.is_rem_lab = 1 AND b.allowremaccess = 1",
-    array($USER->id, $course->id));
+// Get the remote laboratories in the current course.
+$remlabs = $DB->get_records('ejsapp', array('course' => $course->id, 'is_rem_lab' => 1));
 
 if (!$remlabs) {
     // No labs.

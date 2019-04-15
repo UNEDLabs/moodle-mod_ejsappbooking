@@ -48,7 +48,11 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_ejsappbooking_upgrade($oldversion) {
     global $DB;
 
-    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
+    if ($oldversion < '2019041500') {
+        $dbman = $DB->get_manager();
+        $table = new xmldb_table('ejsappbooking_usersaccess');
+        $dbman->drop_table($table);
+    }
 
     return true;
 }
