@@ -105,8 +105,16 @@ if ($ejsappbooking->intro) { // If some text was written, show the intro.
         'ejsappbookingintro');
 }
 
-// Get the remote laboratories in the current course.
+// Get available/visible remote laboratories in the current course.
 $remlabs = $DB->get_records('ejsapp', array('course' => $course->id, 'is_rem_lab' => 1));
+foreach ($remlabs as $key => $remlab) {
+    $ejsappcm = get_coursemodule_from_instance('ejsapp', $remlab->id, $course->id, false, MUST_EXIST);
+    $modinfo = get_fast_modinfo($course);
+    $ejsappcm = $modinfo->get_cm($ejsappcm->id);
+    if (!$ejsappcm->uservisible) {
+        unset($remlabs[$key]);
+    }
+}
 
 if (!$remlabs) {
     // No labs.
