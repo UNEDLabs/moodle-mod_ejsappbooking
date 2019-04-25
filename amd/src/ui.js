@@ -2,10 +2,10 @@ define(['jquery', 'jqueryui'], function($) {
     return {
         init: function(controllerspath) {
 		// alert("loading amd module")
-            
-        // init lab selector    
+                
         $('select').selectmenu();
             
+        // init lab selector
         $('select[name=labid]').on('selectmenuchange', { urlbase: controllerspath }, on_lab_select );
             
         // select first lab
@@ -31,28 +31,182 @@ define(['jquery', 'jqueryui'], function($) {
             altField: "#date"
         });
             
-        $('#datepicker').on('change',  { urlbase: controllerspath }, on_day_select);
+        $('#datepicker').on('change',  { urlbase: controllerspath }, on_date_select);
         
-        // select current day
+        //init timepicker
+        $('#timepicker table#hour td').on('click', function(){
+            clear_selected_time();
+            $(this).addClass('time-highlight time-current');
+        });
         
-        init_timepicker();        
-            
+        // select current day            
         $('#datepicker .ui-datepicker-current-day').click();    
-            
-        // init_submit_btn(controllerspath);
             
         $('#bookingform').on('submit',  { urlbase: controllerspath }, on_submit_form);
             
         update_mybookings_table(controllerspath);
             
         }
-      }
+    };
 });
+
+function clear_selected_time(){
+    $('#timepicker table#hour td').removeClass('time-highlight time-current');
+}
+
+function get_current_hour(){
+    
+    var t = $('#timepicker table#hour .time-current').text();
+    if ( t == ''){ return null }
+    
+    t = t.substr(0, t.length - 2);
+    period = t.substring(t.length - 2);
+    
+    t = parseInt(t);
+    
+    if ( period == 'PM'){
+        t = ( t + 12 ) % 24 ;
+    }
+    
+    if (t < 10) {
+        t = '0' + t.toString();
+    } else {
+        t = t.toString();
+    }
+
+    return t;
+}
+
+function get_current_time(){
+    return get_current_hour() + $('#timepicker table#interval .interval-current').text();
+}
+
+function on_lab_select(e) {
+        id = getSearchParam('id');
+        labid = $(this).val();
+    
+        url = e.data.urlbase+'/get_lab_info.php?'+'id='+id+'&labid='+labid;
+    
+        console.log(url);
+
+        $.getJSON( url, function( data ) {
+            
+            // update practice select
+            $("select[name='practid']").children().remove();
+
+            for (var p in data.practices ){
+               pid = p[0];
+               pname = data.practices[p[0]];
+               opt = $('<option>', { value: pid, text : pname });
+               $("select[name='practid']").append(opt);
+            };
+            
+            $('select[name=slot-size]').val(data['slot-size']);
+            $('select[name=practid] option:first').attr('selected','selected');
+            $("select[name='practid']").selectmenu("refresh");
+            
+            //rebuild timepicker interval selector
+            update_timepicker_interval(data['slot-size']);
+            
+            // update alerts visibility
+            $('#bookingform div.alert').hide();
+
+            if ( data.status == 0){ // practice inactive
+                 
+                $('#bookingform div.alert.inactive').show(); // display message
+
+                $('#bookingform').off().on('submit', function(e){ // disable booking button
+                    e.preventDefault();
+                    alert('This plant is not active at that moment.Unable to book.'); // TOFIX: translate
+                });
+                
+                return;
+            }
+            
+            // default behaviour, send form 
+            $('#bookingform').off().on('submit', { urlbase: e.data.urlbase }, on_submit_form);
+        
+        });
+            
+}
+
+function update_timepicker_interval(slot_size){
+    
+    // delete previous items
+    $('#timepicker table#interval td').remove(); // .not(':first')
+    
+    // insert first items
+    $('#timepicker table#interval tr').append('<td>:00</td>');
+    
+    // insert intervals adding slot_size to the previous one
+    period = slot_size;
+    
+    while ( period < 60 ) {
+        label = period;
+        if ( period < 10 ) label = '0' + label;
+        cell = '<td>:' + label + '</td>';
+        $('#timepicker table#interval tr').append(cell);
+        period += slot_size;
+    } 
+   // init_timepicker_interval();
+}
+         
+function on_date_select(e){
+    
+    clear_selected_time();
+    
+    id= getSearchParam('id');
+    labid=$('select[name=labid]').val();
+    selectDay = $(this).val();
+
+    url2 = e.data.urlbase+'/get_time_slots.php?'+'id='+id+'&labid='+labid+'&date='+selectDay;     
+    console.log(url2);
+
+    $.getJSON( url2, function( data ) { 
+        
+       $('#timepicker table#hour td').on('click',{ bslots: data['busy-slots']}, on_time_select );
+        
+    });
+    
+}
+
+function on_time_select(e){
+    
+    // disable busy slots
+     h = get_current_hour();
+    
+    console.log('selected '+h);
+    
+    $('#timepicker table#interval td').each( function( index, item ){
+        
+        time = h + $(this).text();
+         
+        if ( e.data.bslots.includes(time) ) { // busy, disable
+            $(this).addClass('interval-busy');
+            console.log('disabling '+time);
+        }else {
+            $(this).click(function(e){ // free, enable
+                $('#timepicker table#interval td').removeClass('time-highlight interval-current');
+                $(this).addClass('time-highlight interval-current');
+            });
+        }
+
+     });
+     
+     // focus table#interval after selecting an hour
+     //$('#timepicker table#interval td').first().click(); 
+}
 
 function on_submit_form(e){
     
     e.preventDefault();
-
+    
+    if (time == null){
+        console.log('error');
+        alert('debe seleccionar una hora');
+        return;
+    }
+    
     if ( $('#bookingform div.alert.error').is(":visible") ){
         alert($('#submit-error').html());     
         return;
@@ -60,17 +214,10 @@ function on_submit_form(e){
 
     labid=$('select[name="labid"]').val();
     practid=$('select[name="practid"]').val();
+    date=$('#datepicker').val();
+    time=get_current_time();
 
-    date=$('#datepicker').val(); // no needed
-    time=$('#timepicker ul#time-slots li.selected').html(); // delete
-
-    // timestamp = $('#datepicker').val() + ' ' + time;
-    // timestamp = timestamp.toUTCString();
-    // timestamp = encodeURIComponent(timestamp);
-    console.log(date + " " + time);
-
-    url=$('#bookingform').attr('action')+"&labid="+labid+"&practid="+practid+
-        "&date="+date+"&time="+time ;
+    url=$('#bookingform').attr('action')+"&labid="+labid+"&practid="+practid+"&date="+date+"&time="+time ;
 
     console.log(url);
 
@@ -111,7 +258,7 @@ function on_submit_form(e){
 function update_mybookings_table(controllerspath){
     id=getSearchParam('id');
     
-    url=controllerspath+"/get_bookings.php?id="+id+'&labid='+$('select[name=labid]').val();
+    url=controllerspath+"/get_mybookings.php?id="+id+'&labid='+$('select[name=labid]').val();
     console.log(url);
     
      $.getJSON({
@@ -188,13 +335,11 @@ function update_mybookings_table(controllerspath){
 
 function update_table_visibility(){
     
-    //alert($('#mybookings tbody tr').length );
-    
     if ( $('table#mybookings > tbody > tr').length > 0 ){
         $('table#mybookings').show();
         $('#pagination').show();
         $('#mybookings_notif').hide();    
-    }else{
+    } else {
         $('table#mybookings').hide();
         $('#pagination').hide();
         $('#mybookings_notif').show();
@@ -265,279 +410,7 @@ function init_table_pagination(){
     $("ul.pagination li.page-item:first-child").next().click(); // Select first page
     
 }
-
-function init_timepicker(){
-
-        $('#timepicker #prev_slot').click(function(e){
-            e.preventDefault();
-            
-            cur = $('#timepicker ul#time-slots li.selected');
-
-            if (cur.index() > 0 ){ // not first
-
-                cur.removeClass('selected').addClass('deselected');
-
-                cur.prev().removeClass('deselected').addClass('selected');
-            }
-            // first -> last
-            
-            update_visible_time();
-        });            
-
-        $('#timepicker #next_slot').click(function(e){
-            e.preventDefault();
-            
-            cur = $('#timepicker ul#time-slots li.selected');
-
-            if (cur.index() < cur.siblings().length ){ // not last
-                cur.removeClass('selected').addClass('deselected');
-                cur.next().removeClass('deselected').addClass('selected');
-            }
-            //last -> first
-            
-            update_visible_time();
-        });
-
-        $('#timepicker button').on('mousedown', function(e){
-             timeOut = setInterval(function(){ 
-                   $(e.target).trigger("click");
-                }, 200);
-        });
     
-        $('#timepicker button').on('mouseup', function() {
-            if (timeOut){
-                clearInterval(timeOut);
-            }
-        });
-    
-        $('#timepicker #next_hour').click(function(e){
-            e.preventDefault();
-
-            item = $('#timepicker ul#time-slots li.selected');
-            last = item.parent().siblings().last();
-            next = item.next();
-
-            chour = item.html().split(":")[0];   
-            cmin = item.html().split(":")[1];   
-            
-            nhour = next.html().split(":")[0];                    
-            nmin = next.html().split(":")[1];   
-            
-            while (( next !== last ) && (( chour == nhour ) || (cmin != nmin ) )){
-                
-                next = next.next();
-                
-                if ( next !== last ){
-                    nhour = next.html().split(":")[0];                    
-                    nmin = next.html().split(":")[1];     
-                }
-            } 
-            
-            if ( next ){                
-                item.removeClass('selected').addClass('deselected');
-                next.removeClass('deselected').addClass('selected');
-            }
-
-            // first -> last
-            
-            update_visible_time();
-        });  
-    
-            $('#timepicker #prev_hour').click(function(e){
-                e.preventDefault();
-                
-                item = $('#timepicker ul#time-slots li.selected');
-                prev = item.prev();
-
-                // item.html undefined
-
-                chour = item.html().split(":")[0];   
-                cmin = item.html().split(":")[1];   
-                first = false;
-
-                if ( prev.length == 0 ){
-                    first = true;
-                }else {
-                    phour = prev.html().split(":")[0];                    
-                    pmin = prev.html().split(":")[1];        
-                }
-
-                while ( (! first ) && (( chour == phour ) || (cmin != pmin )) ){
-
-                    prev = prev.prev();
-
-                    if (prev.length == 0){
-                        first = true;
-                    } else {
-                        phour = prev.html().split(":")[0];                    
-                        pmin = prev.html().split(":")[1];                                   
-                    }
-
-                    //console.log(chour+":" + cmin+" "+phour+":"+pmin);
-
-                } 
-
-                if ( prev ){                
-                    item.removeClass('selected').addClass('deselected');
-                    prev.removeClass('deselected').addClass('selected');
-                }
-
-            // first -> last
-            update_visible_time();
-        });             
-
-}
-
-function on_lab_select(e) {
-        id = getSearchParam('id');
-        labid = $(this).val();
-    
-        url = e.data.urlbase+'/get_lab_info.php?'+'id='+id+'&labid='+labid;
-    
-        console.log(url);
-
-        $.getJSON( url, function( data ) {
-
-             $("select[name='practid']").children().remove();
-
-             for (var p in data.practices ){
-               pid = p[0];
-               pname = data.practices[p[0]];
-               opt = $('<option>', { 
-                   value: pid,
-                   text : pname
-               });
-
-               $("select[name='practid']").append(opt);
-            };
-            
-           $('select[name=slot-size]').val(data['slot-size']);
-
-           $('select[name=practid] option:first').attr('selected','selected');
-           $("select[name='practid']").selectmenu("refresh");
-            
-            $('#bookingform div.alert').hide();
-
-            if ( data.status == 0){ // innactice
-                // display message
-                $('#bookingform div.alert.inactive').show();
-
-                // disable booking button
-                $('#bookingform').off().on('submit', function(e){
-                    e.preventDefault();
-                    alert('This plant is not active at that moment.Unable to book.'); // TOFIX: translate
-                });
-            } else { // default behaviour, send form 
-                
-                    // display message
-                $('#bookingform div.alert.inactive').hide();
-
-                // re-enable booking button
-                $('#bookingform').off().on('submit', { urlbase: e.data.urlbase }, on_submit_form);
-                
-            }
-        
-        });
-            
-}
-
-function update_visible_time(){
-    
-    starttime = $('#timepicker li.selected').html();
-   
-    // update displayed time
-
-     h = starttime.split(":")[0];
-     m = starttime.split(":")[1];
-        
-    $('#timepicker label#h').html(h);
-    $('#timepicker label#m').html(m);
-    
-    // update status 
-    
-    cur = $('#timepicker ul#time-slots li.selected');
-    
-    $('#bookingform div.alert').hide();
-    
-    if (cur.hasClass("slot-free")){
-        $('#bookingform div.alert.slot-free').show();
-    } else if (cur.hasClass("slot-busy")){
-        $('#bookingform div.alert.slot-busy').show();
-    } else if (cur.hasClass("slot-past")){
-        $('#bookingform div.alert.slot-past').show();
-    }
-    
-}
-            
-function on_day_select(e){
-
-    id= getSearchParam('id');
-    labid=$('select[name=labid]').val();
-    selectDay = $(this).val();
-
-    var options = { weekday: 'short',  month: 'short', day: 'numeric', year: 'numeric' };
-    var date  = new Date(selectDay);
-        date.setHours(0);
-        date.setMinutes(0);
-    var timestamp = date.toUTCString();
-        timestamp = encodeURIComponent(timestamp);
-    
-    $("#current-date").html(date.toLocaleString("en-US", options));
-
-    url2 = e.data.urlbase+'/get_time_slots.php?'+'id='+id+'&labid='+labid+
-        '&date='+selectDay+ // non needed
-        '&timestamp='+timestamp;
-        
-    console.log(url2);
-
-    $.getJSON( url2, function( data ) { 
-        
-        var now = new Date();
-        
-        slot_list = $('<ul id="time-slots">');
-        first_free= true;
-        
-        for (var i=0; i < data['time-slots'].length ; i++ ){
-
-            ts = data['time-slots'][i]['timestamp'];
-            status = data['time-slots'][i]['status'];
-            
-            dt = new Date(ts);
-            end_time = new Date(dt);
-                end_time.setMinutes(dt.getMinutes() + 30);
-            now = new Date();
-            
-            if ( end_time < now ) { status = "past"; }
-            
-            time = (( dt.getHours()).toString()).padStart(2, '0')+":"+
-                   (dt.getMinutes().toString()).padStart(2, '0');
-                    
-            item = $('<li>'+time+'</li>').addClass('slot deselected');  
-            
-            if (status == "past"){ // past
-                item.addClass('slot-past');
-            } else if (status == "busy"){ // busy
-                item.addClass('slot-busy');
-            } else {
-                item.addClass('slot-free');
-
-                if (first_free){ 
-                    item.removeClass('deselected').addClass('selected');
-                    first_free=false;
-                }
-            }
-            slot_list.append(item);
-        }
-        
-       $('#timepicker #slots ul').remove(); // remove previous list
-
-       $('#timepicker #slots').append(slot_list);
-
-        update_visible_time();
-
-    });
-}
-            
 function setSearchParam(param, newval) {
     var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
     var query = (window.location.search).replace(regex, "$1").replace(/&$/, '');
@@ -551,9 +424,9 @@ function getSearchParam(param) {
     var regex = new RegExp( "[\\?&]"+param+"=([^&#]*)" );
     var results = regex.exec(window.location.search);
     
-    if( results == null )
+    if( results == null ){
         return "";
-    else
+    } else {
         return results[1];
+    }
 }
-

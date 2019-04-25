@@ -8,14 +8,21 @@ require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
 
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
-profile_load_data($USER); // user profile load
 
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 $labid = optional_param('labid', 0, PARAM_INT); // Selected laboratory.
 // $now = optional_param('now',0, PARAM_RAW); // UTC format: Wed, 14 Jun 2017 07:00:00 GMT
 
+$server_tz = new DateTimeZone(date_default_timezone_get());
+
+if( $USER->timezone == '99'){ // default tz
+    $user_tz = $server_tz;
+} else {
+    $user_tz = new DateTimeZone($USER->timezone);
+}
+
 $sdate = new DateTime();
-    $sdate->setTimeZone(new DateTimeZone($USER->timezone));
+    $sdate->setTimeZone($user_tz);
 
 
 if ($id) {
@@ -27,8 +34,10 @@ if ($id) {
     $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
 }
 
-$practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));      
 
+profile_load_data($USER); // user profile load
+
+$practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));  
 
 // $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
 
@@ -62,7 +71,7 @@ $data['bookings-list'] = [];
 foreach ($events2 as $event) {
     
     $ts=DateTime::createFromFormat('Y-m-d H:i:s' , $event->starttime);
-    $ts->setTimeZone(new DateTimeZone($USER->timezone));
+    $ts->setTimeZone($user_tz);
     
     array_push( $data['bookings-list'], Array(
          'id' =>  $event->id,

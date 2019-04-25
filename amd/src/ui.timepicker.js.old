@@ -1,0 +1,179 @@
+/*
+
+
+*/
+
+/*
+function init_timepicker_interval(){
+    
+    $('#timepicker table#interval td').click(function(e){
+         $('#timepicker table#interval td').removeClass('time-highlight interval-current');
+         $(this).addClass('time-highlight interval-current');
+     });
+    
+}
+
+function disable_busy_slots(bslots){
+    //console.log('disable_busy_slots');
+
+    // disable busy slots
+        
+    $('#timepicker table#interval td').click(function(e){
+        
+        $('#timepicker table#interval td')
+        
+         $('#timepicker table#interval td').removeClass('time-highlight interval-current');
+         $(this).addClass('time-highlight interval-current');
+     });
+    
+ 
+    console.log(bslots);
+}
+
+*/
+function init_timepicker(){
+
+        $('#timepicker #prev_slot').click(function(e){
+            e.preventDefault();
+            
+            cur = $('#timepicker ul#time-slots li.selected');
+
+            if (cur.index() > 0 ){ // not first
+
+                cur.removeClass('selected').addClass('deselected');
+
+                cur.prev().removeClass('deselected').addClass('selected');
+            }
+            // first -> last
+            
+            update_visible_time();
+        });            
+
+        $('#timepicker #next_slot').click(function(e){
+            e.preventDefault();
+            
+            cur = $('#timepicker ul#time-slots li.selected');
+
+            if (cur.index() < cur.siblings().length ){ // not last
+                cur.removeClass('selected').addClass('deselected');
+                cur.next().removeClass('deselected').addClass('selected');
+            }
+            //last -> first
+            
+            update_visible_time();
+        });
+
+        $('#timepicker button').on('mousedown', function(e){
+             timeOut = setInterval(function(){ 
+                   $(e.target).trigger("click");
+                }, 200);
+        });
+    
+        $('#timepicker button').on('mouseup', function() {
+            if (timeOut){
+                clearInterval(timeOut);
+            }
+        });
+    
+        $('#timepicker #next_hour').click(function(e){
+            e.preventDefault();
+
+            item = $('#timepicker ul#time-slots li.selected');
+            last = item.parent().siblings().last();
+            next = item.next();
+
+            chour = item.html().split(":")[0];   
+            cmin = item.html().split(":")[1];   
+            
+            nhour = next.html().split(":")[0];                    
+            nmin = next.html().split(":")[1];   
+            
+            while (( next !== last ) && (( chour == nhour ) || (cmin != nmin ) )){
+                
+                next = next.next();
+                
+                if ( next !== last ){
+                    nhour = next.html().split(":")[0];                    
+                    nmin = next.html().split(":")[1];     
+                }
+            } 
+            
+            if ( next ){                
+                item.removeClass('selected').addClass('deselected');
+                next.removeClass('deselected').addClass('selected');
+            }
+
+            // first -> last
+            
+            update_visible_time();
+        });  
+    
+            $('#timepicker #prev_hour').click(function(e){
+                e.preventDefault();
+                
+                item = $('#timepicker ul#time-slots li.selected');
+                prev = item.prev();
+
+                // item.html undefined
+
+                chour = item.html().split(":")[0];   
+                cmin = item.html().split(":")[1];   
+                first = false;
+
+                if ( prev.length == 0 ){
+                    first = true;
+                }else {
+                    phour = prev.html().split(":")[0];                    
+                    pmin = prev.html().split(":")[1];        
+                }
+
+                while ( (! first ) && (( chour == phour ) || (cmin != pmin )) ){
+
+                    prev = prev.prev();
+
+                    if (prev.length == 0){
+                        first = true;
+                    } else {
+                        phour = prev.html().split(":")[0];                    
+                        pmin = prev.html().split(":")[1];                                   
+                    }
+
+                    //console.log(chour+":" + cmin+" "+phour+":"+pmin);
+
+                } 
+
+                if ( prev ){                
+                    item.removeClass('selected').addClass('deselected');
+                    prev.removeClass('deselected').addClass('selected');
+                }
+
+            // first -> last
+            update_visible_time();
+        });             
+
+}
+
+function update_visible_time(){
+    
+    starttime = $('#timepicker li.selected').html();
+   
+    // update displayed time
+     h = starttime.split(":")[0];
+     m = starttime.split(":")[1];
+        
+    $('#timepicker label#h').html(h);
+    $('#timepicker label#m').html(m);
+    
+    // update status
+    cur = $('#timepicker ul#time-slots li.selected');
+    $('#bookingform div.alert').hide();
+    
+    if (cur.hasClass("slot-free")){
+        $('#bookingform div.alert.slot-free').show();
+    } else if (cur.hasClass("slot-busy")){
+        $('#bookingform div.alert.slot-busy').show();
+    } else if (cur.hasClass("slot-past")){
+        $('#bookingform div.alert.slot-past').show();
+    }
+    
+}

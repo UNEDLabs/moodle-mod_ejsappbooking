@@ -8,6 +8,8 @@ div.row.selectores {
     padding-bottom: 3em;
 }
 
+/* old timepicker
+
 #timepicker {
     display: inline-block;
     padding: 2em;
@@ -28,6 +30,13 @@ div.row.selectores {
 #timepicker span#time{
     display: inline-block;
     margin: 1em 0.5em;
+}
+*/
+
+
+.ui-datepicker-current-day {
+  outline: 3px solid rgb(17, 119, 209) !important;
+  font-weight: bold !important
 }
 
 .pagination {
@@ -66,4 +75,65 @@ div.row.selectores {
 
 div.alert{
     display: none
+}
+
+#datepicker, #timepicker {
+    padding: 1em 0;
+}
+
+#timepicker table td{
+    padding: 0.5em;
+    font-size: large
+}
+
+#timepicker table#hour td{
+    border: 1px solid rgb(211, 211, 211) !important;
+    border-collapse: collapse
+    /**/
+}
+
+#timepicker table .time-highlight {
+  outline: 4px solid rgb(17, 119, 209) !important;
+}
+
+#timepicker table td span {
+    font-size: 65%
+}
+
+#timepicker table td{
+    cursor: pointer;   
+}
+
+#timepicker table#interval {
+    width: 360px!important;
+    display: block;
+    overflow-x: scroll;
+    margin: 4px 0;
+    padding: 4px;
+} 
+
+#timepicker table td a {
+    text-decoration: none;
+    color: inherit
+}
+
+#timepicker table#interval td {
+    border-top: 0;
+    text-align: center;
+}
+
+#timepicker table#interval td.interval-busy {
+    color: lightgray;
+    cursor: default;
+}
+
+#booking_btn { 
+    display: inline-block;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    padding: 0.5em;
+    cursor: pointer; 
+    border-radius: 3px;
+    color: rgb(74,74, 74);
+    font-weight: bold
 }

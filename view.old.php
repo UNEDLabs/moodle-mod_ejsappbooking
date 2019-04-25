@@ -134,7 +134,7 @@ if (!$remlabs) {
     // $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
     
     echo html_writer::start_tag('div', array('class' => 'row '));
-        echo html_writer::start_tag('div', array('class' => 'col-md-8    offset-md-1'));
+        echo html_writer::start_tag('div', array('class' => 'col-md-6 offset-md-2'));
             echo $intro;
             echo $OUTPUT->heading(get_string('newreservation', 'ejsappbooking'));
         echo html_writer::end_tag('div');
@@ -144,13 +144,13 @@ if (!$remlabs) {
             'action' => "/mod/ejsappbooking/controllers/add_booking.php?id=".$id));
 
     echo html_writer::start_tag('div', array('class' => 'row selectores'));    
-        echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
+        echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-2'));
             echo get_string('rem_lab_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
             include('views/select_labs.php');
             echo '<input type="hidden" name="slot-size" />';
         echo html_writer::end_tag('div');
     
-        echo html_writer::start_tag('div', array('class' => 'col-md-4 offset-md-1'));
+        echo html_writer::start_tag('div', array('class' => 'col-md-3'));
             echo get_string('rem_prac_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
             include('views/select_practices.php');
         echo html_writer::end_tag('div');
@@ -159,33 +159,22 @@ if (!$remlabs) {
     echo html_writer::start_tag('div', array('class' => 'row'));
     
         // Left column
-        echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
-           echo '<span class="ui-icon ui-icon-calendar"></span> &nbsp;'.
-               get_string('date-select', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
+        echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-2'));
+
+           echo get_string('day_selection', 'ejsappbooking'). ':&nbsp;&nbsp;'.'<br>';
     
             echo $OUTPUT->container('<div id="datepicker"></div>');   
 
         echo html_writer::end_tag('div');
-    
-    
+
         // Right column
-        echo html_writer::start_tag('div', array('class' => 'col-md-4 offset-md-1'));
+        echo html_writer::start_tag('div', array('class' => 'col-md-3'));
+
+            echo get_string('time_selection', 'ejsappbooking'). '  
+               <em><label id="current-date"></label></em>: '.'<br>';
+            include('views/timepicker.php');  
     
-        // Current date
-    
-       //echo '<img src="pix/clock_16px.png" title="Made by Freepic under license CC 3.0 BY from www.flaticon.com" />&nbsp;' .
-       echo '<span class="ui-icon ui-icon-clock"></span>&nbsp;' . 
-            get_string('time-select', 'ejsappbooking').':'; 
-        
-        //<em><label id="current-date"></label></em>'.'<br>';
-    
-        // timepicker
-    
-        include('views/timepicker.php');  
-    
-    
-        // time zone info
-        $tz_edit_url = $CFG->wwwroot . "/user/editadvanced.php?id=".$USER->id; // ."#id_email"
+        $edit_url = $CFG->wwwroot . "/user/editadvanced.php?id=".$USER->id; // ."#id_email"
     
         if ( $USER->timezone == '99'){
             $tz_str = get_string('time_zone_default', 'ejsappbooking');
@@ -194,28 +183,21 @@ if (!$remlabs) {
         } 
     
         echo '<p>' . $tz_str . '&nbsp; '.
-                "<a href='$tz_edit_url' target='_blank' title='".get_string('time_zone_help', 'ejsappbooking')."'>".
+                "<a href='$edit_url' target='_blank' title='".get_string('time_zone_help', 'ejsappbooking')."'>".
                     "<span class='ui-icon ui-icon-gear'></span></a></p></br>";
-    
-        // hiddens warnings
-    
-        echo '<div class="alert alert-primary slot-free" role="alert">'.
-            get_string('slot-free', 'ejsappbooking').'</div>';
-        echo '<div class="alert alert-dark slot-past error" role="alert">'. 
-            get_string('slot-past', 'ejsappbooking').'</div>';
-        echo '<div class="alert alert-warning slot-busy error" role="alert">'. 
-            get_string('slot-busy', 'ejsappbooking').'</div>';
-        echo '<div class="alert alert-danger inactive error" role="alert">'. 
-            get_string('plant-inactive', 'ejsappbooking').'</div>';    
-        echo '<div id="notif" class="alert alert-success" role="alert">&nbsp;</div>';
-        echo '<div id="submit-error" class="alert" role="alert">'.
-            get_string('submit-error', 'ejsappbooking').'</div>';
-    
-        // submit button
-    
-        echo '<div id="submitwrap">'.
-                '<button id="booking_btn" name="bookingbutton" class="btn btn-secondary" value="1" type="submit">' .
-                get_string('book', 'ejsappbooking') . '</button></div>';
+            echo '<div class="alert alert-primary slot-free" role="alert">'.
+                get_string('slot-free', 'ejsappbooking').'</div>';
+            echo '<div class="alert alert-dark slot-past error" role="alert">'. 
+                get_string('slot-past', 'ejsappbooking').'</div>';
+            echo '<div class="alert alert-warning slot-busy error" role="alert">'. 
+                get_string('slot-busy', 'ejsappbooking').'</div>';
+            echo '<div class="alert alert-danger inactive error" role="alert">'. 
+                get_string('plant-inactive', 'ejsappbooking').'</div>';    
+            echo '<div id="notif" class="alert alert-success" role="alert">&nbsp;</div>';
+            echo '<div id="submit-error" class="alert" role="alert">'.
+                get_string('submit-error', 'ejsappbooking').'</div>';
+            echo '<div id="submitwrap"><button id="booking_btn" name="bookingbutton"  value="1" type="submit">' .
+                    get_string('book', 'ejsappbooking') . '</button></div>';
     
         echo html_writer::end_tag('div');
     echo html_writer::end_tag('div');
@@ -223,7 +205,7 @@ if (!$remlabs) {
      echo html_writer::end_tag('form');
     
     echo html_writer::start_tag('div', array('class' => 'row'));
-        echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
+        echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-2'));
             echo $OUTPUT->heading(get_string('mybookings', 'ejsappbooking'));
         echo html_writer::end_tag('div');
     
@@ -238,9 +220,9 @@ if (!$remlabs) {
     echo html_writer::end_tag('div');
     
     echo html_writer::start_tag('div', array('class' => 'row'));
-        echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-1 '));
+        echo html_writer::start_tag('div', array('class' => 'col-md-6 offset-md-2 '));
     
-        echo '<p e id="mybookings_notif" >' 
+        echo '<p e id="mybookings_notif" style="display: none">' 
             . get_string('mybookings_empty','ejsappbooking') . '</p>';
     
         echo '<table id="mybookings" class="table table-hover table-responsive-sm" style="display: none">

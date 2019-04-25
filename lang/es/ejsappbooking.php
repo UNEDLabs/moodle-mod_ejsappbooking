@@ -99,9 +99,10 @@ $string['iyear'] = 'A&ntilde;o';
 $string['imonth'] = 'Mes';
 $string['availability_booking'] = 'N&uacute;mero de reservas disponibles';
 $string['rem_prac_selection'] = 'Seleccione una practica';
-$string['day_selection'] = 'Seleccione una fecha';
-$string['time_selection'] = 'Seleccione una hora de inicio el';
+$string['date-select'] = 'Seleccione una fecha';
+$string['time-select'] = 'Selecione una hora';
 $string['time_zone'] = 'Su zona horaria actual es';
+$string['time_zone_default'] = 'Su zona horaria no ha sido definida (se utilizará la hora del servidor)';
 $string['time_zone_help'] = 'Puede modificar este parámetro en la configuración de su perfil de usuario';
 $string['messageOccupied'] = 'El slot esta ocupado';
 $string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún laboratorio remoto configurado';
@@ -110,9 +111,9 @@ $string['slot-past'] = 'Este hueco ya no está disponible';
 $string['slot-busy'] = 'Este hueco está ocupado';
 $string['plant-inactive'] = 'Esta planta no está disponible en estos momentos';
 $string['submit-error'] = 'Por favor, compruebe los mensajes de error antes de completar su reserva.';
-$string['submit-success'] = 'Su reserva se ha guardado con éxito';
-$string['submit-error-exists'] = 'Esta reserva ya existe en la base de datos';
-$string['delete-confirmation'] = '¿Está seguro de que quiere eliminar este elemento?';
+$string['submit-success'] = 'Su reserva se ha guardada';
+$string['submit-error-exists'] = 'Esta reserva ya existe';
+$string['delete-confirmation'] = '¿Seguro que quiere eliminar este elemento?';
     
 // Capabilities.
 $string['ejsappbooking:addinstance'] = 'Añadir un nuevo sistema de reservas';

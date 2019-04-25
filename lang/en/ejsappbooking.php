@@ -100,9 +100,10 @@ $string['iyear'] = 'Year';
 $string['imonth'] = 'Month';
 $string['availability_booking'] = 'Number of available reserves';
 $string['rem_prac_selection'] = 'Select a practice';
-$string['day_selection'] = 'Select a day';
-$string['time_selection'] = 'Select starting time on';
+$string['date-select'] = 'Select date';
+$string['time-select'] = 'Select time';
 $string['time_zone'] = 'Your current timezone is';
+$string['time_zone_default'] = 'Your timezone is undefined (Using server time).';
 $string['time_zone_help'] = 'You can change this settings in your user profile';
 $string['messageOccupied'] = 'The slot is occupied';
 $string['no_labs_rem'] = 'You are not authorized to book or there is no remote laboratory set';
@@ -111,9 +112,9 @@ $string['slot-past'] = 'This slot has expired';
 $string['slot-busy'] = 'This slot is occupied';
 $string['plant-inactive'] = 'This plant is currently unavailable';
 $string['submit-error'] = 'Please, check error messages before completing your booking.';
-$string['submit-success'] = 'Your booking has been saved successfully';
+$string['submit-success'] = 'Your booking has been saved';
 $string['submit-error-exists'] = 'This record already exists';
-$string['delete-confirmation'] = 'Are you sure you want to delete this item?';
+$string['delete-confirmation'] = 'Are you sure to delete this item?';
 
 // Capabilities.
 $string['ejsappbooking:addinstance'] = 'Add a new booking system';

@@ -3,14 +3,15 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))). '/config.php');
                 
 require_once(dirname(dirname(__FILE__)) . '/lib.php');
-require_once($CFG->dirroot . '/filter/multilang/filter.php');           
+require_once($CFG->dirroot . '/filter/multilang/filter.php'); 
+require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
              
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 $labid = optional_param('labid', 0, PARAM_INT); // Selected laboratory.
-//$selectDay = optional_param('date', 0, PARAM_RAW); 
-$timestamp = optional_param('timestamp', 0, PARAM_RAW); 
+$selectDay = optional_param('date', 0, PARAM_RAW); 
+//$timestamp = optional_param('timestamp', 0, PARAM_RAW); 
 
 if ($id) {
     $cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
@@ -21,11 +22,24 @@ if ($id) {
     $context = context_module::instance($cm->id);
     $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));      
     $multilang = new filter_multilang($context, array('filter_multilang_force_old' => 0));
+    profile_load_data($USER); // user profile load
 }
 
 $data="";
 
-$sdate=DateTime::createFromFormat('D, d M Y H:i:s T',$timestamp);
+$server_tz = new DateTimeZone(date_default_timezone_get());
+
+if( $USER->timezone == '99'){ // default tz
+    $user_tz = $server_tz;
+} else {
+    $user_tz = new DateTimeZone($USER->timezone);
+}
+
+//$sdate=DateTime::createFromFormat('D, d M Y H:i:s T',$timestamp);
+
+$sdate=DateTime::createFromFormat('Y-m-d H:i:s', $selectDay . ' 00:00:00');
+    $sdate->setTimeZone($user_tz);
+    
 $edate= clone $sdate;
     $edate->add(new DateInterval('PT24H'));
 
@@ -42,39 +56,33 @@ $slots_list = $DB->get_records_sql("
     ORDER BY starttime ASC", 
     array($USER->username, $labid, $sdate->format("Y-m-d H:i"), $edate->format("Y-m-d H:i")));
 
-$busy_starttimes = [];
+//echo $user_tz->getName() .'<br>';
+//echo $sdate->format("Y-m-d H:i") .'<br>';
+//echo $edate->format("Y-m-d H:i");
 
+$data['busy-slots'] = [];
 foreach ($slots_list as $slot) {
     $time = substr($slot->starttime,11,5);
-    array_push($busy_starttimes, $slot->starttime );
+    array_push($data['busy-slots'], $time );
 }
 
+/*
+
 $slotduration = $DB->get_field('block_remlab_manager_conf', 'slotsduration', array('practiceintro' => $practiceintro));
-
-$slotsize = 60 / ( $slotduration + 1);
-
-// $data['slot-duration']=$minsperslot;
-
-$data['time-slots'] = [];
+$durations = array("0" => 60, "1"=>30, "2"=>15, "3"=>5, "4"=>2 );
+$slotsize = $durations[$slotduration];
 
 $date = clone $sdate;
 
 while ( $date < $edate ){
-    $stime = $date->format('Y-m-d H:i:s');
     
-    if ( array_search($stime, $busy_starttimes ) !== false ){
-        $status = "busy";
-    } else {
-        $status = "free";    
-    }
-
-    $item = [];
-    $item['timestamp'] = $date->format('D, d M Y H:i:s T');
-    $item['status'] = $status;
-        
-   array_push( $data['time-slots'], $item );
+    if ( array_search($date->format('Y-m-d H:i:s'), $busy_starttimes )){
+        array_push( $data['busy-slots'], $date->format('H:i'));   
+    } 
     
-   $date->modify('+'.$slotsize.' minutes');    
+    $date->modify('+'.$slotsize.' minutes');   
 }
+
+*/
 
 echo json_encode($data);

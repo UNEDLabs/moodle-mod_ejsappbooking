@@ -39,6 +39,8 @@ foreach ($practices as $practice) {
 
 $data['practices'] = $practices_loc;
 
-$data['slot-size'] = 60 / ( $slotduration + 1 )  ;
+$durations = array("0" => 60, "1"=>30, "2"=>15, "3"=>5, "4"=>2 );
+
+$data['slot-size'] = $durations[$slotduration];
 
 echo json_encode($data);
