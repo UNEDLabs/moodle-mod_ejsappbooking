@@ -2,53 +2,155 @@ define(['jquery', 'jqueryui'], function($) {
     return {
         init: function(controllerspath) {
 		// alert("loading amd module")
+            
+        console.log("Initializing dropdown selects");
                 
         $('select').selectmenu();
             
         // init lab selector
         $('select[name=labid]').on('selectmenuchange', { urlbase: controllerspath }, on_lab_select );
             
-        // select first lab
+        console.log('Selecting first lab');
         firstlab = $('select[name=labid] option:first').val();
         
         $('select[name=labid]').val(firstlab)
             .selectmenu("refresh")
-            .trigger("selectmenuchange");                
+            .trigger("selectmenuchange");
             
-        // init datepicker 
+        console.log('Initializing submit form');
+        $('#bookingform').on('submit',  { urlbase: controllerspath }, on_submit_form);
+            
+/*
+        console.log('Initializing datepicker');
         var today = new Date(); 
         var current = new Date(getSearchParam('selectDay'));
         
-        $('div#datepicker').datepicker({	
-            dateFormat: 'yy-mm-dd',
+        $('div#datepicker').datepicker({
+            altField: "#date",
             changeMonth: false,
             changeYear: false,
-            gotoCurrent: true,
-            firstDay: 1,
-            minDate: today,
+            dateFormat: 'yy-mm-dd',
             defaultDate: current,
+            firstDay: 1,
+            gotoCurrent: true,
+            minDate: today,
             numberOfMonths: [ 1, 1 ],
-            altField: "#date"
+            showOtherMonths: true,
+            selectOtherMonths: true
         });
             
-        $('#datepicker').on('change',  { urlbase: controllerspath }, on_date_select);
-        
-        //init timepicker
+        $('#datepicker').on('change', { urlbase: controllerspath }, on_date_select);
+                      
+        console.log('Initializing timepicker');
         $('#timepicker table#hour td').on('click', function(){
             clear_selected_time();
             $(this).addClass('time-highlight time-current');
         });
         
-        // select current day            
-        $('#datepicker .ui-datepicker-current-day').click();    
-            
-        $('#bookingform').on('submit',  { urlbase: controllerspath }, on_submit_form);
-            
+        console.log('Selecting current day');            
+        $('#datepicker .ui-datepicker-current-day').click();  
+        
+        console.log('Initializing mybookings table');
         update_mybookings_table(controllerspath);
+*/
+ 
+            url=controllerspath+"/get_mybookings.php?id="+getSearchParam('id')+'&labid='+$('select[name=labid]').val();
+            console.log(url);
+
+             $.getJSON({
+                 url: url,
+                 success: function(data){
+                     
+                    console.log(data['bookings-list']);
+
+                    init_datepicker(controllerspath, data['bookings-list']);
+
+                    // init_timepicker();
+                     
+                    console.log('Initializing timepicker');
+                    $('#timepicker table#hour td').on('click', function(){
+                        clear_selected_time();
+                        $(this).addClass('time-highlight time-current');
+                    });
+
+                    update_mybookings_table(controllerspath, data['bookings-list']);
+                     
+                  },
+                 error: function(xhr, desc, err){ //console.log(err);
+                    console.log('Error getting bookings list.');
+                }
+             });             
+            
             
         }
     };
 });
+
+function init_datepicker(controllerspath, bookings ){
+    
+    console.log('Initializing datepicker');
+    
+    var today = new Date(); 
+    var current = new Date(getSearchParam('selectDay'));
+
+    //created asociative array
+    
+    // var dates_times = new Array();
+    var dates_times = [];
+    
+    if (( bookings != null ) && (bookings.length > 0)){
+        
+        for(var i = 0; i< bookings.length; i++){
+            bk = bookings[i];
+            d = bk['day'];
+            t = bk['time'];
+            // l = Object.keys.length;
+            
+            if ( dates_times[d] == null ){
+                dates_times[d] =  t ;
+            } else {
+                dates_times[d] = dates_times[d] + " &#013;&#10; " + t ; 
+            }
+        }
+    }
+
+    $('div#datepicker').datepicker({	
+        dateFormat: 'yy-mm-dd',
+        changeMonth: false,
+        changeYear: false,
+        gotoCurrent: true,
+        firstDay: 1,
+        minDate: today,
+        defaultDate: current,
+        numberOfMonths: [ 1, 1 ],
+        altField: "#date",
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        beforeShowDay: function(d){
+            
+            //var month=((d.getMonth()+1)>=10)? (d.getMonth()+1) : '0' + (d.getMonth()+1); 
+            //var day = ((d.getDate())>=10)? (d.getDate()) : '0' + (d.getDate());
+            //var date = d.getFullYear() + "-" + month + "-" + day ; 
+            
+            var date = $.datepicker.formatDate('yy-mm-dd', d);
+            
+            if ( dates_times.hasOwnProperty(date)){ // console.log('Highlight' + date);
+                console.log('busy day '+ date);
+                return [true, 'highlight-day',dates_times[date]];
+            }else { // console.log('skip');
+                return [true,'',''];
+            }
+       }
+
+    }); 
+
+    $('#datepicker').on('change',  { urlbase: controllerspath }, on_date_select);
+    
+    $('#datepicker .ui-datepicker-current-day').click(); // select current day  
+}
+
+
+
 
 function clear_selected_time(){
     $('#timepicker table#hour td').removeClass('time-highlight time-current');
@@ -91,7 +193,7 @@ function on_lab_select(e) {
 
         $.getJSON( url, function( data ) {
             
-            // update practice select
+            console.log('Updating practice select');
             $("select[name='practid']").children().remove();
 
             for (var p in data.practices ){
@@ -105,7 +207,7 @@ function on_lab_select(e) {
             $('select[name=practid] option:first').attr('selected','selected');
             $("select[name='practid']").selectmenu("refresh");
             
-            //rebuild timepicker interval selector
+            
             update_timepicker_interval(data['slot-size']);
             
             // update alerts visibility
@@ -131,6 +233,8 @@ function on_lab_select(e) {
 }
 
 function update_timepicker_interval(slot_size){
+
+    console.log('Updating time interval picker');
     
     // delete previous items
     $('#timepicker table#interval td').remove(); // .not(':first')
@@ -148,10 +252,20 @@ function update_timepicker_interval(slot_size){
         $('#timepicker table#interval tr').append(cell);
         period += slot_size;
     } 
-   // init_timepicker_interval();
+    n = $('#timepicker table#interval td').length;
+    
+    console.log( 'Updating table overflow (' + n +  ')');
+    
+    if ( n > 8 ){
+        $('#timepicker table#interval').css('overflow-x', 'scroll');
+    } else {
+        $('#timepicker table#interval').css('overflow-x', 'hidden');
+    }
 }
          
 function on_date_select(e){
+    
+    console.log('On date select');
     
     clear_selected_time();
     
@@ -175,7 +289,7 @@ function on_time_select(e){
     // disable busy slots
      h = get_current_hour();
     
-    console.log('selected '+h);
+    console.log('On time select ('+h +')');
     
     $('#timepicker table#interval td').each( function( index, item ){
         
@@ -198,6 +312,8 @@ function on_time_select(e){
 }
 
 function on_submit_form(e){
+    
+    console.log('On submit form');
     
     e.preventDefault();
     
@@ -254,6 +370,143 @@ function on_submit_form(e){
     });
 
 }
+
+function update_mybookings_table(controllerspath, bookings){
+    
+    console.log('Updating mybookings table ' . bookings);
+    
+    $('#mybookings tbody').html(''); 
+
+    for (var i=0; i < bookings.length ; i++ ){
+        bk = bookings[i];
+        delete_url=controllerspath + "/delete_booking.php?id="+id+"&bookid="+bk['id'];
+
+        line = '<tr>' +
+                '<td>' + ' &nbsp; '+'</td>' + 
+                '<td>' + bk['day'] + '</td>' +         
+                '<td>' + bk['labname'] + '</td>' +
+                '<td>' + bk['time'] + '</td>' +                        
+                '<td class="text-center del_btn_cell"><a href="' + delete_url + '" class="del_btn">'+
+                    '<span class="ui-icon ui-icon-trash" >&nbsp;</span>'+
+                '</a></td>' +
+            '</tr>';
+
+        $('#mybookings tbody').append(line);
+    }
+
+    $('#mybookings tbody a').on('click', on_delete_mybookings_table_item );
+
+    if ( bookings.length > 0 ){
+        init_table_pagination();
+    }
+    
+    update_table_visibility();
+}
+
+function init_table_pagination(){ // .disabled and .active .page-item
+    
+    // Remove previous
+    while ( $('ul.pagination li').length > 2 ){
+        $('ul.pagination li').first().next().remove();
+    }
+    
+    // Add pages
+    count = Math.ceil( $('#mybookings tbody tr').length / 10 );
+    
+    for (i = 1; i <= count; i++) {
+        item = $('<li class="page-item"><a class="page-link">'+i+'</a></li>');
+        $("ul.pagination li.page-item").last().prev().after(item);
+    } 
+    
+    $('.pagination .page-item').click(function(e){
+        e.preventDefault();
+    
+        items = $('ul.pagination li').length;
+        old = $('.pagination .page-item.active');
+        
+        if ( $(this).index() == 0 ){ // First button (Previous)
+            if ( old.index() == 1 ) {
+               cur = $('ul.pagination li.page-item').last().prev();
+            } else {
+                cur = old.prev();
+            }
+        }else if ($(this).index() == items - 1 ){ // Last button (Next)
+            if ( old.index() == items - 2 ){
+                cur = $('ul.pagination li.page-item').first().next();
+            } else {
+                cur = old.next();
+            }
+        } else  { // Middle button (Direct)
+           cur = $(this);
+        }
+        
+        old.removeClass('active');
+        cur.addClass('active');
+        
+        page = $('ul.pagination li.page-item.active').index() ;
+        
+        $('#mybookings tbody tr').hide();
+        
+        total = $('#mybookings tbody tr').length;
+        
+        first = ( page - 1 )*10 + 1;
+        last = page*10;
+        
+        if ( $(this).index() == items - 2 ){
+            last = total; 
+        }
+        
+        for(i=first; i <= last; i++){
+            $('#mybookings tbody tr:nth-child('+i+')').show();
+        }
+        
+    });
+    
+    $("ul.pagination li.page-item:first-child").next().click(); // Select first page
+    
+}
+
+function on_delete_mybookings_table_item(e){
+    
+    console.log('Deleting booking');
+    e.preventDefault();
+
+    msg = $('#del-confirm').html();
+
+    if ( ! confirm(msg) ){
+        return;
+    }
+
+    url = $(this).attr('href');
+    row = $(this).closest("tr");
+
+    $.getJSON( url, function( data ) { 
+        console.log(url);
+        row.remove();
+        update_table_visibility();
+        init_table_pagination();
+    });
+}
+
+function update_table_visibility(){
+    
+    if ( $('table#mybookings > tbody > tr').length > 0 ){
+        $('table#mybookings').show();
+        $('#pagination').show();
+        $('#mybookings_notif').hide();
+        console.log('Mybookings table contain items');
+    }else{
+        $('table#mybookings').hide();
+        $('#pagination').hide();
+        $('#mybookings_notif').show();
+        
+        console.log('Mybookings table is empty');
+    }
+
+}
+
+/*
+
 
 function update_mybookings_table(controllerspath){
     id=getSearchParam('id');
@@ -333,6 +586,9 @@ function update_mybookings_table(controllerspath){
         });
 }
 
+*/
+
+/*
 function update_table_visibility(){
     
     if ( $('table#mybookings > tbody > tr').length > 0 ){
@@ -346,7 +602,9 @@ function update_table_visibility(){
     }
 
 }
+*/
 
+/*
 function init_table_pagination(){
      // .disabled and .active .page-item
     
@@ -410,7 +668,8 @@ function init_table_pagination(){
     $("ul.pagination li.page-item:first-child").next().click(); // Select first page
     
 }
-    
+*/
+
 function setSearchParam(param, newval) {
     var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
     var query = (window.location.search).replace(regex, "$1").replace(/&$/, '');

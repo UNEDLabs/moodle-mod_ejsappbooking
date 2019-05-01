@@ -77,6 +77,39 @@ div.alert{
     display: none
 }
 
+#datepicker td.highlight-day {
+}
+
+/*
+ * text-decoration: underline !important;
+
+    color: rgb(48, 181,244) !important; 
+
+    background-color: darkgray
+
+
+    color: dimgray !important;
+    color: hotpink !important;
+
+    color: #222222 !important;
+
+rgb(149,149,149) disabled gray;
+
+ */
+
+
+#datepicker td.highlight-day a {
+    
+    font-weight: bold !important;
+    color: rgb(38,38,38) !important;
+    background-image: none;
+    
+    background-color: rgb(149,149,149);
+    color: beige !important;
+        
+}
+
+
 #datepicker, #timepicker {
     padding: 1em 0;
 }
@@ -107,7 +140,6 @@ div.alert{
 #timepicker table#interval {
     width: 360px!important;
     display: block;
-    overflow-x: scroll;
     margin: 4px 0;
     padding: 4px;
 } 

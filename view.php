@@ -133,6 +133,9 @@ if (!$remlabs) {
     // Start building the website.
     // $baseurl = new moodle_url('/mod/ejsappbooking/view.php', array('id' => $id, 'labid' => $labid));
     
+    // Section one
+    // Booking form
+    
     echo html_writer::start_tag('div', array('class' => 'row '));
         echo html_writer::start_tag('div', array('class' => 'col-md-8    offset-md-1'));
             echo $intro;
@@ -169,7 +172,7 @@ if (!$remlabs) {
     
     
         // Right column
-        echo html_writer::start_tag('div', array('class' => 'col-md-4 offset-md-1'));
+        echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
     
         // Current date
     
@@ -182,7 +185,6 @@ if (!$remlabs) {
         // timepicker
     
         include('views/timepicker.php');  
-    
     
         // time zone info
         $tz_edit_url = $CFG->wwwroot . "/user/editadvanced.php?id=".$USER->id; // ."#id_email"
@@ -222,6 +224,10 @@ if (!$remlabs) {
     
      echo html_writer::end_tag('form');
     
+    
+    // Section two
+    // My bookings table
+    
     echo html_writer::start_tag('div', array('class' => 'row'));
         echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
             echo $OUTPUT->heading(get_string('mybookings', 'ejsappbooking'));
@@ -238,7 +244,7 @@ if (!$remlabs) {
     echo html_writer::end_tag('div');
     
     echo html_writer::start_tag('div', array('class' => 'row'));
-        echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-1 '));
+        echo html_writer::start_tag('div', array('class' => 'col-md-7 offset-md-1 '));
     
         echo '<p e id="mybookings_notif" >' 
             . get_string('mybookings_empty','ejsappbooking') . '</p>';
