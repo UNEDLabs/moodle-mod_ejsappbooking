@@ -1,0 +1,236 @@
+/*
+
+function update_mybookings_table(controllerspath, bookings){
+    
+    console.log('Updating mybookings table ' . bookings);
+    
+    $('#mybookings tbody').html(''); 
+
+    for (var i=0; i < bookings.length ; i++ ){
+        bk = bookings[i];
+        delete_url=controllerspath + "/delete_booking.php?id="+id+"&bookid="+bk['id'];
+
+        line = '<tr>' +
+                '<td>' + ' &nbsp; '+'</td>' + 
+                '<td>' + bk['day'] + '</td>' +         
+                '<td>' + bk['labname'] + '</td>' +
+                '<td>' + bk['time'] + '</td>' +                        
+                '<td class="text-center del_btn_cell"><a href="' + delete_url + '" class="del_btn">'+
+                    '<span class="ui-icon ui-icon-trash" >&nbsp;</span>'+
+                '</a></td>' +
+            '</tr>';
+
+        $('#mybookings tbody').append(line);
+    }
+
+    $('#mybookings tbody a').on('click', on_delete_mybookings_table_item );
+
+    if ( bookings.length > 0 ){
+        init_table_pagination();
+    }
+    
+    update_table_visibility();
+}
+
+*/
+
+
+
+/*
+function update_interval_picker(slot_size){
+
+    console.log('Updating time-interval picker');
+
+    // delete previous items
+    $('#timepicker').children('table#interval td').remove(); // .not(':first')
+
+    // insert first item
+    $('#timepicker').children('table#interval tr').append('<td>:00</td>');
+
+    // insert further intervals adding slot_size to the previous one
+    period = slot_size;
+    while ( period < 60 ) {
+        label = period;
+        if ( period < 10 ) label = '0' + label;
+        cell = '<td>:' + label + '</td>';
+        $('#timepicker table#interval tr').append(cell);
+        period += slot_size;
+    } 
+    n = $('#timepicker table#interval td').length;
+
+    console.log( 'Updating time-interval picker table overflow (' + n +  ')');
+
+    if ( n > 8 ){
+        $('#timepicker').children('table#interval').css('overflow-x', 'scroll');
+    } else {
+        $('#timepicker').children('table#interval').css('overflow-x', 'hidden');
+    }
+}
+
+*/
+
+
+/*
+
+
+function update_mybookings_table(controllerspath){
+    id=getSearchParam('id');
+    
+    url=controllerspath+"/get_mybookings.php?id="+id+'&labid='+$('select[name=labid]').val();
+    console.log(url);
+    
+     $.getJSON({
+          url:  url,
+          success: function(data){
+                
+                $('#mybookings tbody').html(''); 
+                
+                for (var i=0; i < data['bookings-list'].length ; i++ ){
+                    bk = data['bookings-list'][i];
+                    url2=controllerspath+"/delete_booking.php?id="+id+"&bookid="+bk['id'];
+                    
+                    //dt = new Date(bk['timestamp']);
+                    //opt1 = { year: '2-digit', month: '2-digit', day: '2-digit'};
+                    //day = new Intl.DateTimeFormat( opt1 ).format(dt);
+                    day = bk['day'];
+                    
+                    //day = dt.getFullYear()+"-"+
+                    //     (( dt.getMonth() + 1 ).toString()).padStart(2, '0')+"-"+
+                    //     (dt.getDate().toString()).padStart(2, '0');
+                    
+                    //starttime= dt.getHours().padStart(2, '0')+":"+dt.getMinutes().padStart(2, '0');
+                    //opt2 = { hour: '2-digit', minute: '2-digit' };
+                    //starttime = new Intl.DateTimeFormat('en-US', opt2).format(dt);
+                    starttime = bk['time'];
+                    //now.setMinutes(now.getMinutes() + 30);
+
+                    line = '<tr>' +
+                        '<td>' + ' &nbsp; '+'</td>' + // ( i + 1 ) 
+                        '<td>' + day + '</td>' +         
+                        '<td>' + bk['labname'] + '</td>' +
+                        '<td>' + starttime + '</td>' +                        
+                        '<td class="text-center del_btn_cell"><a href="' + url2 + '" class="del_btn">'+
+                            '<span class="ui-icon ui-icon-trash" >&nbsp;</span>'+
+                        '</a></td>' +
+                    '</tr>';
+
+                    $('#mybookings tbody').append(line);
+                    
+                }
+              
+                 $('#mybookings tbody a').click(function(e){
+                        e.preventDefault();
+                     
+                        msg = $('#del-confirm').html();
+                     
+                        if ( ! confirm(msg) ){
+                            return;
+                        }
+         
+                        url = $(this).attr('href');
+                        row = $(this).closest("tr");
+                     
+                        $.getJSON( url, function( data ) { 
+                            console.log(url);
+                            row.remove();
+                            update_table_visibility();
+                            init_table_pagination();
+                        });
+                 });
+              
+                if ( data['bookings-list'].length > 0 ){
+                    init_table_pagination();
+                }
+              
+                update_table_visibility();
+              
+            },
+            error: function(xhr, desc, err){
+                console.log(err);       
+            }
+        });
+}
+
+*/
+
+/*
+function update_table_visibility(){
+    
+    if ( $('table#mybookings > tbody > tr').length > 0 ){
+        $('table#mybookings').show();
+        $('#pagination').show();
+        $('#mybookings_notif').hide();    
+    } else {
+        $('table#mybookings').hide();
+        $('#pagination').hide();
+        $('#mybookings_notif').show();
+    }
+
+}
+*/
+
+/*
+function init_table_pagination(){
+     // .disabled and .active .page-item
+    
+    // Remove previous
+    while ( $('ul.pagination li').length > 2 ){
+        $('ul.pagination li').first().next().remove();
+    }
+    
+    // Add pages
+    count = Math.ceil( $('#mybookings tbody tr').length / 10 );
+    
+    for (i = 1; i <= count; i++) {
+        item = $('<li class="page-item"><a class="page-link">'+i+'</a></li>');
+        $("ul.pagination li.page-item").last().prev().after(item);
+    } 
+    
+    $('.pagination .page-item').click(function(e){
+        e.preventDefault();
+    
+        items = $('ul.pagination li').length;
+        old = $('.pagination .page-item.active');
+        
+        if ( $(this).index() == 0 ){ // First button (Previous)
+            if ( old.index() == 1 ) {
+               cur = $('ul.pagination li.page-item').last().prev();
+            } else {
+                cur = old.prev();
+            }
+        }else if ($(this).index() == items - 1 ){ // Last button (Next)
+            if ( old.index() == items - 2 ){
+                cur = $('ul.pagination li.page-item').first().next();
+            } else {
+                cur = old.next();
+            }
+        } else  { // Middle button (Direct)
+           cur = $(this);
+        }
+        
+        old.removeClass('active');
+        cur.addClass('active');
+        
+        page = $('ul.pagination li.page-item.active').index() ;
+        
+        $('#mybookings tbody tr').hide();
+        
+        total = $('#mybookings tbody tr').length;
+        
+        first = ( page - 1 )*10 + 1;
+        last = page*10;
+        
+        if ( $(this).index() == items - 2 ){
+            last = total; 
+        }
+        
+        for(i=first; i <= last; i++){
+            $('#mybookings tbody tr:nth-child('+i+')').show();
+        }
+        
+    });
+    
+    $("ul.pagination li.page-item:first-child").next().click(); // Select first page
+    
+}
+*/

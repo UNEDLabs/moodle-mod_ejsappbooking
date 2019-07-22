@@ -47,7 +47,17 @@ $edate= clone $sdate;
 // $nextDay = date('Y-m-d', strtotime($selectDay) + 86400 );
 
 // mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
+/*
+$slots_list = $DB->get_records_sql("
+    SELECT  starttime, ejsappid
+    FROM {ejsappbooking_remlab_access} 
+    WHERE username = ? 
+    ORDER BY starttime ASC", 
+    array($USER->username, $labid));
 
+print_r($slots_list);
+return;
+*/
 $slots_list = $DB->get_records_sql("
     SELECT  starttime
     FROM {ejsappbooking_remlab_access} 

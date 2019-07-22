@@ -1,0 +1,140 @@
+
+/*
+              
+           labsel = new lab_select();
+              
+           pracsel = new practice_select();
+               
+           datepicker = new date_picker(selDate);
+            
+           timepicker = new time_picker();
+            
+           notifarea = new notif_area();
+            
+           form = new booking_form();
+            
+           labsel.onselect({ urlbase: controllerspath, course: course, lab_sel: labsel, prac_sel: pracsel, 
+                time_picker: timepicker, notif_area: notifarea, booking_form: form });
+        
+           datepicker.on_date_select({ urlbase: controllerspath, timepicker: timepicker});
+        
+           //form.onsubmit({ urlbase: controllerspath, booking_form: form, timepicker: timepicker, notif_area: notif_area});
+            
+           labsel.first();
+           pracsel.first();
+            
+           mybookings = new mybookings_table();
+
+             bookings_list_url = controllerspath+"/get_mybookings.php?id="+course+'&labid='+labsel.get_lab();
+            
+             $.getJSON({
+                 url: bookings_list_url,
+                 success: function(data){
+                    
+                    console.log('GET ' +bookings_list_url);
+                     
+                    bookings = Array.from(data['bookings-list']); 
+                    console.log('Retrieving booking list: ' + data['bookings-list'] +'#' + bookings.length);
+                     
+                    //datepicker.init(controllerspath, to_date_map(bookings));
+                    
+                    if ( bookings.length > 0  ){ 
+                        console.log('Updating mybookings table');
+                        
+                        mybookings.empty();
+                        mybookings.populate(controllerspath, data['bookings-list']);
+                        mybookings.update_visibility();
+                    }
+
+                  },
+                 error: function(xhr, desc, err){ //console.log(err);
+                    console.log('Error getting bookings list.');
+                }
+             });
+  
+  */
+  
+  
+/*
+function on_date_select(e){
+
+    console.log('On date select');
+
+    (e.data.timepicker).clear();
+
+    id= getSearchParam('id');
+    labid=$('select[name=labid]').val();
+    selectDay = $(this).val();
+    busy_slots_url = e.data.urlbase+'/get_time_slots.php?'+'id='+id+'&labid='+labid+'&date='+selectDay;  
+
+    $.getJSON( busy_slots_url, function( data ) { 
+
+       console.log( 'GET ' + busy_slots_url); 
+
+       (e.data.timepicker).children('table#hour td').on('click',{ bslots: data['busy-slots']}, 
+            (e.data.timepicker).on_time_select );
+
+    }); 
+}
+*/
+
+/*
+
+function on_submit_form(e){
+    
+    e.preventDefault();
+
+    if ( $('#bookingform div.alert.error').is(":visible") ){
+        alert($('#submit-error').html());     
+        return;
+    }
+
+    labid=$('select[name="labid"]').val();
+    practid=$('select[name="practid"]').val();
+
+    date=$('#datepicker').val(); // no needed
+    time=$('#timepicker ul#time-slots li.selected').html(); // delete
+
+    // timestamp = $('#datepicker').val() + ' ' + time;
+    // timestamp = timestamp.toUTCString();
+    // timestamp = encodeURIComponent(timestamp);
+    console.log(date + " " + time);
+
+    url=$('#bookingform').attr('action')+"&labid="+labid+"&practid="+practid+
+        "&date="+date+"&time="+time ;
+
+    console.log(url);
+
+    $.getJSON({
+        method: 'POST',
+        url:  url,
+        dataType: "json",
+        contentType: "application/json",
+        success: function(data){
+            console.log(data);
+            if (data.exitCode >= 0 ){
+                // mark as busy and choose skip to next slot
+                cur = $('#timepicker ul#time-slots li.selected');
+                cur.removeClass('slot-free').addClass('slot-busy');                    
+                $('#timepicker #next_slot').click();
+
+                $("#bookingform div#notif").attr('class','alert alert-success');
+                update_mybookings_table(e.data.urlbase);
+            } else {
+                $("#bookingform div#notif").attr('class','alert alert-danger');
+            }
+                $("#bookingform div#notif").html(e.data.exitMsg);
+        },
+        error: function(xhr, desc, err){ // console.log(err); 
+            
+            $("#bookingform div#notif").html(err);
+            $("#bookingform div#notif").attr('class','alert alert-danger');
+        },
+        complete: function (data){
+            $("#bookingform div.alert").hide();
+            $("#bookingform div#notif").show();   
+        }
+    });
+
+}
+  */  

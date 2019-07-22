@@ -100,7 +100,7 @@ rgb(149,149,149) disabled gray;
 
 #datepicker td.highlight-day a {
     
-    font-weight: bold !important;
+   /* font-weight: bold !important; */
     color: rgb(38,38,38) !important;
     background-image: none;
     
@@ -154,7 +154,8 @@ rgb(149,149,149) disabled gray;
     text-align: center;
 }
 
-#timepicker table#interval td.interval-busy {
+#timepicker table#hour td.disabled,
+#timepicker table#interval td.disabled {
     color: lightgray;
     cursor: default;
 }
