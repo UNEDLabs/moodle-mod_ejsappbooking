@@ -1,25 +1,24 @@
 define(['jquery','jqueryui'], function($){
 
-    var notif = function notificationArea(){
-        console.log('Initializing notification area');
+    var notif = function(debug){
+        this.debug = debug;
         this.elem = $('div#notif-area');
+        
+        this.log('Creating object');
+    };
+    
+    notif.prototype.log = function(msg){
+        if (this.debug){
+            console.log('[NOTIF] ' + msg);
+        }
     };
   
     notif.prototype.clear = function(){
         this.elem.children('div.alert').hide();
     };
     
-    /* TOREMOVE */
-    notif.prototype.set_msg = function(text){
-       this.elem.children('div#notif').html(text);  
-    };
-    
-    notif.prototype.foo = function(){
-        return 'foo';
-    };
-    
     notif.prototype.display = function(selector){    
-        console.log('Displaying alert '+selector);
+        this.log('Displaying alert '+selector);
         this.elem.children('div.alert'+selector).show();  
     };
 

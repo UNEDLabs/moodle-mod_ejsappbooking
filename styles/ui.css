@@ -34,6 +34,7 @@ div.row.selectores {
 */
 
 
+
 .ui-datepicker-current-day {
   outline: 3px solid rgb(17, 119, 209) !important;
   font-weight: bold !important
@@ -53,9 +54,9 @@ div.row.selectores {
     margin-bottom: 2%;
 }
 
-#bookingform #notif {
-    margin: 1em 0;
-    width: 75%
+
+#bookingform  #notif-area div.alert{
+    width: 100% !important
 }
 
 #bookingform #submitwrap{

@@ -1,9 +1,10 @@
 define(['jquery','jqueryui'], function($){
 
-     var dpicker = function Datepicker(current_date, bookings){
+     var dpicker = function Datepicker(debug){
+         this.debug = debug;
          this.elem = $('div#datepicker');
          
-         console.log('Initializing datepicker');
+         this.log('Creating object');
 
          var today = new Date(); 
 
@@ -14,90 +15,32 @@ define(['jquery','jqueryui'], function($){
             gotoCurrent: true,
             firstDay: 1,
             minDate: today,
-            defaultDate: current_date,
             numberOfMonths: [ 1, 1 ],
             altField: "#date",
             showOtherMonths: true,
-            selectOtherMonths: true,
-            beforeShowDay: function(d){
-                var date = $.datepicker.formatDate('yy-mm-dd', d);
-                console.log('Marking ' + date );
-                if ( bookings.hasOwnProperty(date)){ // busy day
-                    return [true, 'highlight-day', bookings[date]];
-                } else { // skip
-                    return [true,'',''];
-                }
-           }
+            selectOtherMonths: true
          });
                  
-     }
+     };
+     
+     dpicker.prototype.log = function(msg){
+        if (this.debug){
+            console.log('[DATEPICKER] ' + msg);
+        }
+    }; 
      
      dpicker.prototype.get = function(){
          return this.elem.val();
      }
      
-     dpicker.prototype.set_default = function(){
-            $('.ui-datepicker-today').click();
+     dpicker.prototype.get_today = function(){
+         return $('.ui-datepicker-today');
      }
-
-     dpicker.prototype.mark_booked = function(controllerspath, dates_times){
-        
-        console.log('Marking booked on datepicker');
-         
-        this.elem.datepicker({
-            beforeShowDay: function(d){
-                var date = $.datepicker.formatDate('yy-mm-dd', d);
-                console.log('Marking ' + date );
-                console.log(date_times);
-                if ( dates_times.hasOwnProperty(date)){ // busy day
-                    return [true, 'highlight-day',dates_times[date]];
-                } else { // skip
-                    return [true,'',''];
-                }
-           }
-        });  
-    };
     
-    dpicker.prototype.onchange = function(data){
-        
-        var dpicker = this;
-        
-        this.elem.on('change', data, function (e){
-            console.log('<EVENT> On date select '+$(this).val());
-            
-           // Interesa esto? no si estamos buscando fecha para una hora concreta
-           // e.data.timepicker.pick_default();
-            
-            e.data.timepicker.set_today(dpicker.get_real_day() == $(this).val());
-       
-            busy_slots_url = e.data.urlbase+'/get_time_slots.php?'+
-                'id='+e.data.course_id+'&labid='+e.data.lab_id+'&date='+$(this).val();  
-
-            $.getJSON(busy_slots_url, function( data ){
-                console.log( 'GET ' + busy_slots_url + " " + data);
-                
-                if ( e.data.timepicker.is_today() ){
-                    console.log('Today');
-                    e.data.timepicker.update_past_hours();
-                    
-                    if ( e.data.timepicker.get_current_hour() == e.data.timepicker.get_real_hour()){    
-                        e.data.timepicker.update_past_interv();
-                    }
-                } else {
-                    e.data.timepicker.clear_past();
-                }
-                
-                if ( data['busy-slots'].length  > 0) {
-                    e.data.timepicker.set_busy(data['busy-slots']);
-                    e.data.timepicker.update_busy_interv();
-                }else {
-                    console.log('No busy slots this day');
-                }
-            });
-
-     });
-   };
-
+     dpicker.prototype.set_today = function(){
+            this.get_today().click();
+     }
+     
    dpicker.prototype.get_real_day = function(){
         var now = new Date();
         var y = now.getFullYear();
@@ -108,6 +51,76 @@ define(['jquery','jqueryui'], function($){
      
          return y + "-" + m + "-" + d; 
    };
+
+     dpicker.prototype.mark_booked = function(bookings){
+        var dpicker = this;
+         
+        dpicker.log('Marking booked');
+         
+        this.elem.datepicker( "option", "beforeShowDay", function(d){
+                var date = $.datepicker.formatDate('yy-mm-dd', d);
+                if ( bookings.hasOwnProperty(date)){ // busy day 
+                    dpicker.log('Marking ' + date );
+                    return [true, 'highlight-day', bookings[date]];
+                } else { // skip
+                    return [true,'',''];
+                }
+        });
+         
+    };
+    
+    dpicker.prototype.on_date_change_setup = function(data){
+        
+        var dpicker = this;
+        
+        this.elem.on('change', data, function (e){
+            dpicker.log('select '+$(this).val() + " <EVENT>");
+            
+           // Interesa esto? no si estamos buscando fecha para una hora concreta
+           // e.data.timepicker.pick_default();
+            
+            var tpickr = e.data.timepicker;
+            tpickr.set_today(dpicker.get_real_day() == $(this).val());
+
+            if ( tpickr.is_today() ){
+                tpickr.disable_past_hours();
+                tpickr.next_free_hour();
+                
+                if ( tpickr.is_interval_picker_init() && (tpickr.get_current_hour() == e.data.timepicker.get_real_hour())) {    
+                    tpickr.disable_past_interv();
+                    tpickr.next_free_interv();
+                } else {
+                    tpickr.clear_past_interv();
+                }
+                
+            } else {
+                tpickr.clear_past();
+            }
+                     
+            busy_slots_url = e.data.urlbase+'/get_time_slots.php?'+
+                'id='+e.data.course_id+'&labid='+e.data.lab_id+'&date='+$(this).val();
+            
+            tpickr.clear_busy_interv();
+
+            $.getJSON(busy_slots_url, function( data ){
+               dpicker.log( 'GET ' + busy_slots_url + " " + data);
+                
+                if (data['busy-slots'].length  == 0 ){
+                   dpicker.log('No busy slots this day');
+                } else if ( tpickr.is_interval_picker_init()) {
+                    tpickr.set_busy(data['busy-slots']);
+                    tpickr.disable_busy_interv();
+                    tpickr.next_free_interv();
+                }   
+                
+                // si no quedan interv libres pasar a la siguiente hora.
+
+            });
+            
+
+     });
+   };
+
      
     return dpicker;
 });

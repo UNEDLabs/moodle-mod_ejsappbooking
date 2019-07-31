@@ -1,23 +1,33 @@
 define(['jquery','jqueryui'], function($){
         
-    var pselect = function (){
+    var pselect = function (debug){
+        this.debug = debug
         
-        console.log('Initializing practice select');
+        this.log('Creating object');
         
         this.elem = $("select[name='practid']");
         this.elem.selectmenu();
         
+        
+        var pselect = this;
+        
         this.elem.on('selectmenuselect', function(e){
-            console.log('<EVENT> On practice select');
+            pselect.log('select <EVENT>');
         });
     };
+    
+   pselect.prototype.log = function(msg){
+        if (this.debug){
+            console.log('[PRACSEL] ' + msg);
+        }
+    }; 
     
     pselect.prototype.get = function(){
          return this.elem.val();
      }
         
    pselect.prototype.first = function(){
-        console.log('Selecting first practice');
+        this.log('Select first');
         var first = this.elem.children('option:first').val();
         this.elem.val(first).change();
         this.elem.selectmenu("refresh").trigger("selectmenuselect");
@@ -35,7 +45,6 @@ define(['jquery','jqueryui'], function($){
         };
         
         this.first();
-      
         this.elem.selectmenu("refresh");
 
     };
