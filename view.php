@@ -68,6 +68,6 @@ $view->load_page_components();
 $view->print_header($model->get_mod_url(), $model->get_mod_name(), $model->get_course_name());
 
 $view->print_body($id, $model->get_mod_intro(), $model->get_remlabs(), $model->get_practices(), 
-                  $model->get_user_timezone(), $model->get_timezone_edit_url());
+                  $model->get_user_timezone_str(), $model->get_timezone_edit_url());
 
 $view->print_footer();

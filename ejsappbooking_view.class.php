@@ -98,9 +98,8 @@ class ejsappbooking_view {
         
         // Form      
       
-        echo html_writer::start_tag('form', array('id' => 'bookingform', 'method' => 'get', 
-        'action' => "/mod/ejsappbooking/controllers/add_booking.php?id=".$id));
-        
+        echo html_writer::start_tag('form', array('id' => 'bookingform', 'method' => 'get', 'action' => "/mod/ejsappbooking/controllers/add_booking.php?id=".$id));
+        //
             // First row: lab and practice select
 
             echo html_writer::start_tag('div', array('class' => 'row selectores'));    

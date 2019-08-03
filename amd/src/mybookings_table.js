@@ -2,8 +2,9 @@ define(['jquery','jqueryui'], function($){
 
     var table = function myBookingsTable(debug){
         this.debug = debug;
-        this.log('Creating object');
         this.elem = $('table#mybookings');
+        
+        this.log('Creating object');
     };
     
     table.prototype.log = function(msg){
@@ -132,31 +133,36 @@ define(['jquery','jqueryui'], function($){
     
     table.prototype.on_delete_item_setup = function (data){
         
-        data['mybookings_table'] =  this ;
+        data['mybookings'] =  this ;
         
         this.elem.find('tbody a').on('click', data , this.on_delete_item );
     }
  
     table.prototype.on_delete_item = function(e){
-        console.log('delete <EVENT>');
+        
+        var mybookings = e.data.mybookings;
+        
+        mybookings.log('delete <EVENT>');
+        
         e.preventDefault();
 
         var msg = $('#del-confirm').html();
         if ( ! confirm(msg) ){  return; }
 
-        //var delete_url = $(this).attr('href');
-        var booking_id=$(this).parent().attr('id');
-        var delete_url=e.data.controllerspath + "/delete_booking.php?id="+e.data.course_id+"&bookid="+booking_id;  
+        //var booking_id=$(this).parent().attr('id');
+        var booking_id = this.parentNode.id;
         
-        var btn = $(this);
-        var bookings_table = this;
+        var delete_url=e.data.controllerspath + "/delete_booking.php?id="+e.data.course_id+"&bookid="+booking_id;  
+        var btn = this;
+        
+        mybookings.log('GET ' + delete_url);
         
         $.getJSON( delete_url, function( data ) { //success
-            bookings_talbe.log('GET ' + delete_url);
+            mybookings.log('GET ' + delete_url);
             btn.closest("tr").remove();
             
-            e.data.mybookings_table.update_visibility();
-            e.data.mybookings_table.paginate();
+            mybookings.update_visibility();
+            mybookings.paginate();
         });
 
     };

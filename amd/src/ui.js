@@ -2,7 +2,7 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
        function($, ui, booking_form, mybookings_table) {
             
     var course_id = getSearchParam('id');
-    var debug = false;
+    var debug = true;
     
     require.config({ urlArgs: "bust=" + (new Date()).getTime()});
     

@@ -97,13 +97,13 @@ define(['jquery','jqueryui'], function($){
                 tpickr.clear_past();
             }
                      
-            busy_slots_url = e.data.urlbase+'/get_time_slots.php?'+
+            busy_slots_url = e.data.urlbase+'/get_booked_slots.php?'+
                 'id='+e.data.course_id+'&labid='+e.data.lab_id+'&date='+$(this).val();
             
             tpickr.clear_busy_interv();
 
             $.getJSON(busy_slots_url, function( data ){
-               dpicker.log( 'GET ' + busy_slots_url + " " + data);
+               dpicker.log( 'GET ' + busy_slots_url);
                 
                 if (data['busy-slots'].length  == 0 ){
                    dpicker.log('No busy slots this day');

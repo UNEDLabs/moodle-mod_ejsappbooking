@@ -226,8 +226,8 @@ tpicker.prototype.on_hour_click = function(e){
     
 };
     
-tpicker.prototype.on_interval_click = function(e){
-    var tpicker = e.data.timepicker;
+tpicker.prototype.on_interv_click = function(e){
+    var tpicker = e.data.tpicker;
     
     tpicker.log('interval click <EVENT>');
     
