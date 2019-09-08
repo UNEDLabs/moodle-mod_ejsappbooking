@@ -21,6 +21,10 @@ define(['jquery','jqueryui'], function($){
         return this.elem.val();
     }
     
+    lselect.prototype.get_lab_name = function(){
+        return this.elem.children("option:selected").text();
+    }
+    
     lselect.prototype.first = function(){
         this.log('Selecting first');
         var first = this.elem.children('option:first').val();
@@ -53,7 +57,7 @@ define(['jquery','jqueryui'], function($){
                     labsel.log('Is active');
                     e.data.notif_area.display('.plant-active');
                     e.data.booking_form.enable();
-                } else { // innactice, then disable
+                } else { // innactive, then disable
                     labsel.log('Is innactive');
                     e.data.notif_area.display('.plant-inactive');
                     e.data.booking_form.disable();

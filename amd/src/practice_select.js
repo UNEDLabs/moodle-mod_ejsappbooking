@@ -25,7 +25,11 @@ define(['jquery','jqueryui'], function($){
     pselect.prototype.get = function(){
          return this.elem.val();
      }
-        
+    
+    pselect.prototype.get_prac_name = function(){
+        return this.elem.children("option:selected").text();
+    }
+    
    pselect.prototype.first = function(){
         this.log('Select first');
         var first = this.elem.children('option:first').val();

@@ -1,4 +1,4 @@
-<?php
+$<?php
 
 defined('MOODLE_INTERNAL') || die();
 /*
@@ -9,10 +9,13 @@ require_once(__DIR__.'/turnitintooltwo_submission.class.php');
 
 class ejsappbooking_view {
     
-    public function __contruct($context){
-        global $PAGE;
-        
-        $PAGE->set_context($context);
+    public function __construct($id,$url, $title, $heading, $intro, $remlabs, $practices, $tz, $tz_edit_url){ 
+  
+        $this->setup_header($url,$title,$heading);
+            
+        $this->body = $this->generate_intro($intro) .
+            $this->generate_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url) .
+            $this->generate_bookings_table();
     }
     
     /**
@@ -36,7 +39,8 @@ class ejsappbooking_view {
 
         $PAGE->requires->css(new moodle_url('/mod/ejsappbooking/styles/ui.css'));
 
-        $CFG->cachejs = false;
+        $CFG->cachejs = false; 
+        $PAGE->set_cacheable(false);
     }
     
     /**
@@ -48,46 +52,47 @@ class ejsappbooking_view {
      * @param bool $return If true, return the visible elements of the header instead of echoing them.
      * @return mixed If return=true then string else void
      */
-    public function print_header($url, $title = '', $heading = '') {
+    public function setup_header($url, $title = '', $heading = '') {
         global $PAGE, $OUTPUT;
 
         $PAGE->set_url($url);
         $PAGE->set_title($title);
         $PAGE->set_heading($heading);
         
-        echo $OUTPUT->header();
     }
     
-    public function print_body($id, $intro, $remlabs, $practices, $tz, $tz_edit_url){
+    public function print_page(){
         
         global $OUTPUT;
+
+        $this->load_page_components();
+  
+        echo  $OUTPUT->header();
         
-        $this->print_intro($intro);
-        $this->print_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url);
-        $this->print_mybooking_table();
+        echo $this->body;
         
-    }
-    
-    public function print_footer(){
-        global $OUTPUT;
-        
-        // Finish the page.
         echo $OUTPUT->footer();
+    
     }
     
-    function print_intro($intro){
+    function generate_intro($intro){
         global $OUTPUT;
+        
+        ob_start();
 
         echo html_writer::start_tag('div', array('class' => 'row '));
             echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-1'));
                 echo $OUTPUT->box($intro, 'generalbox mod_introbox', 'ejsappbookingintro');
             echo html_writer::end_tag('div');
         echo html_writer::end_tag('div');
+        
+        return ob_get_clean(); 
     }
     
-    function print_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url){
+    function generate_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url){
         global $OUTPUT;
         
+        ob_start();
         // Header
         
         echo html_writer::start_tag('div', array('class' => 'row '));
@@ -106,12 +111,12 @@ class ejsappbooking_view {
 
                 echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
                     echo get_string('rem_lab_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
-                    echo $this->get_lab_select($remlabs);
+                    echo $this->generate_lab_select($remlabs);
                 echo html_writer::end_tag('div');
 
                 echo html_writer::start_tag('div', array('class' => 'col-md-4 offset-md-1'));
                     echo get_string('rem_prac_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
-                    echo $this->get_practice_select($practices);
+                    echo $this->generate_practice_select($practices);
                 echo html_writer::end_tag('div');
             echo html_writer::end_tag('div');  /* row end */
 
@@ -134,8 +139,8 @@ class ejsappbooking_view {
 
                 echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
                     echo '<span class="ui-icon ui-icon-clock"></span>&nbsp;' . get_string('time-select', 'ejsappbooking').':'; 
-                    echo $this->get_time_picker();
-                    echo $this->get_notif_area();
+                    echo $this->generate_time_picker();
+                    echo $this->generate_notif_area();
                     // submit button
                     echo '<div id="submitwrap"><button id="booking_btn" name="bookingbutton" class="btn btn-secondary"'. 
                           'value="1" type="submit">' . get_string('book', 'ejsappbooking') . '</button></div>';
@@ -143,9 +148,12 @@ class ejsappbooking_view {
         
             echo html_writer::end_tag('div'); /* row end */        
         echo html_writer::end_tag('form');
+        
+        return ob_get_clean();
+        
     }
     
-    function get_lab_select($remlabs){
+    function generate_lab_select($remlabs){
         
         $select_lab = '<select name="labid" class="booking_select" data-previousindex="0" "> '; // onchange="this.form.submit()
         $currentlab = '';
@@ -171,7 +179,7 @@ class ejsappbooking_view {
         
     }
     
-    function get_practice_select($practices){
+    function generate_practice_select($practices){
         
         $i = 1;
         $practid = 0;
@@ -211,7 +219,13 @@ class ejsappbooking_view {
         return $select;
     }
     
-    function get_notif_area(){
+    function generate_time_picker(){
+        ob_start();
+        include 'ejsappbooking_view_timepicker.php';
+        return ob_get_clean();
+    }
+    
+    function generate_notif_area(){
         
        $notif_area = '<div id="notif-area">'.
             '<div class="alert alert-primary slot-free" role="alert">'. 
@@ -234,14 +248,10 @@ class ejsappbooking_view {
         return $notif_area;
     }
     
-    function get_time_picker(){
-        ob_start();
-        include 'ejsappbooking_view_timepicker.php';
-        return ob_get_clean();
-    }
-    
-    function print_mybooking_table(){
+    function generate_bookings_table(){
         global $OUTPUT;
+        
+         ob_start();
 
         echo html_writer::start_tag('div', array('class' => 'row'));
             echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
@@ -257,7 +267,7 @@ class ejsappbooking_view {
         echo html_writer::end_tag('div'); /* row end */
 
         echo html_writer::start_tag('div', array('class' => 'row'));
-            echo html_writer::start_tag('div', array('class' => 'col-md-7 offset-md-1 '));
+            echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-1 '));
 
             echo '<p e id="mybookings_notif" >'. get_string('mybookings_empty','ejsappbooking') . '</p>';
 
@@ -276,6 +286,8 @@ class ejsappbooking_view {
 
             echo html_writer::end_tag('div'); // end col
         echo html_writer::end_tag('div'); // end row
+        
+         return ob_get_clean();
     }
     
 

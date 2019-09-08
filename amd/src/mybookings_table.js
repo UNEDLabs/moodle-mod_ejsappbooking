@@ -1,7 +1,8 @@
 define(['jquery','jqueryui'], function($){
 
-    var table = function myBookingsTable(debug){
-        this.debug = debug;
+    var table = function myBookingsTable(data){
+        this.debug = data.debug;
+        this.delete_base_url = data.controllerspath + "/delete_booking.php?id="+data.course_id;
         this.elem = $('table#mybookings');
         
         this.log('Creating object');
@@ -13,6 +14,10 @@ define(['jquery','jqueryui'], function($){
         }
     };
     
+    table.prototype.attach = function(datepicker){
+        this.datepicker = datepicker;
+    }
+    
     table.prototype.populate = function( data ){
         
         this.log('Clearing');
@@ -22,17 +27,12 @@ define(['jquery','jqueryui'], function($){
 
         for (var i=0; i < data.bookings.length ; i++ ){
             bk = data.bookings[i];
-            //delete_url=data.controllerspath + "/delete_booking.php?id="+data.course_id+"&bookid="+bk['id'];    
-            line = '<tr>' +
-                        '<td>' + ' &nbsp; '+'</td>' + 
-                        '<td>' + bk['day'] + '</td>' +         
-                        '<td>' + bk['labname'] + '</td>' +
-                        '<td>' + bk['time'] + '</td>' +                        
-                        '<td class="text-center del_btn_cell" id="'+bk['id']+'">'+
-                           '<a class="del_btn"><span class="ui-icon ui-icon-trash" >&nbsp;</span></a></td>' +
-                    '</tr>';
-
-             this.elem.find('tbody').append(line);
+            
+            //delete_url=data.controllerspath + "/delete_booking.php?id="+data.course_id+"&bookid="+bk['id'];
+            
+            var line = this.create_row(bk['day'], bk['labname'], bk['time'], bk['id']);
+            this.append_item(line);
+            
         }
 
         this.update_visibility();
@@ -42,6 +42,63 @@ define(['jquery','jqueryui'], function($){
         }
 
      };
+    
+    table.prototype.append_item = function (row){
+         this.elem.find('tbody').append(row);
+    }
+    
+    table.prototype.create_row = function(day,labname,starttime,bookid) {
+        var line = $('<tr>' +
+            '<td>' + ' &nbsp; '+'</td>' + 
+            '<td>' + day + '</td>' +         
+            '<td>' + labname + '</td>' +
+            '<td>' + starttime + '</td>' +                        
+            '<td class="text-center del_btn_cell" id="'+bookid+'">'+
+               '<a class="del_btn"><span class="ui-icon ui-icon-trash" >&nbsp;</span></a></td>' +
+        '</tr>');
+        
+        line.find('a').on('click', { mybookings: this, datepicker: this.datepicker, bookid: bookid }, this.on_delete_item );
+        
+        return line;
+    }
+    
+    table.prototype.update = function(day,labname,starttime,bookid){
+        var line = this.create_row(day,labname,starttime,bookid);
+        
+        this.add_sorted(day, starttime, line);
+        
+        this.update_visibility();
+    }
+    
+    table.prototype.add_sorted = function(day, starttime, line){
+        
+        // #, day, labname, startime, booking;
+        
+        //var item = this.elem.find('tbody').children().first();
+        
+        var date1 = new Date(day + " " + starttime);
+        
+        if ( this.elem.find('tbody').children().length == 0){
+            this.elem.find('tbody').html(line);
+            return;
+        }
+        
+        this.elem.find('tbody > tr').each( function(){
+          
+           var d2 =  $(this).find('td:nth-child(2)').text();
+           var t2 = $(this).find('td:nth-child(4)').text();
+            
+           var date2 = new Date( d2 + " " + t2);
+            if ( date1 < date2 ) {
+                 $(this).before(line);
+                 return false;
+            } else if ( $(this).is(':last-child')){
+                 $(this).after(line);
+            }
+            
+        });
+        
+    }
     
     table.prototype.update_visibility = function(){
         
@@ -136,11 +193,13 @@ define(['jquery','jqueryui'], function($){
         data['mybookings'] =  this ;
         
         this.elem.find('tbody a').on('click', data , this.on_delete_item );
-    }
- 
+    };
+    
+    
     table.prototype.on_delete_item = function(e){
         
         var mybookings = e.data.mybookings;
+        var dpicker = e.data.datepicker;
         
         mybookings.log('delete <EVENT>');
         
@@ -148,18 +207,23 @@ define(['jquery','jqueryui'], function($){
 
         var msg = $('#del-confirm').html();
         if ( ! confirm(msg) ){  return; }
-
-        //var booking_id=$(this).parent().attr('id');
-        var booking_id = this.parentNode.id;
+    
+        var delete_url = e.data.mybookings.delete_base_url + "&bookid=" + e.data.bookid;
         
-        var delete_url=e.data.controllerspath + "/delete_booking.php?id="+e.data.course_id+"&bookid="+booking_id;  
-        var btn = this;
-        
-        mybookings.log('GET ' + delete_url);
+        var btn = $(this);
         
         $.getJSON( delete_url, function( data ) { //success
             mybookings.log('GET ' + delete_url);
-            btn.closest("tr").remove();
+            var row = btn.closest("tr");
+            
+            var day = row.find('td:nth-child(2)').text();
+            
+            var time = row.find('td:nth-child(4)').text();
+
+            row.remove();
+            
+            dpicker.delete_booking(day,time); 
+            dpicker.refresh();
             
             mybookings.update_visibility();
             mybookings.paginate();

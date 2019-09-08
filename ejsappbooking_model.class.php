@@ -2,23 +2,23 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
-class ejsappbooking_model {
+class ejsappbooking_model
+{
     
-      private $cm;
-      private $course;
-      private $ejsappbooking;
-      private $context;
-      private $multilang;
+    private $cm;
+    private $course;
+    private $ejsappbooking;
+    private $context;
+    private $multilang;
+    private $remlabs;
     
-      private $remlabs;
-    
-      public function __construct($id, $n){
+    public function __construct($id, $n){
           
-            global $DB, $USER, $CFG;   
+            global $DB, $USER, $CFG, $PAGE;   
           
             if ($id) {
                 $this->cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
+    
                 $this->course = $DB->get_record('course', array('id' => $this->cm->course), '*', MUST_EXIST);
                 $this->ejsappbooking = $DB->get_record('ejsappbooking', array('id' => $this->cm->instance), '*', MUST_EXIST);
             } else if ($n) {
@@ -34,7 +34,13 @@ class ejsappbooking_model {
             profile_load_data($USER); // user profile load
     
             $this->context = context_module::instance($this->cm->id);
+            //global $PAGE;
+        
+            //$PAGE->set_context($context);
             $this->multilang = new filter_multilang($this->context, array('filter_multilang_force_old' => 0));
+          
+          
+            //$PAGE->set_context($context);   
 
             if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
                 add_to_log($course->id, 'ejsappbooking', 'view', "view.php?id={$this->cm->id}", $this->ejsappbooking->name, $this->cm->id);
@@ -57,25 +63,21 @@ class ejsappbooking_model {
             // Check if the user has the capability to view the page - used when an assignment is set to hidden.
             require_capability('mod/ejsappbooking:view', $this->context); 
           
-      }
+       }
     
-      public function get_context(){
-          return $this->context;
-      }
-    
-      public function get_mod_url (){
+    public function get_mod_url (){
           return '/mod/ejsappbooking/view.php' . http_build_query(array('id' => $this->cm->id));
       }
     
-      public function get_mod_name(){
+    public function get_mod_name(){
           return format_string($this->ejsappbooking->name);
       }
     
-      public function get_course_name(){
+    public function get_course_name(){
           return format_string($this->course->fullname);
       }
     
-      public function get_mod_intro(){
+    public function get_mod_intro(){
      
           $intro = ""; 
 
@@ -86,7 +88,7 @@ class ejsappbooking_model {
           return $intro;
       }
     
-      public function get_remlabs(){
+    public function get_remlabs(){
           // Get the remote laboratories in which the user is authorized to make bookings.
         global $DB,$USER;
         
@@ -102,11 +104,9 @@ class ejsappbooking_model {
         return $this->remlabs;
       }
           
-      public function get_practices(){
+    public function get_practices($labid){
         global $DB;
     
-        $labid=0;
-          
         // Select practices.
         $practices = $DB->get_records_sql(
             "SELECT id, ejsappid, practiceid, practiceintro 
@@ -116,7 +116,7 @@ class ejsappbooking_model {
         return  $practices;
       }
     
-      public function get_user_timezone_str(){
+    public function get_user_timezone_str(){
           global $USER;
           
           if ( $USER->timezone == '99' ){
@@ -128,7 +128,7 @@ class ejsappbooking_model {
           return $tz_str;
       }
     
-      public function get_user_timezone(){
+    public function get_user_timezone(){
             global $USER;
           
             if( $USER->timezone == '99'){
@@ -138,159 +138,38 @@ class ejsappbooking_model {
             }
       }
     
-      public function get_default_timezone(){
+    public function get_default_timezone(){
             return new DateTimeZone(date_default_timezone_get()); // server tz
       }
     
-      public function get_timezone_edit_url(){
+    public function get_timezone_edit_url(){
             global $CFG, $USER;
             $tz_edit_url = $CFG->wwwroot . "/user/editadvanced.php?id=".$USER->id; // ."#id_email"
             return $tz_edit_url;
       }
     
-      function get_current_server_time(){
+    public function get_current_server_time(){
          return new DateTime('NOW', $this->get_default_timezone());
         
       }
     
-    public function get_lab_info($labid){
-        global $DB;
+    public function translate($str){
+        return $this->multilang->filter($str);
+    }        
+    
+    public function get_lab_conf($labid){
         
-        $data = '';
+        global $DB;
         
         $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));
         
-        $conflabs = $DB->get_record('block_remlab_manager_conf', array('practiceintro' => $practiceintro));
-        
-        $data['status']=$conflabs->active;
-        
-        $durations = array("0" => 60, "1"=>30, "2"=>15, "3"=>5, "4"=>2 );
+        $labconf = $DB->get_record('block_remlab_manager_conf', array('practiceintro' => $practiceintro));
 
-        $data['slot-size'] = $durations[$conflabs->slotsduration];
+        return $labconf;
 
-        $practices= $DB->get_records_sql("
-            SELECT id, ejsappid, practiceid, practiceintro FROM {block_remlab_manager_exp2prc} 
-            WHERE ejsappid = ? ", 
-            array($labid));
-        
-        foreach ($practices as $practice) {
-            $practices_loc[$practice->practiceid] = $this->multilang->filter($practice->practiceintro);
-        }
-
-        $data['practices'] = $practices_loc;
-        
-        return $data;
-        
     }
-    
-    public function get_booked_slots($labid, $selectDay){
-        global $USER, $DB;
         
-        $user_tz = $this->get_user_timezone();
-
-        $sdate=DateTime::createFromFormat('Y-m-d H:i:s', $selectDay . ' 00:00:00');
-            $sdate->setTimeZone($user_tz);
-
-        $edate= clone $sdate;
-            $edate->add(new DateInterval('PT24H'));
-        
-        $slots_list = $DB->get_records_sql("
-            SELECT  starttime
-            FROM {ejsappbooking_remlab_access} 
-            WHERE username = ? AND ejsappid = ? 
-            AND starttime >= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' ) AND starttime <= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' )
-            ORDER BY starttime ASC", 
-            array($USER->username, $labid, $sdate->format("Y-m-d H:i"), $edate->format("Y-m-d H:i")));
-
-        $data['busy-slots'] = [];
-        foreach ($slots_list as $slot) {
-            $time = substr($slot->starttime,11,5);
-            array_push($data['busy-slots'], $time );
-        }
-        
-        return $data;
-    }
-    
-    public function add_booking($labid, $practid, $date, $time){
-        
-        global $USER, $DB;
-        
-        $user_tz = $this->get_user_timezone();
-        $server_tz = $this->get_default_timezone();
-        
-        $sdate = new DateTime();
-            $sdate->setTimeZone($user_tz);
-            $sdate->setDate(substr($date, 0, 4), substr($date, 5, 2), substr($date, 8, 2));
-            $sdate->setTime(substr($time,0,2), substr($time,3,2));
-       //     $sdate->setTimeZone($server_tz);
-
-        $exit = 0;
-        $msg = get_string('submit-success', 'ejsappbooking');
-        
-        $daybooks = count($this->get_day_bookings($labid,$sdate));
-        $weekbooks = count($this->get_week_bookings($labid,$sdate));
-        $totalbooks = count($this->get_total_bookings($labid));
-
-        // Check restrictions.
-        
-        $sdate->setTimeZone($server_tz);
-        
-        $lab_conf = $this->get_lab_conf($labid);
-
-        if ( $sdate < $this->get_current_server_time()){
-            $exit = -5;
-            $msg = "The requested time has expired";
-        } else if ($this->booking_exists($labid,$practid,$sdate)) { // Check if the book exists.
-            $msg = get_string('submit-error-exists', 'ejsappbooking'); 
-            $exit = -4;
-        } else if ( $totalbooks >= $lab_conf->totalslots ) {    
-            $exit = -1;
-            $number = $lab_conf->totalslots - $totalbooks;
-            $msg = get_string('totalslots', 'ejsappbooking'). ': ' . $lab_conf->totalslots;
-            if ($number > 0) {
-                $msg .= '. ' . get_string('availability_booking', 'ejsappbooking') . ': ' . $number;
-            }
-        } else if ( $weekbooks >= $lab_conf->weeklyslots) {
-            $exit = -2;
-            $msg = get_string('weeklyslots', 'ejsappbooking') . '. ';
-            $number = $conflabs->weeklyslots - $weekbooks;
-            if ($number > 0) {
-                $msg .= get_string('availability_booking', 'ejsappbooking') . ': ' . $number;
-            }
-        } else if ( $daybooks >= $lab_conf->dailyslots) {
-            $exit = -3;
-            $msg = get_string('dailyslots', 'ejsappbooking')  . ': ' . $lab_conf->dailyslots;
-        }
-
-   //    $slotduration = $DB->get_field('block_remlab_manager_conf', 'slotsduration', array('practiceintro' => $practiceintro));
-   //    $slotduration = $lab_conf->slotsduration;
-
-        $data['exitCode']=$exit;
-        $data['exitMsg']=$msg;
-        $data['dayCount']= $daybooks;
-        $data['weekCount']= $weekbooks;
-        $data['totalCount']= $totalbooks;
-
-        if ( $exit < 0 ){ // Doesn't meet restrictions
-            return $data;
-        }
-        
-        $slot_size = 60 / ( $lab_conf->slotsduration + 1);
-        
-        //$startdate = $sdate->format("Y-m-d H:i").':00';
-        $starttime=$sdate->format("Y-m-d H:i:s");
-            $sdate->modify('+'.$slot_size.' minutes');
-        $endtime = $sdate->format("Y-m-d H:i").':59';
-        
-        $this->save_booking($labid, $practid, $starttime, $endtime);
-        $this->create_event($labid, $practid, $starttime, $endtime, $slot_size);
-        $this->send_message($labid, $practid, $starttime, $endtime);
-        
-        return $data;
-        
-    }
-    
-    function save_booking($labid, $practid, $starttime, $endtime){
+    public function save_booking($labid, $practid, $starttime, $endtime){
         global $USER,$DB;
         
         $bk = new stdClass();
@@ -302,15 +181,17 @@ class ejsappbooking_model {
             $bk->valid = 1;
 
         // Save in database.
-        $identificador = $DB->insert_record('ejsappbooking_remlab_access', $bk, true);
+        $bookid = $DB->insert_record('ejsappbooking_remlab_access', $bk, true);
+        
+        return $bookid;
     }
     
-    function create_event($labid, $practid, $starttime, $endtime, $slot_size){
+    public function create_event($labid, $practid, $starttime, $endtime, $slot_size){
         global $USER;
         
         // Booking information - Event.
-            $inittime= new date($starttime);
-            $finishtime = new date($endtime);
+        $inittime = DateTime::createFromFormat('Y-m-d H:i:s', $starttime, $this->get_user_timezone());
+        $finishtime = DateTime::createFromFormat('Y-m-d H:i:s', $endtime, $this->get_user_timezone());
         
         $event = new stdClass();
             $event->name = get_string('book_message', 'ejsappbooking') . ' '. $labid . '. ' . $practid;
@@ -333,29 +214,27 @@ class ejsappbooking_model {
         calendar_event::create($event);
     }
     
-    function send_message($labid, $practid, $starttime, $endtime){
+    public function send_message($labid, $practid, $starttime, $endtime){
         global $DB, $USER, $CFG;
 
         // Check message delivery.
+        $init = explode(" ",$starttime);
+        $finish = explode(" ",$endtime);
         
-        $inittime = $starttime;
-        $finishtime = $endtime;
 
         $msgbody = get_string('bookinginfo', 'ejsappbooking') . '<br><br>';
 
         $msgbody = $msgbody . get_string('plant', 'ejsappbooking') . ': ' .
             $this->multilang->filter($labid) . '. ' . $practid . '<br>';
         $msgbody = $msgbody . get_string('date', 'ejsappbooking') . ': ' .
-            $inittime->format("Y-m-d") . '<br>';
+            $init[0] . '<br>';
         $msgbody = $msgbody . get_string('hour', 'ejsappbooking') . ': ' .
-            $inittime->format('H:i:s') . '-' . $finishtime->format('H:i:s') . '<br><br>';
+            $init[1] . '-' . $finish[1] . '<br><br>';
 
         if (empty($CFG->messaging)) {
             // $out .= '<p align="center"> <strong>' . get_string('messagingdisabled', 'message') . '</strong></p>';
             return;
         }
-        
-        echo $msgbody . '<br>';
 
         // Format and send the message by the Admin user.
         $format = FORMAT_HTML;
@@ -364,7 +243,7 @@ class ejsappbooking_model {
 
     }
     
-    function booking_exists($labid, $practid, $sdate){
+    public function booking_exists($labid, $practid, $sdate){
         global $DB;
         
         return $DB->record_exists('ejsappbooking_remlab_access', array(
@@ -374,31 +253,37 @@ class ejsappbooking_model {
         );
     }
     
-    function get_lab_conf($labid){
-        
+    public function delete_booking($bookid){ // Check and delete booking
         global $DB;
         
-        $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));
+        $record = $DB->get_record('ejsappbooking_remlab_access', array('id' => $bookid));
         
-        $conflabs = $DB->get_record('block_remlab_manager_conf', array('practiceintro' => $practiceintro));
-        
-        return $conflabs;
+        if ( ! $record ){
+            return -1; // not found
+        } else {
+            
+            $success = $DB->delete_records('ejsappbooking_remlab_access', array('id' => $bookid));
 
+            if ( $success ){
+                return 0; // success
+            } else {
+                return -2; // error deleting
+            }
+        }
+        
     }
     
-    function get_day_bookings($labid, $sdate){
+    public function get_day_bookings($labid, $sdate){
         global $USER, $DB;
         
         $user_tz = $this->get_user_timezone();
+        
         $server_tz = $this->get_default_timezone();
         
-        $day_start = clone $sdate;
-            $day_start->setTime(0,0);
-            $day_start->setTimeZone($server_tz);
-
-        $day_end = clone $sdate;
-            $day_end->setTime(23,59);
-            $day_end->setTimeZone($server_tz);
+        $sdate->setTimeZone($server_tz);
+        
+        $edate= clone $sdate;
+            $edate->add(new DateInterval('PT24H'));
         
         $dayaccesses = $DB->get_records_sql("
             SELECT starttime
@@ -407,9 +292,21 @@ class ejsappbooking_model {
             AND starttime >= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' )
             AND starttime <= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' )
             ORDER BY starttime ASC", 
-            array($USER->username, $labid, $day_start->format('Y-m-d H:i'), $day_end->format('Y-m-d H:i')));
+            array($USER->username, $labid, $sdate->format('Y-m-d H:i'), $edate->format('Y-m-d H:i')));
         
-        return $dayaccesses;
+        
+         $data['busy-slots'] = [];
+        
+         foreach ($dayaccesses as $slot) {
+             
+            $date=DateTime::createFromFormat('Y-m-d H:i:s', $slot->starttime, $server_tz);
+                $date->setTimeZone($user_tz);
+             
+            array_push($data['busy-slots'], $date->format("H:i"));
+             
+        }
+        
+        return $data;
     }
     
     public function get_week_bookings($labid,$sdate){ // Determine user´s bookings of the week.
@@ -443,7 +340,7 @@ class ejsappbooking_model {
 
         $week_end =  DateTime::createFromFormat('Y-m-d H:i', $dsunday . ' 23:59', $user_tz);
             $week_end->setTimeZone($server_tz);
-
+        
         $weekaccesses = $DB->get_records_sql("
             SELECT starttime FROM {ejsappbooking_remlab_access} 
             WHERE  username = ? AND ejsappid = ? 
@@ -456,7 +353,7 @@ class ejsappbooking_model {
         return $weekaccesses;
     }
     
-    function get_total_bookings($labid){ // Retrieving user´s bookings at the DB.
+    public function get_total_bookings($labid){ // Retrieving user´s bookings at the DB.
         global $USER, $DB;
         
         $start = $this->get_current_server_time();
@@ -472,18 +369,18 @@ class ejsappbooking_model {
         return $useraccess;
     }
     
-    public function get_mybookings(){
+    public function get_slot_size($slotsduration){
+        
+        $durations = array( "0" => 60, "1"=>30, "2"=>15, "3"=>5, "4"=>2 );
+        
+        return $durations[$slotsduration];
+    }
+
+    public function get_current_user_active_bookings($sdate){
         
         global $USER, $DB;
         
-        $user_tz = $this->get_user_timezone();
-        
-        $sdate = new DateTime();
-            $sdate->setTimeZone($user_tz);
-        
-      //  $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));  
-
-        $events2 = $DB->get_records_sql("
+        $bookings = $DB->get_records_sql("
             SELECT a.id, a.username, a.ejsappid, a.practiceid, a.starttime, a.endtime, a.valid, b.name, c.practiceintro 
             FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id 
             INNER JOIN {block_remlab_manager_exp2prc} c ON a.practiceid = c.practiceid  
@@ -491,53 +388,8 @@ class ejsappbooking_model {
             AND a.starttime >= to_timestamp( ?, 'YYYY-MM-DD HH24:MI' ) 
             ORDER BY a.starttime",
             array( $USER->username, $sdate->format('Y-m-d H:i') ));
-
-        $data['bookings-list'] = [];
-
-        foreach ($events2 as $event) {
-
-            $ts=DateTime::createFromFormat('Y-m-d H:i:s' , $event->starttime);
-                $ts->setTimeZone($user_tz);
-
-            array_push( $data['bookings-list'], Array(
-                 'id' =>  $event->id,
-                 'labname' => $this->multilang->filter($event->name) . '. ' . $event->practiceintro,         
-                 'day' => $ts->format('Y-m-d'),
-                 'time' => $ts->format('H:i')
-             )); //'timestamp' => $ts->format('D, d M Y H:i:s T')
-        }
         
-        return $data;
-    
-    }
-    
-    public function delete_booking($bookid){ // Check and delete booking
-        global $DB;
-        
-        $record = $DB->get_record('ejsappbooking_remlab_access', array('id' => $bookid));
-
-        if ( ! $record ){
-            $data['exitCode']=-1;
-            $data['exitMsg']="Booking id not found " . $bookid;
-        } else { 
-            $lab = $DB->get_record('ejsapp', array('id' => $record->ejsappid));
-            $prac = $DB->get_record('block_remlab_manager_exp2prc', array(
-                'practiceid' => $record->practiceid,
-                'ejsappid' => $record->ejsappid));
-
-            $inittime = new DateTime($record->starttime);
-            $error = $DB->delete_records('ejsappbooking_remlab_access', array('id' => $bookid));
-
-            if ($error < 0 ){
-                $data['exitCode']=-2;
-                $data['exitMsg']="Error deleting record" . $error;
-            } else {
-                $data['exitCode']=0;
-                $data['exitMsg']="Success";
-            }
-        }
-        
-        return $data;
+        return $bookings;
         
     }
     

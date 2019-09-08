@@ -12,7 +12,10 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
             console.log("Loading UI");
             
             var form = new booking_form({controllerspath: controllerspath,course_id: course_id, debug: debug});
-            var mybookings = new mybookings_table(debug);
+            var mybookings = new mybookings_table({controllerspath: controllerspath,course_id: course_id, debug: debug});
+            
+            form.attach(mybookings);
+            mybookings.attach(form.datepicker);
     
             bookings_list_url = controllerspath+"/get_mybookings.php?id="+course_id;
             
@@ -21,13 +24,22 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
                  success: function(data){
                     
                     console.log('GET ' + bookings_list_url);
-                    
-                    form.datepicker.mark_booked(to_date_map(Array.from(data['bookings-list'])));
+                     
+                    var a = Array.from(data['bookings-list']);
+                     
+                   form.datepicker.set_bookings_by_date(a);
+                
+                   form.datepicker.refresh();
+                     
+                   //form.datepicker.update_marked_bookings();
+                     
                     
                     if (data['bookings-list'].length > 0){ 
                         console.log('#' + data['bookings-list'].length + ' items found');
                         mybookings.populate({ bookings: data['bookings-list'] });
-                        mybookings.on_delete_item_setup({controllerspath: controllerspath, course_id: course_id});
+                        
+                       // mybookings.update("2018-08-02","foo bar","11:00",0);
+                        
                     } else {
                         console.log('No bookings to show');
                     }
@@ -53,10 +65,19 @@ function to_date_map(bookings) {
             t = bk['time'];
             
             if ( dates_times[d] == null ){
+                dates_times[d] = new Array();
+            }
+            /*
+            if ( dates_times[d] == null ){
                 dates_times[d] =  t ;
+                
             } else {
                 dates_times[d] = dates_times[d] + " &#013;&#10; " + t ; 
             }
+            
+            */
+            
+            dates_times[d].push(t);
         }
     }
     

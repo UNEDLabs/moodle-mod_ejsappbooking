@@ -21,7 +21,6 @@ tpicker.prototype.log = function(msg){
         console.log('[TIMEPICKER] ' + msg);
     }
 };
-
     
 tpicker.prototype.hcells = function(){
     return this.elem.find('table#hour td.hour'); 
@@ -119,19 +118,28 @@ tpicker.prototype.is_today = function(){
     return this.today;
 };
 
+tpicker.prototype.is_current_hour_select = function (){
+    
+    return (this.get_current_hour() == this.get_real_hour());
+};
+
 tpicker.prototype.clear_past_hours = function(){
-    this.hcells().removeClass('hour-past disabled');
-    this.icells().not('.hour-busy').removeClass('disabled').on();
+    this.hcells().removeClass('hour-past disabled').on('click', { tpicker: this }, this.on_hour_click);
 };
     
 tpicker.prototype.clear_past_interv = function(){
-    this.icells().removeClass('interv-past');
-    this.icells().not('.interv-busy').removeClass('disabled').on();
+    this.icells().removeClass('interv-past');    
+    this.icells().not('.interv-busy').removeClass('disabled').on('click', { tpicker: this }, this.on_interv_click );
+};
+
+tpicker.prototype.clear_interv = function(){
+    this.icells().removeClass('interv-past interv-busy disabled');    
+    this.icells().on('click', { tpicker: this }, this.on_interv_click );
 };
     
 tpicker.prototype.clear_busy_interv = function(){
     this.icells().removeClass('interv-busy');
-    this.icells().not('.interv-past').removeClass('disabled').on();
+    this.icells().not('.interv-past').removeClass('disabled').on('click', { tpicker: this }, this.on_interv_click );
 };
     
 tpicker.prototype.clear_past = function(){
@@ -153,6 +161,12 @@ tpicker.prototype.unselect_hour = function(){
     this.log('hour={}');
     this.hcells().removeClass('time-highlight hour-current');
 };
+    
+tpicker.prototype.set_past_hour = function(item){
+        
+    item.addClass('hour-past disabled');
+    item.off();
+}
 
 tpicker.prototype.select_interval = function(item){
     this.log('interv='+item.text());
@@ -190,7 +204,7 @@ tpicker.prototype.update_interval = function(){
     } 
     
     // setup behaviour
-    tpickr.icells().on('click', { tpicker: tpickr }, tpickr.on_interv_click );
+    tpickr.icells().on('click', { tpicker: this }, this.on_interv_click );
  
     // scroll bar for small slot size
     if ( this.icells().length > 8 ){
@@ -205,20 +219,22 @@ tpicker.prototype.update_interval = function(){
 };
     
 tpicker.prototype.on_hour_click = function(e){
+    
+    e.preventDefault();
+    
     var tpicker = e.data.tpicker;
 
     tpicker.log('hour click <EVENT>');
-
+    
+    var txt = $(this).text();
+    
     tpicker.unselect_hour();
     tpicker.select_hour($(this));
     
-    if (tpicker.is_today()){
-        if ( tpicker.get_current_hour() == tpicker.get_real_hour()){
+    tpicker.clear_interv();
+    
+    if ( tpicker.is_today() && (tpicker.get_current_hour() == tpicker.get_real_hour()) ){
             tpicker.disable_past_interv();
-        } else {   
-            tpicker.unselect_interval();
-            tpicker.disable_past_interv();
-        }
     }
 
     tpicker.disable_busy_interv();
@@ -228,13 +244,15 @@ tpicker.prototype.on_hour_click = function(e){
     
 tpicker.prototype.on_interv_click = function(e){
     var tpicker = e.data.tpicker;
-    
+        
     tpicker.log('interval click <EVENT>');
+    
+    e.preventDefault();      
     
     tpicker.unselect_interval();
     tpicker.select_interval($(this));
 };
-
+ 
 tpicker.prototype.disable_past_hours = function (){
 
     var tpicker = this;
@@ -254,8 +272,7 @@ tpicker.prototype.disable_past_hours = function (){
         var h2 = tpicker.convert_12to24($(this).text());
         
         if ( h2 < h ){
-            $(this).addClass('hour-past disabled');
-            $(this).off();
+            tpicker.set_past_hour($(this));
         } else { //( h2 == h ) => current time, stop checking past
             return false;
         };
@@ -282,13 +299,24 @@ tpicker.prototype.next_free_hour = function(){
     
     var next = this.hcells().filter(':not(.disabled)').first();
     
-    if ( next ) { this.select_hour(next); }
+    if ( next.length > 0 ) { this.select_hour(next); }
     
 };
     
 tpicker.prototype.set_busy = function(busy_slots){
     this.busy_slots = busy_slots;
 };
+    
+tpicker.prototype.set_past_interv = function (item){
+    item.addClass('interval-busy disabled');
+    item.off();
+}
+
+tpicker.prototype.set_busy_interv = function (item){
+    item.addClass('interval-busy disabled');
+    item.off();
+}
+
      
 tpicker.prototype.disable_busy_interv = function( ){
     
@@ -306,13 +334,16 @@ tpicker.prototype.disable_busy_interv = function( ){
         time = time_picker.get_current_hour() + $(this).text();
         
         if ( time_picker.busy_slots.includes(time) ) { // busy, disable
-            $(this).addClass('interval-busy disabled');
-            $(this).off();
             time_picker.log('Disabling ' + time);
-        } else {
+            time_picker.set_busy_interv($(this));
+            
+        } 
+        /*
+        else {
             $(this).removeClass('interval-busy');
             $(this).on();
         }
+        */
 
     });
     
@@ -339,10 +370,13 @@ tpicker.prototype.disable_past_interv = function(){
     
     intervs.each(function(){
         
-        var i2 = parseInt(($(this).text()).substring(1));
+        if ( $(this).next() != null ){
+            end = parseInt(($(this).next().text()).substring(1));
+        } else {
+            end = 60;
+        }
         
-        if ( i2 < i ){
-            // tpicker.log('Disabling ' + i2 +'min');
+        if (  end <= i ){
             $(this).addClass('interv-past disabled');
             $(this).off();
         } else { // current time, stop checking past
@@ -360,6 +394,7 @@ tpicker.prototype.next_free_interv = function(){
     var pos = this.icells().index(current);
     
     tpicker.log('next free interv');
+    tpicker.unselect_interval();
     
     if ( ! this.is_interval_picker_init()){
         tpicker.log('Interval picker not found');
@@ -378,10 +413,10 @@ tpicker.prototype.next_free_interv = function(){
     
     var next = this.icells().filter(':not(.disabled)').first();
     
-    if ( next ) {
+    if ( next.length > 0 ) {
         this.select_interval(next);
         this.scrollTo(next);
-    }
+    } 
     
 };
     

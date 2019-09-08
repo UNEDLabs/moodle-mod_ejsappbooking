@@ -47,6 +47,10 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
         return this.elem.disabled;
     };
     
+    form.prototype.attach = function ( mybooking_table ){
+        this.mybooking_table = mybooking_table;
+    }
+    
     form.prototype.on_submit_setup = function(data){
         
         var booking_form = this;
@@ -58,7 +62,8 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
 
             var base_url = e.data.urlbase + booking_form.elem.attr('action');
             var labid = e.data.lab_sel.get_lab();
-            var practid = e.data.prac_sel.get();
+            var practid = e.data.prac_sel.get(); 
+            
             var date = e.data.date_picker.get();
             var time = e.data.time_picker.get_current_time();
             
@@ -80,8 +85,12 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
             }
             
             var submit_url = "http://moodle.local" + booking_form.elem.attr('action') +"&labid="+labid+"&practid="+practid + "&date="+date+"&time="+time;
-
-            booking_form.log("TMP " + submit_url);
+            
+            
+            var labname = e.data.lab_sel.get_lab_name();
+            var pracname = e.data.prac_sel.get_prac_name(); 
+            
+            booking_form.log('POST '+submit_url);
             
             $.getJSON({
                 method: 'POST',
@@ -89,15 +98,26 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
                 dataType: "json",
                 contentType: "application/json",
                 success: function(data){
-                    booking_form.log('POST '+submit_url);
                     
                     notif_area.clear();
+                    
+                    //alert(date + " " +time + " " + labname + " " + pracname);
                     
                     if (data.exitCode >= 0){
                         notif_area.display_msg(data.exitMsg, 'alert-success');
                         tpicker.next_free_interv();
                         
-                        // TODO: update mybookings table
+                        //update mybookings table 
+                        booking_form.mybooking_table.update(date, labname + ". " + pracname, time, data.bookid);
+                        
+                        //update datepicker marked
+                        booking_form.datepicker.add_booking(date,time, labname + ". " + pracname);
+                        booking_form.datepicker.refresh();
+                        
+                        //mark current interval busy
+                        var current = booking_form.timepicker.get_current_interv_item();
+                        booking_form.timepicker.set_busy_interv(current);
+                        booking_form.timepicker.next_free_interv();
                         
                     } else { 
                         notif_area.display_msg(data.exitMsg, 'alert-danger');      

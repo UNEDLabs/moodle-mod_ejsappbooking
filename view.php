@@ -30,14 +30,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+global $DB, $CFG, $USER, $PAGE, $OUTPUT;
+
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 //require_once(dirname(__FILE__) . '/locallib.php');
 
 require_once(dirname(__FILE__) . '/ejsappbooking_model.class.php');
 require_once(dirname(__FILE__) . '/ejsappbooking_view.class.php');
-
-global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
 //require_once($CFG->libdir . '/tablelib.php');
 //require_once($CFG->libdir . '/filelib.php');
@@ -61,13 +63,11 @@ $n = optional_param('n', 0, PARAM_INT); // ...ejsappbooking instance ID - it sho
 
 $model = new ejsappbooking_model($id, $n);
 
-$view = new ejsappbooking_view($model->get_context());
+$view = new ejsappbooking_view(
+   $id, $model->get_mod_url(), $model->get_mod_name(), $model->get_course_name(),
+   $model->get_mod_intro(), $model->get_remlabs(), $model->get_practices($id), 
+   $model->get_user_timezone_str(), $model->get_timezone_edit_url()
+);
 
-$view->load_page_components();
+$view->print_page();
 
-$view->print_header($model->get_mod_url(), $model->get_mod_name(), $model->get_course_name());
-
-$view->print_body($id, $model->get_mod_intro(), $model->get_remlabs(), $model->get_practices(), 
-                  $model->get_user_timezone_str(), $model->get_timezone_edit_url());
-
-$view->print_footer();
