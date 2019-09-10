@@ -13,6 +13,8 @@ $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 
 $controller = new get_mybookings_controller($id);
 $bookings = $controller->do();
+
+header('Content-Type: application/json');
 echo json_encode($bookings);
 
 class get_mybookings_controller {

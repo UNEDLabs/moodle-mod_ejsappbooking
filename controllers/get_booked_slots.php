@@ -15,6 +15,8 @@ $selectDay = optional_param('date', 0, PARAM_RAW);
 
 $controller = new get_booked_slots_controller($id);
 $bookings = $controller->do($labid,$selectDay);
+
+header('Content-Type: application/json');
 echo json_encode($bookings);
 
 class get_booked_slots_controller

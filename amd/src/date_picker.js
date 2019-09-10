@@ -203,6 +203,7 @@ define(['jquery','jqueryui'], function($){
                 if (data['busy-slots'].length  == 0 ){
                    dpicker.log('No busy slots this day');
                 } else if ( tpickr.is_interval_picker_init()) {
+                    alert(data['busy-slots'].join('-'));
                     tpickr.set_busy(data['busy-slots']);
                     tpickr.disable_busy_interv();
                     tpickr.next_free_interv();

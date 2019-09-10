@@ -307,6 +307,25 @@ tpicker.prototype.set_busy = function(busy_slots){
     this.busy_slots = busy_slots;
 };
     
+tpicker.prototype.add_busy = function(time){
+    if (this.busy_slots == null) {
+        this.busy_slots = new Array();
+    }
+    this.busy_slots.push(time);
+    this.busy_slots.sort();
+}
+
+tpicker.prototype.del_busy = function(time){
+    if (this.busy_slots == null) {
+        return;
+    }
+    var pos = this.busy_slots.indexOf(time);
+    
+    if ( pos > 0 ){
+        this.busy_slots.splice(pos, 1);
+    }
+}
+    
 tpicker.prototype.set_past_interv = function (item){
     item.addClass('interval-busy disabled');
     item.off();
@@ -348,6 +367,13 @@ tpicker.prototype.disable_busy_interv = function( ){
     });
     
 };
+
+tpicker.prototype.update_busy_interv = function(){
+    
+    this.clear_busy_interv();
+    this.disable_busy_interv();
+    this.next_free_interv();
+}
 
 tpicker.prototype.disable_past_interv = function(){
     

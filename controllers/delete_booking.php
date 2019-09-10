@@ -13,6 +13,8 @@ $bookid = optional_param('bookid', 0, PARAM_INT); // Book ID
 
 $controller = new delete_booking_controller($id);
 $exit = $controller->do($bookid);
+
+header('Content-Type: application/json');
 echo json_encode($exit);
 
 class delete_booking_controller {

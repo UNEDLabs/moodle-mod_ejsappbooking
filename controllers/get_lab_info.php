@@ -11,6 +11,8 @@ $labid = optional_param('labid', 0, PARAM_INT); // Selected laboratory.
 
 $controller = new get_lab_info_controller($id);
 $labinfo = $controller->do( $labid);
+
+header('Content-Type: application/json');
 echo json_encode($labinfo);
 
 class get_lab_info_controller

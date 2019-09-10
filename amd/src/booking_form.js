@@ -113,11 +113,10 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
                         //update datepicker marked
                         booking_form.datepicker.add_booking(date,time, labname + ". " + pracname);
                         booking_form.datepicker.refresh();
-                        
+                            
                         //mark current interval busy
-                        var current = booking_form.timepicker.get_current_interv_item();
-                        booking_form.timepicker.set_busy_interv(current);
-                        booking_form.timepicker.next_free_interv();
+                        booking_form.timepicker.add_busy(time);
+                        booking_form.timepicker.update_busy_interv();
                         
                     } else { 
                         notif_area.display_msg(data.exitMsg, 'alert-danger');      

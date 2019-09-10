@@ -5,6 +5,9 @@ define(['jquery','jqueryui'], function($){
         this.delete_base_url = data.controllerspath + "/delete_booking.php?id="+data.course_id;
         this.elem = $('table#mybookings');
         
+        this.datepicker = data.datepicker;
+        this.timepicker = data.timepicker;
+        
         this.log('Creating object');
     };
     
@@ -13,10 +16,6 @@ define(['jquery','jqueryui'], function($){
             console.log('[TABLE] ' + msg);
         }
     };
-    
-    table.prototype.attach = function(datepicker){
-        this.datepicker = datepicker;
-    }
     
     table.prototype.populate = function( data ){
         
@@ -57,7 +56,7 @@ define(['jquery','jqueryui'], function($){
                '<a class="del_btn"><span class="ui-icon ui-icon-trash" >&nbsp;</span></a></td>' +
         '</tr>');
         
-        line.find('a').on('click', { mybookings: this, datepicker: this.datepicker, bookid: bookid }, this.on_delete_item );
+        line.find('a').on('click', { mybookings: this, timepicker: this.timepicker, datepicker: this.datepicker, bookid: bookid }, this.on_delete_item );
         
         return line;
     }
@@ -188,6 +187,8 @@ define(['jquery','jqueryui'], function($){
 
     };
     
+    /*
+    
     table.prototype.on_delete_item_setup = function (data){
         
         data['mybookings'] =  this ;
@@ -195,11 +196,12 @@ define(['jquery','jqueryui'], function($){
         this.elem.find('tbody a').on('click', data , this.on_delete_item );
     };
     
-    
+    */
     table.prototype.on_delete_item = function(e){
         
         var mybookings = e.data.mybookings;
         var dpicker = e.data.datepicker;
+        var tpicker = e.data.timepicker;
         
         mybookings.log('delete <EVENT>');
         
@@ -217,13 +219,17 @@ define(['jquery','jqueryui'], function($){
             var row = btn.closest("tr");
             
             var day = row.find('td:nth-child(2)').text();
-            
             var time = row.find('td:nth-child(4)').text();
 
             row.remove();
             
             dpicker.delete_booking(day,time); 
             dpicker.refresh();
+            
+            if ( day == dpicker.get() ){
+                tpicker.del_busy(time);
+                tpicker.update_busy_interv();
+            }
             
             mybookings.update_visibility();
             mybookings.paginate();

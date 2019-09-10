@@ -19,6 +19,8 @@ $time = optional_param('time',0, PARAM_RAW);
 
 $controller = new add_booking_controller($id);
 $exit = $controller->do($labid, $practid, $date, $time);
+
+header('Content-Type: application/json');
 echo json_encode($exit);
 
 class add_booking_controller{
