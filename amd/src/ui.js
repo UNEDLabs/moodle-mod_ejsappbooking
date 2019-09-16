@@ -9,11 +9,10 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
     return {
         init: function(controllerspath) {
 
-            console.log("Loading UI");
+            //console.log("Loading UI");
             
             var form = new booking_form({controllerspath: controllerspath,course_id: course_id, debug: debug });
-            var mybookings = new mybookings_table({controllerspath: controllerspath,course_id: course_id, debug: debug, 
-                    datepicker: form.datepicker, timepicker: form.timepicker });
+            var mybookings = new mybookings_table({controllerspath: controllerspath,course_id: course_id, debug: debug, datepicker: form.datepicker, timepicker: form.timepicker });
             
             form.attach(mybookings);
     
@@ -23,7 +22,7 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
                  url: bookings_list_url,
                  success: function(data){
                     
-                    console.log('GET ' + bookings_list_url);
+                    //console.log('GET ' + bookings_list_url);
                      
                     var a = Array.from(data['bookings-list']);
                      
@@ -32,17 +31,14 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
                    form.datepicker.refresh();
                      
                     if (data['bookings-list'].length > 0){ 
-                        console.log('#' + data['bookings-list'].length + ' items found');
+                        //console.log('#' + data['bookings-list'].length + ' items found');
                         mybookings.populate({ bookings: data['bookings-list'] });
-                        
-                       // mybookings.update("2018-08-02","foo bar","11:00",0);
-                        
                     } else {
-                        console.log('No bookings to show');
+                        //console.log('No bookings to show');
                     }
                   },
                  error: function(xhr, desc, err){ //console.log(err);
-                    console.log('Error getting bookings list.');
+                    // console.log('Error getting bookings list.');
                 }
              });
             

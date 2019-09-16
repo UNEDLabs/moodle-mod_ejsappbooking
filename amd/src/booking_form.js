@@ -15,7 +15,7 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
         this.timepicker = new time_picker(this.debug);
         this.notifarea = new notif_area(this.debug);
         
-        this.labsel.on_select_setup({ urlbase: data.controllerspath, course: data.course_id, lab_sel: this.labsel, prac_sel:                this.pracsel, time_picker: this.timepicker, notif_area: this.notifarea, booking_form: this });
+        this.labsel.on_select_setup({ urlbase: data.controllerspath, course: data.course_id, lab_sel: this.labsel, prac_sel: this.pracsel, time_picker: this.timepicker, notif_area: this.notifarea, booking_form: this });
             
         this.datepicker.on_date_change_setup({ urlbase: data.controllerspath, course_id: data.course_id, 
                 lab_id: this.labsel.get_lab(), timepicker: this.timepicker});      
@@ -84,8 +84,9 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
                 return;
             }
             
-            var submit_url = "http://moodle.local" + booking_form.elem.attr('action') +"&labid="+labid+"&practid="+practid + "&date="+date+"&time="+time;
+            // TODO: If time has changed update timepicker
             
+            var submit_url = "http://moodle.local" + booking_form.elem.attr('action') +"&labid="+labid+"&practid="+practid + "&date="+date+"&time="+time;
             
             var labname = e.data.lab_sel.get_lab_name();
             var pracname = e.data.prac_sel.get_prac_name(); 

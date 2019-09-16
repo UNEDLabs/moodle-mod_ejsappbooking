@@ -2,20 +2,16 @@
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/lib.php');
-require_once($CFG->dirroot . '/filter/multilang/filter.php');
 
 require_once(dirname(dirname(__FILE__)) . '/ejsappbooking_model.class.php');
+require_once(dirname(dirname(__FILE__)) . '/ejsappbooking_view_json.class.php');
 
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
-$bookid = optional_param('bookid', 0, PARAM_INT); // Book ID
 
 $controller = new delete_booking_controller($id);
-$exit = $controller->do($bookid);
-
-header('Content-Type: application/json');
-echo json_encode($exit);
+$controller->dispatch();
 
 class delete_booking_controller {
     
@@ -23,7 +19,19 @@ class delete_booking_controller {
         $this->model = new ejsappbooking_model($id, null);
     }
     
-    public function do($bookid){
+    public function dispatch(){
+           
+        $bookid = optional_param('bookid', 0, PARAM_INT); // Book ID
+        
+        $exit = $this->do(array('bookid'=>$bookid));
+
+        $view = new ejsappbooking_json_view();
+        $view->render($exit);
+    }
+    
+    public function do($params){
+        
+        $bookid=$params['bookid'];
         
         $data['exitCode']=$this->model->delete_booking($bookid);
         

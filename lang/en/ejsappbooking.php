@@ -71,6 +71,7 @@ $string['update_users_table'] = 'Update ejsapp booking users table';
 
 $string['already_enabled'] = 'You already have a booking system in this course.';
 
+$string['no_remlabs'] = 'No laboratories configured for this course';
 $string['newreservation'] = 'New reservation';
 $string['deleteBooking'] = 'Booking info deleted';
 $string['mybookings'] = 'My bookings';
@@ -103,7 +104,7 @@ $string['rem_prac_selection'] = 'Select a practice';
 $string['date-select'] = 'Select date';
 $string['time-select'] = 'Select time';
 $string['time_zone'] = 'Your current timezone is';
-$string['time_zone_default'] = 'Your timezone is undefined (Using server time).';
+$string['time_zone_default'] = 'Using server timezone.';
 $string['time_zone_help'] = 'You can change this settings in your user profile';
 $string['messageOccupied'] = 'The slot is occupied';
 $string['no_labs_rem'] = 'You are not authorized to book or there is no remote laboratory set';

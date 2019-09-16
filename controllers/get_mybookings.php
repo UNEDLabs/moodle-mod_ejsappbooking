@@ -2,20 +2,16 @@
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/lib.php');
-require_once($CFG->dirroot . '/filter/multilang/filter.php');
-require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
 
 require_once(dirname(dirname(__FILE__)) . '/ejsappbooking_model.class.php');
+require_once(dirname(dirname(__FILE__)) . '/ejsappbooking_view_json.class.php');
 
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 
 $controller = new get_mybookings_controller($id);
-$bookings = $controller->do();
-
-header('Content-Type: application/json');
-echo json_encode($bookings);
+$controller->dispatch();
 
 class get_mybookings_controller {
     
@@ -23,7 +19,16 @@ class get_mybookings_controller {
         $this->model = new ejsappbooking_model($id, null);
     }
     
-    public function do(){
+    public function dispatch(){
+            
+        $bookings = $this->do(array());
+
+        $view = new ejsappbooking_json_view();
+        $view->render($bookings);
+     
+    }
+    
+    public function do($params){
         
         $user_tz = $this->model->get_user_timezone();
         $server_tz = $this->model->get_default_timezone();

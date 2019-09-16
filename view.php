@@ -63,11 +63,11 @@ $n = optional_param('n', 0, PARAM_INT); // ...ejsappbooking instance ID - it sho
 
 $model = new ejsappbooking_model($id, $n);
 
+
 $view = new ejsappbooking_view(
    $id, $model->get_mod_url(), $model->get_mod_name(), $model->get_course_name(),
    $model->get_mod_intro(), $model->get_remlabs(), $model->get_practices($id), 
    $model->get_user_timezone_str(), $model->get_timezone_edit_url()
 );
 
-$view->print_page();
-
+$view->render();

@@ -14,6 +14,8 @@ var tpicker = function timePicker(debug){
     this.hcells().on('click', { tpicker: this }, this.on_hour_click );
     this.pick_default_hour();
     
+    // update timepicker past our every minute
+    
 };
   
 tpicker.prototype.log = function(msg){
@@ -67,6 +69,11 @@ tpicker.prototype.get_real_hour = function(){
    var now = new Date();
    return now.getHours();
 };
+    
+tpicker.prototype.is_current_hour_outdated = function (){
+   return ( this.get_current_hour() < this.get_real_hour());
+};
+
     
 tpicker.prototype.convert_12to24 = function(h){
     if ( h == ''){ return null }
@@ -293,9 +300,9 @@ tpicker.prototype.next_free_hour = function(){
         tpicker.log('No hour selected');
         current = this.hcells().first();
         pos = 0;
-    };
-    
-    if (current.hasClass('disabled')){ this.unselect_hour(); }
+    } else {
+       this.unselect_hour();
+    }
     
     var next = this.hcells().filter(':not(.disabled)').first();
     
@@ -369,7 +376,6 @@ tpicker.prototype.disable_busy_interv = function( ){
 };
 
 tpicker.prototype.update_busy_interv = function(){
-    
     this.clear_busy_interv();
     this.disable_busy_interv();
     this.next_free_interv();

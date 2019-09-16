@@ -1,21 +1,21 @@
 $<?php
 
 defined('MOODLE_INTERNAL') || die();
-/*
-require_once(__DIR__."/lib.php");
-require_once(__DIR__.'/turnitintooltwo_form.class.php');
-require_once(__DIR__.'/turnitintooltwo_submission.class.php');
-*/
 
 class ejsappbooking_view {
     
     public function __construct($id,$url, $title, $heading, $intro, $remlabs, $practices, $tz, $tz_edit_url){ 
   
         $this->setup_header($url,$title,$heading);
+        
+        if ( $remlabs == null ){
+            $this->body = $this->generate_nolabs_warning();
+        } else  {
+            $this->body = $this->generate_intro($intro) .
+                $this->generate_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url) .
+                $this->generate_bookings_table();
+        }
             
-        $this->body = $this->generate_intro($intro) .
-            $this->generate_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url) .
-            $this->generate_bookings_table();
     }
     
     /**
@@ -24,7 +24,7 @@ class ejsappbooking_view {
      * @global type $PAGE
      * @global type $CFG
      */
-    public function load_page_components() {
+    function load_page_components() {
         global $PAGE, $CFG;
         
         $PAGE->requires->jquery();
@@ -49,10 +49,8 @@ class ejsappbooking_view {
      * @param string $url The URL of the page
      * @param string $title Appears at the top of the window
      * @param string $heading Appears at the top of the page
-     * @param bool $return If true, return the visible elements of the header instead of echoing them.
-     * @return mixed If return=true then string else void
      */
-    public function setup_header($url, $title = '', $heading = '') {
+    function setup_header($url, $title = '', $heading = '') {
         global $PAGE, $OUTPUT;
 
         $PAGE->set_url($url);
@@ -61,7 +59,7 @@ class ejsappbooking_view {
         
     }
     
-    public function print_page(){
+    public function render(){
         
         global $OUTPUT;
 
@@ -89,6 +87,16 @@ class ejsappbooking_view {
         return ob_get_clean(); 
     }
     
+    function generate_nolabs_warning(){
+        ob_start();
+            echo html_writer::start_tag('div', array('class' => 'row '));
+                echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-2'));
+                    echo get_string('no_remlabs', 'ejsappbooking');
+                echo html_writer::end_tag('div');
+            echo html_writer::end_tag('div');    
+        return ob_get_clean();
+    }
+    
     function generate_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url){
         global $OUTPUT;
         
@@ -96,7 +104,7 @@ class ejsappbooking_view {
         // Header
         
         echo html_writer::start_tag('div', array('class' => 'row '));
-            echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-1'));
+            echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-2'));
                 echo $OUTPUT->heading(get_string('newreservation', 'ejsappbooking'));
             echo html_writer::end_tag('div');
         echo html_writer::end_tag('div');
@@ -109,12 +117,12 @@ class ejsappbooking_view {
 
             echo html_writer::start_tag('div', array('class' => 'row selectores'));    
 
-                echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
+                echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-2'));
                     echo get_string('rem_lab_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
                     echo $this->generate_lab_select($remlabs);
                 echo html_writer::end_tag('div');
 
-                echo html_writer::start_tag('div', array('class' => 'col-md-4 offset-md-1'));
+                echo html_writer::start_tag('div', array('class' => 'col-md-4'));
                     echo get_string('rem_prac_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
                     echo $this->generate_practice_select($practices);
                 echo html_writer::end_tag('div');
@@ -126,7 +134,7 @@ class ejsappbooking_view {
 
                 // Left column: datepicker and timezone display
 
-                echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
+                echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-2'));
                     echo '<span class="ui-icon ui-icon-calendar"></span> &nbsp;'.
                        get_string('date-select', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
                     echo $OUTPUT->container('<div id="datepicker"></div>');   
@@ -137,7 +145,7 @@ class ejsappbooking_view {
 
                 // Right column: timepicker, notif area and submit button
 
-                echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
+                echo html_writer::start_tag('div', array('class' => 'col-md-3'));
                     echo '<span class="ui-icon ui-icon-clock"></span>&nbsp;' . get_string('time-select', 'ejsappbooking').':'; 
                     echo $this->generate_time_picker();
                     echo $this->generate_notif_area();
@@ -159,6 +167,7 @@ class ejsappbooking_view {
         $currentlab = '';
         $i = 1;
         foreach ($remlabs as $remlab) {
+            
             $labname[$remlab->id] = $remlab->name;
             if ($i == 1) {
                 $labid = $remlab->id;
@@ -194,7 +203,7 @@ class ejsappbooking_view {
         } // Select first practices as default;
 
         $selectedpractice = '';
-        $select = '<select id="foo" name="practid" class="booking_select" data-previousindex="0" > ';
+        $select = '<select  name="practid" class="booking_select" data-previousindex="0" > ';
         $i = 1;
         
         foreach ($practices as $practice) {
@@ -221,7 +230,7 @@ class ejsappbooking_view {
     
     function generate_time_picker(){
         ob_start();
-        include 'ejsappbooking_view_timepicker.php';
+        include 'ejsappbooking_view_timepicker.tpl.php';
         return ob_get_clean();
     }
     
@@ -254,7 +263,7 @@ class ejsappbooking_view {
          ob_start();
 
         echo html_writer::start_tag('div', array('class' => 'row'));
-            echo html_writer::start_tag('div', array('class' => 'col-md-3 offset-md-1'));
+            echo html_writer::start_tag('div', array('class' => 'col-md-7 offset-md-2'));
                 echo $OUTPUT->heading(get_string('mybookings', 'ejsappbooking'));
             echo html_writer::end_tag('div');
 
@@ -267,7 +276,7 @@ class ejsappbooking_view {
         echo html_writer::end_tag('div'); /* row end */
 
         echo html_writer::start_tag('div', array('class' => 'row'));
-            echo html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-1 '));
+            echo html_writer::start_tag('div', array('class' => 'col-md-6 offset-md-2 '));
 
             echo '<p e id="mybookings_notif" >'. get_string('mybookings_empty','ejsappbooking') . '</p>';
 
@@ -276,7 +285,7 @@ class ejsappbooking_view {
                        <th></th>
                        <th>'.get_string('date', 'ejsappbooking').'</th>              
                        <th>'.get_string('plant', 'ejsappbooking').'</th>
-                       <th>'.get_string('hour', 'ejsappbooking').'</th>                        
+                       <th>'.get_string('hour', 'ejsappbooking').'</th>
                        <th>'.get_string('action', 'ejsappbooking').'</th>
                        </tr></thead>
                     <tbody></tbody>

@@ -69,7 +69,7 @@ $string['update_remlab_table'] = 'Actualizar tabla remlab de ejsapp booking';
 $string['update_users_table'] = 'Actualizar tabla users de ejsapp booking';
 
 $string['already_enabled'] = 'Ya tiene un sistema de reservas en este curso.';
-
+$string['no_remlabs'] = 'No se encontraron laboratorios configurados para este curso';
 $string['newreservation'] = 'Realizar una reserva';
 $string['deleteBooking'] = 'Informaci&oacute;n de la reserva eliminada';
 $string['mybookings'] = 'Mis reservas';
@@ -102,7 +102,7 @@ $string['rem_prac_selection'] = 'Seleccione una practica';
 $string['date-select'] = 'Seleccione una fecha';
 $string['time-select'] = 'Selecione una hora';
 $string['time_zone'] = 'Su zona horaria actual es';
-$string['time_zone_default'] = 'Su zona horaria no ha sido definida (se utilizará la hora del servidor)';
+$string['time_zone_default'] = 'Está utilizarndo la zona horaria del servidor)';
 $string['time_zone_help'] = 'Puede modificar este parámetro en la configuración de su perfil de usuario';
 $string['messageOccupied'] = 'El slot esta ocupado';
 $string['no_labs_rem'] = 'No tiene permisos para reservar o no existe ningún laboratorio remoto configurado';
