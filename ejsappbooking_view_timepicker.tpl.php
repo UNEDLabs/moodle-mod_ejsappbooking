@@ -41,6 +41,7 @@
             </tr>  
     </tbody>
     </table>
+    <div style="overflow-x:auto;">
     <table id="interval">
     <tr><!--
         <td>:00</td>
@@ -49,4 +50,5 @@
         <td>:45</td>
     --></tr>
     </table>
+    </div>
 </div>

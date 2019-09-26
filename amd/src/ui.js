@@ -12,7 +12,7 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
             //console.log("Loading UI");
             
             var form = new booking_form({controllerspath: controllerspath,course_id: course_id, debug: debug });
-            var mybookings = new mybookings_table({controllerspath: controllerspath,course_id: course_id, debug: debug, datepicker: form.datepicker, timepicker: form.timepicker });
+            var mybookings = new mybookings_table({controllerspath: controllerspath, course_id: course_id, debug: debug, datepicker: form.datepicker, timepicker: form.timepicker });
             
             form.attach(mybookings);
     
@@ -26,9 +26,9 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
                      
                     var a = Array.from(data['bookings-list']);
                      
-                   form.datepicker.set_bookings_by_date(a);
+                    form.datepicker.set_bookings_by_date(a);
                 
-                   form.datepicker.refresh();
+                    form.datepicker.refresh();
                      
                     if (data['bookings-list'].length > 0){ 
                         //console.log('#' + data['bookings-list'].length + ' items found');

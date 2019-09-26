@@ -34,7 +34,6 @@ div.row.selectores {
 */
 
 
-
 .ui-datepicker-current-day {
   outline: 3px solid rgb(17, 119, 209) !important;
   font-weight: bold !important
@@ -107,12 +106,16 @@ rgb(149,149,149) disabled gray;
     
     background-color: rgb(149,149,149);
     color: beige !important;
-        
 }
 
 
 #datepicker, #timepicker {
     padding: 1em 0;
+}
+
+#timepicker table {
+    table-layout: auto; 
+    width: 100%;
 }
 
 #timepicker table td{
@@ -139,7 +142,6 @@ rgb(149,149,149) disabled gray;
 }
 
 #timepicker table#interval {
-    width: 360px!important;
     display: block;
     margin: 4px 0;
     padding: 4px;

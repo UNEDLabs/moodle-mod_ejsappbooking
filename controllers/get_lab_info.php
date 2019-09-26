@@ -31,6 +31,7 @@ class get_lab_info_controller
     }
     
     public function do($params){
+        
         $labid=$params['labid'];
         
         $data = '';
@@ -39,21 +40,20 @@ class get_lab_info_controller
         
         if ( !$conflab ) return (object) null;
         
-        $data['status']=$conflab->active;
-
-        $data['slot-size'] = $this->model->get_slot_size($conflab->slotsduration);
-        
-        $data['maxDay'] = $conflab->dailyslots;
-        $data['maxWeek'] = $conflab->weeklyslots;
-        $data['maxTotal'] = $conflab->totalslots;
-
         $practices = $this->model->get_practices($labid);
         
         foreach ($practices as $practice) {
             $practices_loc[$practice->practiceid] = $this->model->translate($practice->practiceintro);
         }
 
-        $data['practices'] = $practices_loc;
+        $data = array(
+            'status' => $conflab->active,
+            'slot-size' => $this->model->get_slot_size($conflab->slotsduration),
+            'maxDay' => $conflab->dailyslots,
+            'maxWeek' => $conflab->weeklyslots,
+            'maxTotal' => $conflab->totalslots,
+            'practices' => $practices_loc
+        );
         
         return $data;
     }

@@ -1,9 +1,7 @@
 <?php 
 
-
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once(dirname(dirname(__FILE__)) . '/lib.php');
-
 
 require_once(dirname(dirname(__FILE__)) . '/ejsappbooking_model.class.php');
 require_once(dirname(dirname(__FILE__)) . '/ejsappbooking_view_json.class.php');
@@ -55,14 +53,11 @@ class add_booking_controller{
         $weekbooks = count($this->model->get_week_bookings($labid,$sdate));
         $totalbooks = count($this->model->get_total_bookings($labid));
         
-        //echo $totalbooks . " " . $lab_conf->totalslots;
-        
         // Check restrictions.
      
         $lab_conf = $this->model->get_lab_conf($labid);
         $slot_size = $this->model->get_slot_size($lab_conf->slotsduration);
         
-            
         $edate = clone $sdate;
             $edate->modify('+'.$slot_size.' minutes'); // restar tiempo de recuperación
         
@@ -98,13 +93,7 @@ class add_booking_controller{
 
         $data['exitCode']=$exit;
         $data['exitMsg']=$msg;
-        
-/*     
-        $data['dayMax'] = $lab_conf->dailyslots;
-        $data['weekMax'] = $lab_conf->weeklyslots;
-        $data['totalMax'] = $lab_conf->totalslots;
 
-  */
         if ( $exit < 0 ){ // Doesn't meet restrictions
             return $data;
         }
@@ -123,14 +112,6 @@ class add_booking_controller{
         $data['dayCount']= $daybooks +1 ;
         $data['weekCount']= $weekbooks +1 ;
         $data['totalCount']= $totalbooks +1;
-        
-        /*
-        
-        $data['dayCount'] = $data['dayCount'] + 1;
-        $data['weekCount'] = $data['weekCount'] + 1;
-        $data['totalCount'] = $data['totalCount'] + 1;
-        
-        */
         
         return $data;
     }

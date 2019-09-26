@@ -328,6 +328,8 @@ function ejsappbooking_pluginfile($course, $cm, $context, $filearea, array $args
  * @param navigation_node $ejsappbookingnode
  * @return void
  */
+
+/*
 function ejsappbooking_extend_settings_navigation($settings, $ejsappbookingnode) {
     global $PAGE;
 
@@ -350,3 +352,4 @@ function ejsappbooking_extend_settings_navigation($settings, $ejsappbookingnode)
         $ejsappbookingnode->add_node($node, $beforekey);
     }
 }
+*/

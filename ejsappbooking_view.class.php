@@ -35,7 +35,9 @@ class ejsappbooking_view {
         //$PAGE->requires->string_for_js('book_message', 'ejsappbooking');
         //$PAGE->requires->string_for_js('cancel', 'ejsappbooking');
 
-        $PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init', array($CFG->wwwroot . '/mod/ejsappbooking/controllers'));
+        $PAGE->requires->js_call_amd('mod_ejsappbooking/app','init', array());
+        $PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init', array(
+            $CFG->wwwroot . '/mod/ejsappbooking/controllers'));
 
         $PAGE->requires->css(new moodle_url('/mod/ejsappbooking/styles/ui.css'));
 
