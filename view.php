@@ -36,30 +36,15 @@ global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
-//require_once(dirname(__FILE__) . '/locallib.php');
 
 require_once(dirname(__FILE__) . '/ejsappbooking_model.class.php');
 require_once(dirname(__FILE__) . '/ejsappbooking_view.class.php');
 
-//require_once($CFG->libdir . '/tablelib.php');
-//require_once($CFG->libdir . '/filelib.php');
-//require_once($CFG->libdir . '/formslib.php');
-//require_once($CFG->libdir . '/moodlelib.php');
-// require_once($CFG->dirroot . '/calendar/lib.php');
 require_once($CFG->dirroot . '/filter/multilang/filter.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
 
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 $n = optional_param('n', 0, PARAM_INT); // ...ejsappbooking instance ID - it should be named as the first character of the module.
-//$labid = optional_param('labid', 0, PARAM_INT); // Selected laboratory.
-//$practid = optional_param('practid', 0, PARAM_INT); // Selected practice.
-
-//$booking = optional_param_array('booking', array(), PARAM_INT); // Bookings selected to save or delete.
-//$bookingbutton = optional_param('bookingbutton', 0, PARAM_RAW); // Controls the functionality for saving bookings.
-//$mybookingsbutton = optional_param('Mybookingsbutton', 0, PARAM_RAW); // Controls the functionality of showing the bookings.
-//$mybookingsdelete = optional_param('Mybookingsdelete', 0, PARAM_RAW); // Controls functionality to delete the selected bookings.
-//$selectday = optional_param('selectDay', 0, PARAM_RAW); // Selected day.
-//$page = optional_param('page', 0, PARAM_INT); // Which page to show.
 
 $model = new ejsappbooking_model($id, $n);
 

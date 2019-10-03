@@ -80,44 +80,6 @@ function ejsappbooking_add_instance($ejsappbooking) {
     $ejsappbooking->timemodified = time();
     $bookingid = $DB->insert_record('ejsappbooking', $ejsappbooking);
 
-    // Table ejsappbooking_usersaccess.
-    $context = context_course::instance($ejsappbooking->course);
-    $users = get_enrolled_users($context);
-    $ejsapps = $DB->get_records('ejsapp', array('course' => $ejsappbooking->course));
-
-    $usersaccess = new stdClass();
-    $usersaccess->timecreated = time();
-    $usersaccess->timemodified = time();
-    $usersaccess->bookingid = $bookingid;
-
-    // Grant remote access to admin user.
-    $usersaccess->allowremaccess = 1;
-    $usersaccess->userid = 2;
-    foreach ($ejsapps as $ejsapp) {
-        if ($ejsapp->is_rem_lab == 1) {
-            $usersaccess->ejsappid = $ejsapp->id;
-            $DB->insert_record('ejsappbooking_usersaccess', $usersaccess);
-        }
-    }
-
-    // Rest of users.
-    foreach ($users as $user) {
-        $usersaccess->userid = $user->id;
-        if ($user->id != 2) {
-            if (!has_capability('mod/ejsapp:accessremotelabs', $context, $user->id, true)) {
-                $usersaccess->allowremaccess = 0;
-            } else {
-                $usersaccess->allowremaccess = 1;
-            }
-            foreach ($ejsapps as $ejsapp) {
-                if ($ejsapp->is_rem_lab == 1) {
-                    $usersaccess->ejsappid = $ejsapp->id;
-                    $DB->insert_record('ejsappbooking_usersaccess', $usersaccess);
-                }
-            }
-        }
-    }
-
     return $bookingid;
 }
 
@@ -159,7 +121,6 @@ function ejsappbooking_delete_instance($id) {
 
     // Delete dependent records.
     $DB->delete_records('ejsappbooking', array('id' => $id));
-    $DB->delete_records('ejsappbooking_usersaccess', array('bookingid' => $id));
 
     return true;
 }
@@ -328,28 +289,5 @@ function ejsappbooking_pluginfile($course, $cm, $context, $filearea, array $args
  * @param navigation_node $ejsappbookingnode
  * @return void
  */
-
-/*
 function ejsappbooking_extend_settings_navigation($settings, $ejsappbookingnode) {
-    global $PAGE;
-
-    // We want to add these new nodes after the Edit settings node, and before the
-    // Locally assigned roles node. Of course, both of those are controlled by capabilities.
-    $keys = $ejsappbookingnode->get_children_key_list();
-    $beforekey = null;
-    $i = array_search('modedit', $keys);
-    if ($i === false and array_key_exists(0, $keys)) {
-        $beforekey = $keys[0];
-    } else if (array_key_exists($i + 1, $keys)) {
-        $beforekey = $keys[$i + 1];
-    }
-
-    if (has_capability('mod/ejsappbooking:managerights', $PAGE->cm->context)) {
-        $url = new moodle_url('/mod/ejsappbooking/set_permissions.php',
-            array('id' => $PAGE->cm->id, 'courseid' => $PAGE->course->id, 'contextid' => $PAGE->context->id));
-        $node = navigation_node::create(get_string('manage_access_but', 'ejsappbooking'),
-            $url, navigation_node::TYPE_SETTING, null, 'mod_ejsappbooking_manage_rights');
-        $ejsappbookingnode->add_node($node, $beforekey);
-    }
 }
-*/

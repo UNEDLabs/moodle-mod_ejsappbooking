@@ -39,14 +39,5 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '1',
         'month' => '*'
-    ),
-    array(
-        'classname' => 'mod_ejsappbooking\task\update_users_table',
-        'blocking' => 0,
-        'minute' => '*/10',
-        'hour' => '*',
-        'day' => '*',
-        'dayofweek' => '*',
-        'month' => '*'
     )
 );

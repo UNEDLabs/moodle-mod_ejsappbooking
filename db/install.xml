@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="ejsappbooking" COMMENT="Defines all the booking system instances for each course" NEXT="ejsappbooking_usersaccess">
+    <TABLE NAME="ejsappbooking" COMMENT="Defines all the booking system instances for each course" NEXT="ejsappbooking_remlab_access">
       <FIELDS>
       	<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
       	<FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course ejsappbooking activity belongs to" PREVIOUS="id" NEXT="name"/>
@@ -21,22 +21,7 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="ejsappbooking_usersaccess" COMMENT="Specifies if a user has access to the booking system for a particular remote EJSApp" PREVIOUS="ejsappbooking" NEXT="ejsappbooking_remlab_access">
-      <FIELDS>
-      	<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="bookingid"/>
-      	<FIELD NAME="bookingid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The Moodle user id" PREVIOUS="bookingid" NEXT="ejsappid"/>
-        <FIELD NAME="ejsappid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="The EJSApp id" PREVIOUS="userid" NEXT="allowremaccess"/>
-        <FIELD NAME="allowremaccess" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Whether the user has access or not" PREVIOUS="ejsappid"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-      <INDEXES>
-        <INDEX NAME="bookingid" UNIQUE="false" FIELDS="bookingid"/>
-      </INDEXES>
-    </TABLE>
-    <TABLE NAME="ejsappbooking_remlab_access" COMMENT="Records the bookings made by the users to the different remote EJSApp" PREVIOUS="ejsappbooking_usersaccess">
+    <TABLE NAME="ejsappbooking_remlab_access" COMMENT="Records the bookings made by the users to the different remote EJSApp" PREVIOUS="ejsappbooking">
       <FIELDS>
       	<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="username"/>
       	<FIELD NAME="username" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="ejsappid"/>
