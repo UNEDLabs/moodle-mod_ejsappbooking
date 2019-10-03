@@ -1,0 +1,175 @@
+
+h2 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+div.row.selectores {
+    padding-bottom: 3em;
+}
+
+/* old timepicker
+
+#timepicker {
+    display: inline-block;
+    padding: 2em;
+    border-radius: 5px;   
+    
+    min-width: 200px;
+}
+
+#timepicker div#slots{ 
+     display: none !important; 
+}
+
+#timepicker div:first-child, 
+#timepicker div:last-child {
+    text-align: center;
+}
+
+#timepicker span#time{
+    display: inline-block;
+    margin: 1em 0.5em;
+}
+*/
+
+
+.ui-datepicker-current-day {
+  outline: 3px solid rgb(17, 119, 209) !important;
+  font-weight: bold !important
+}
+
+.pagination {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.pagination li a {
+    color: rgb(85, 85, 85);
+}
+
+#bookingform {
+    margin-bottom: 2%;
+}
+
+
+#bookingform  #notif-area div.alert{
+    width: 100% !important
+}
+
+#bookingform #submitwrap{
+    text-align: center;
+}
+
+#bookingform button[name="bookingbutton"]{
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    float: left
+}
+
+.ui-icon {
+  transform: scale(1.25);
+}
+
+div.alert{
+    display: none
+}
+
+#datepicker td.highlight-day {
+}
+
+/*
+ * text-decoration: underline !important;
+
+    color: rgb(48, 181,244) !important; 
+
+    background-color: darkgray
+
+
+    color: dimgray !important;
+    color: hotpink !important;
+
+    color: #222222 !important;
+
+rgb(149,149,149) disabled gray;
+
+ */
+
+
+#datepicker td.highlight-day a {
+    
+   /* font-weight: bold !important; */
+    color: rgb(38,38,38) !important;
+    background-image: none;
+    
+    background-color: rgb(149,149,149);
+    color: beige !important;
+}
+
+
+#datepicker, #timepicker {
+    padding: 1em 0;
+}
+
+#timepicker table {
+    table-layout: auto; 
+    width: 100%;
+}
+
+#timepicker table td{
+    padding: 0.5em;
+    font-size: large
+}
+
+#timepicker table#hour td{
+    border: 1px solid rgb(211, 211, 211) !important;
+    border-collapse: collapse
+    /**/
+}
+
+#timepicker table .time-highlight {
+  outline: 4px solid rgb(17, 119, 209) !important;
+}
+
+#timepicker table td span {
+    font-size: 65%
+}
+
+#timepicker table td{
+    cursor: pointer;   
+}
+
+#timepicker table#interval {
+    display: block;
+    margin: 4px 0;
+    padding: 4px;
+} 
+
+#timepicker table td a {
+    text-decoration: none;
+    color: inherit
+}
+
+#timepicker table#interval td {
+    border-top: 0;
+    text-align: center;
+}
+
+#timepicker table#hour td.disabled,
+#timepicker table#interval td.disabled {
+    color: lightgray;
+    cursor: default;
+}
+
+#booking_btn { 
+    display: inline-block;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    padding: 0.5em;
+    cursor: pointer; 
+    border-radius: 3px;
+    color: rgb(74,74, 74);
+    font-weight: bold
+}
