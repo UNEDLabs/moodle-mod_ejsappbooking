@@ -32,9 +32,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2019041500;      // The current module version (Date: YYYYMMDDXX).
+$plugin->version  = 2019102100;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires = 2013111800;      // Requires this Moodle version.
 $plugin->component = 'mod_ejsappbooking'; // To check on upgrade, that module sits in correct place.
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '3.0 (Build: 2019100300)';
+$plugin->release = '3.0 (Build: 2019102100)';
 $plugin->dependencies = array('mod_ejsapp' => 2019041500, 'block_remlab_manager' => 2016080400);

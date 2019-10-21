@@ -38,8 +38,6 @@ class ejsappbooking_view {
         $PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init', array(
             $CFG->wwwroot . '/mod/ejsappbooking/controllers'));
 
-        $PAGE->requires->css(new moodle_url('/mod/ejsappbooking/styles/ui.css'));
-
         $CFG->cachejs = false; 
         $PAGE->set_cacheable(false);
     }
@@ -124,7 +122,7 @@ class ejsappbooking_view {
                     echo $this->generate_lab_select($remlabs);
                 echo html_writer::end_tag('div');
 
-                echo html_writer::start_tag('div', array('class' => 'col-md-4'));
+                echo html_writer::start_tag('div', array('class' => 'col-md-3'));
                     echo get_string('rem_prac_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>';
                     echo $this->generate_practice_select($practices);
                 echo html_writer::end_tag('div');
