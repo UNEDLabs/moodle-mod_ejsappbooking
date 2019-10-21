@@ -241,7 +241,7 @@ class ejsappbooking_model
                 $inittime->format('d'), $inittime->format('H'));
             $event->timeduration = $slot_size ;     
             $event->description = $event->description . get_string('plant', 'ejsappbooking') .
-                ': ' . $this->multilang->filter($labid) . '. ' . $practid . '<br>';
+                ': ' . $this->multilang->filter($lab->name) . '. ' . $prac->practiceintro . '<br>';
             $event->description = $event->description . get_string('date', 'ejsappbooking') .
                 ': ' . $inittime->format("Y-m-d"). '<br>';
             $event->description = $event->description . get_string('hour', 'ejsappbooking') .
