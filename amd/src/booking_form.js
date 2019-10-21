@@ -1,21 +1,24 @@
-define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.js', 'amd/src/date_picker.js', 'amd/src/time_picker.js','amd/src/notif_area.js'], function($, ui, lab_select, practice_select, date_picker, time_picker, notif_area){
+define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.js', 'amd/src/date_picker.js',
+    'amd/src/time_picker.js','amd/src/notif_area.js'],
+    function($, ui, lab_select, practice_select, date_picker, time_picker, notif_area){
 
     var form = function (data) {
         // controllerspath, course_id, debug
         this.debug = data.debug;
-        
+
         this.log('Creating object');
-        
+
         this.elem = $('#bookingform');
         this.disabled = false;
-        
+
         this.labsel = new lab_select(this.debug);
         this.pracsel = new practice_select(this.debug);
         this.datepicker = new date_picker(this.debug);
         this.timepicker = new time_picker(this.debug);
         this.notifarea = new notif_area(this.debug);
-        
-        this.labsel.on_select_setup({ urlbase: data.controllerspath, course: data.course_id, lab_sel: this.labsel, prac_sel: this.pracsel, time_picker: this.timepicker, notif_area: this.notifarea, booking_form: this });
+
+        this.labsel.on_select_setup({ urlbase: data.controllerspath, course: data.course_id, lab_sel: this.labsel,
+            prac_sel: this.pracsel, time_picker: this.timepicker, notif_area: this.notifarea, booking_form: this });
             
         this.datepicker.on_date_change_setup({ urlbase: data.controllerspath, course_id: data.course_id, 
                 lab_id: this.labsel.get_lab(), timepicker: this.timepicker});      
@@ -49,7 +52,7 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
     
     form.prototype.attach = function ( mybooking_table ){
         this.mybooking_table = mybooking_table;
-    }
+    };
     
     form.prototype.on_submit_setup = function(data){
         
@@ -60,7 +63,7 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
             booking_form.log('on submit <EVENT> ');
             e.preventDefault();      
 
-            var base_url = e.data.urlbase + booking_form.elem.attr('action');
+            var base_url = booking_form.elem.attr('action');
             var labid = e.data.lab_sel.get_lab();
             var practid = e.data.prac_sel.get(); 
             
@@ -69,7 +72,7 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
             
             if (booking_form.is_disabled()){
                 booking_form.log('Disabled');
-                alert('This plant is not active at that moment.Unable to book.');
+                alert('This plant is not active at that moment. Unable to book.');
                 return;
             } else {
                 booking_form.log('Enabled');
@@ -85,8 +88,8 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
             }
             
             // TODO: If time has changed update timepicker
-            
-            var submit_url = "http://moodle.local" + booking_form.elem.attr('action') +"&labid="+labid+"&practid="+practid + "&date="+date+"&time="+time;
+
+            var submit_url = base_url +"&labid="+labid+"&practid="+practid + "&date="+date+"&time="+time;
             
             var labname = e.data.lab_sel.get_lab_name();
             var pracname = e.data.prac_sel.get_prac_name(); 

@@ -1,7 +1,7 @@
 define(['jquery','jqueryui'], function($){
         
     var pselect = function (debug){
-        this.debug = debug
+        this.debug = debug;
         
         this.log('Creating object');
         
@@ -24,11 +24,11 @@ define(['jquery','jqueryui'], function($){
     
     pselect.prototype.get = function(){
          return this.elem.val();
-     }
+    };
     
     pselect.prototype.get_prac_name = function(){
         return this.elem.children("option:selected").text();
-    }
+    };
     
    pselect.prototype.first = function(){
         this.log('Select first');
@@ -40,13 +40,14 @@ define(['jquery','jqueryui'], function($){
     pselect.prototype.populate = function(practices){
       
         this.elem.children().remove();
-        
-        for (p in practices ){
+
+        var pid, pname, opt;
+        for (var p in practices ){
             pid = p[0];
             pname = practices[p[0]];
             opt = $('<option>', { value: pid, text : pname });
             this.elem.append(opt);
-        };
+        }
         
         this.first();
         this.elem.selectmenu("refresh");

@@ -35,7 +35,6 @@ class ejsappbooking_view {
         //$PAGE->requires->string_for_js('book_message', 'ejsappbooking');
         //$PAGE->requires->string_for_js('cancel', 'ejsappbooking');
 
-        $PAGE->requires->js_call_amd('mod_ejsappbooking/app','init', array());
         $PAGE->requires->js_call_amd('mod_ejsappbooking/ui','init', array(
             $CFG->wwwroot . '/mod/ejsappbooking/controllers'));
 
@@ -113,7 +112,8 @@ class ejsappbooking_view {
         
         // Form      
       
-        echo html_writer::start_tag('form', array('id' => 'bookingform', 'method' => 'get', 'action' => "/mod/ejsappbooking/controllers/add_booking.php?id=".$id));
+        echo html_writer::start_tag('form', array('id' => 'bookingform', 'method' => 'get',
+            'action' => new moodle_url("/mod/ejsappbooking/controllers/add_booking.php", array('id' => $id))));
         //
             // First row: lab and practice select
 

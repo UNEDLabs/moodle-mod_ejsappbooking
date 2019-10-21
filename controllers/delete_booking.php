@@ -45,7 +45,6 @@ class delete_booking_controller {
             case -2:
                 $data['exitMsg']="Error deleting record" ;
                 break;
-
         }
         
         return $data;

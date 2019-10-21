@@ -47,7 +47,9 @@ tpicker.prototype.pick_default_interv = function(){
 tpicker.prototype.get_current_hour = function(){
     var item = this.get_current_hour_item();
     
-    if (  item.length == 0 ) return null;
+    if (  item.length == 0 ) {
+        return null;
+    }
     
     var h = (this.get_current_hour_item()).text();
     var hnum = this.convert_12to24(h);
@@ -74,15 +76,16 @@ tpicker.prototype.is_current_hour_outdated = function (){
    return ( this.get_current_hour() < this.get_real_hour());
 };
 
-    
 tpicker.prototype.convert_12to24 = function(h){
-    if ( h == ''){ return null }
+    if ( h == '') {
+        return null;
+    }
 
-    period = h.substring(h.length - 2);
+    var period = h.substring(h.length - 2);
     h = h.substr(0, h.length - 2);
-    hnum = parseInt(h);
+    var hnum = parseInt(h);
 
-    if ( period == 'PM'){
+    if ( period == 'PM') {
         hnum = hnum + 12  ;
     }
 
@@ -173,7 +176,7 @@ tpicker.prototype.set_past_hour = function(item){
         
     item.addClass('hour-past disabled');
     item.off();
-}
+};
 
 tpicker.prototype.select_interval = function(item){
     this.log('interv='+item.text());
@@ -201,11 +204,11 @@ tpicker.prototype.update_interval = function(){
     interv_pickr.find('tr').append('<td>:00</td>');
 
     // insert further intervals adding slot_size to the previous one
-    period = slot_size;
+    var period = slot_size;
     while ( period < 60 ) {
-        label = period;
+        var label = period;
         if ( period < 10 ) label = '0' + label;
-        cell = '<td>:' + label + '</td>';
+        var cell = '<td>:' + label + '</td>';
         interv_pickr.find('tr').append(cell);
         period += slot_size;
     } 
@@ -214,7 +217,7 @@ tpicker.prototype.update_interval = function(){
     tpickr.icells().on('click', { tpicker: this }, this.on_interv_click );
  
     // scroll bar for small slot size
-    if ( this.icells().length > 8 ){
+    if ( this.icells().length > 8 ) {
         interv_pickr.css('overflow-x', 'scroll');
     } else {
         interv_pickr.css('overflow-x', 'hidden');
@@ -226,7 +229,6 @@ tpicker.prototype.update_interval = function(){
 };
     
 tpicker.prototype.on_hour_click = function(e){
-    
     e.preventDefault();
     
     var tpicker = e.data.tpicker;
@@ -246,7 +248,6 @@ tpicker.prototype.on_hour_click = function(e){
 
     tpicker.disable_busy_interv();
     tpicker.next_free_interv();
-    
 };
     
 tpicker.prototype.on_interv_click = function(e){
@@ -261,7 +262,6 @@ tpicker.prototype.on_interv_click = function(e){
 };
  
 tpicker.prototype.disable_past_hours = function (){
-
     var tpicker = this;
     var hours = this.hcells();
     var now = new Date();
@@ -272,9 +272,9 @@ tpicker.prototype.disable_past_hours = function (){
         this.clear_past_hours();
         return;
     }
-    
-   tpicker.log('Disabling past hours:' + h);
-    
+
+    tpicker.log('Disabling past hours:' + h);
+
     hours.each( function( index ){
         var h2 = tpicker.convert_12to24($(this).text());
         
@@ -282,10 +282,9 @@ tpicker.prototype.disable_past_hours = function (){
             tpicker.set_past_hour($(this));
         } else { //( h2 == h ) => current time, stop checking past
             return false;
-        };
+        }
         
     });
-    
 };
 
 tpicker.prototype.next_free_hour = function(){
@@ -316,11 +315,11 @@ tpicker.prototype.set_busy = function(busy_slots){
     
 tpicker.prototype.add_busy = function(time){
     if (this.busy_slots == null) {
-        this.busy_slots = new Array();
+        this.busy_slots = [];
     }
     this.busy_slots.push(time);
     this.busy_slots.sort();
-}
+};
 
 tpicker.prototype.del_busy = function(time){
     if (this.busy_slots == null) {
@@ -331,21 +330,20 @@ tpicker.prototype.del_busy = function(time){
     if ( pos > 0 ){
         this.busy_slots.splice(pos, 1);
     }
-}
+};
     
 tpicker.prototype.set_past_interv = function (item){
     item.addClass('interval-busy disabled');
     item.off();
-}
+};
 
 tpicker.prototype.set_busy_interv = function (item){
     item.addClass('interval-busy disabled');
     item.off();
-}
+};
 
      
 tpicker.prototype.disable_busy_interv = function( ){
-    
     var time_picker = this;
     
     if ( (time_picker.busy_slots == null) || (time_picker.busy_slots.length == 0 )){ 
@@ -372,17 +370,15 @@ tpicker.prototype.disable_busy_interv = function( ){
         */
 
     });
-    
 };
 
 tpicker.prototype.update_busy_interv = function(){
     this.clear_busy_interv();
     this.disable_busy_interv();
     this.next_free_interv();
-}
+};
 
 tpicker.prototype.disable_past_interv = function(){
-    
     var tpicker = this;
     var intervs = this.icells();
     var now = new Date();
@@ -396,7 +392,7 @@ tpicker.prototype.disable_past_interv = function(){
         tpicker.log('No past intervals to remove ' + h1 +" "+ h);
         tpicker.clear_past_interv();
         return;
-    };
+    }
     
     tpicker.log('Disabling previous intervals: 0-' + i );
     
@@ -413,14 +409,12 @@ tpicker.prototype.disable_past_interv = function(){
             $(this).off();
         } else { // current time, stop checking past
             return false;
-        };
+        }
         
     });
-    
 };    
 
 tpicker.prototype.next_free_interv = function(){
-    
     var tpicker = this;
     var current = this.get_current_interv_item();
     var pos = this.icells().index(current);
@@ -441,15 +435,14 @@ tpicker.prototype.next_free_interv = function(){
     
     if (current.hasClass('disabled')){
         this.unselect_interval();
-    };
+    }
     
     var next = this.icells().filter(':not(.disabled)').first();
     
     if ( next.length > 0 ) {
         this.select_interval(next);
         this.scrollTo(next);
-    } 
-    
+    }
 };
     
 tpicker.prototype.scrollTo = function(item){

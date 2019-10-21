@@ -219,14 +219,19 @@ class ejsappbooking_model
     }
     
     public function create_event($labid, $practid, $starttime, $endtime, $slot_size){
-        global $USER;
+        global $DB, $USER;
         
         // Booking information - Event.
         $inittime = DateTime::createFromFormat('Y-m-d H:i:s', $starttime, $this->get_user_timezone());
         $finishtime = DateTime::createFromFormat('Y-m-d H:i:s', $endtime, $this->get_user_timezone());
+
+        $lab = $DB->get_record('ejsapp', array('id' => $labid));
+        $prac = $DB->get_record('block_remlab_manager_exp2prc', array('practiceid' => $practid,
+            'ejsappid' => $labid));
         
         $event = new stdClass();
-            $event->name = get_string('book_message', 'ejsappbooking') . ' '. $labid . '. ' . $practid;
+            $event->name = get_string('book_message', 'ejsappbooking') . ' ' . $lab->name .
+                '. ' . $prac->practiceintro;
             $event->description = get_string('bookinginfo', 'ejsappbooking') . '<br><br>';
             $event->groupid = 0;
             $event->courseid = 0;
@@ -293,16 +298,29 @@ class ejsappbooking_model
     }
     
     public function delete_booking($bookid){ // Check and delete booking
-        global $DB;
+        global $DB, $USER;
         
         $record = $DB->get_record('ejsappbooking_remlab_access', array('id' => $bookid));
         
         if ( ! $record ){
             return -1; // not found
         } else {
-            
+            $lab = $DB->get_record('ejsapp', array('id' => $record->ejsappid));
+            $prac = $DB->get_record('block_remlab_manager_exp2prc', array('practiceid' => $record->practiceid,
+                'ejsappid' => $record->ejsappid));
+            $name = get_string('book_message', 'ejsappbooking') . ' ' . $lab->name .
+                '. ' . $prac->practiceintro;
+            $inittime = DateTime::createFromFormat('Y-m-d H:i:s', $record->starttime, $this->get_user_timezone());
+            $time = make_timestamp($inittime->format('Y'), $inittime->format('m'),
+                $inittime->format('d'), $inittime->format('H'));
+            $event = $DB->get_record_sql('SELECT * FROM {event} WHERE userid = ? AND name = ? AND timestart = ?',
+                array($USER->id, $name, $time));
+            // Delete calendar´s event.
+            if ($event) {
+                $event = calendar_event::load($event->id);
+                $event->delete($deleterepeated = false);
+            }
             $success = $DB->delete_records('ejsappbooking_remlab_access', array('id' => $bookid));
-
             if ( $success ){
                 return 0; // success
             } else {

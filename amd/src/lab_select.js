@@ -19,11 +19,11 @@ define(['jquery','jqueryui'], function($){
     
     lselect.prototype.get_lab = function(){
         return this.elem.val();
-    }
+    };
     
     lselect.prototype.get_lab_name = function(){
         return this.elem.children("option:selected").text();
-    }
+    };
     
     lselect.prototype.first = function(){
         this.log('Selecting first');
@@ -39,7 +39,7 @@ define(['jquery','jqueryui'], function($){
         labsel.elem.on('selectmenuchange', data, function(e){
             
             labsel.log('select <EVENT>');
-            url = e.data.urlbase+'/get_lab_info.php?'+'id='+e.data.course+'&labid='+e.data.lab_sel.get_lab();
+            var url = e.data.urlbase+'/get_lab_info.php?'+'id='+e.data.course+'&labid='+e.data.lab_sel.get_lab();
 
             $.getJSON( url, function( data ) {
                 labsel.log('GET '+ url);

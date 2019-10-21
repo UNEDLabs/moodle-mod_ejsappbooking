@@ -9,8 +9,8 @@ define(['jquery','jqueryui'], function($){
 
          var today = new Date(); 
          var dpicker = this;
-         
-         this.elem.datepicker({	
+
+         this.elem.datepicker({
             dateFormat: 'yy-mm-dd',
             changeMonth: false,
             changeYear: false,
@@ -47,15 +47,15 @@ define(['jquery','jqueryui'], function($){
      
      dpicker.prototype.get = function(){
          return this.elem.val();
-     }
+     };
      
      dpicker.prototype.get_today = function(){
          return $('.ui-datepicker-today');
-     }
+     };
     
      dpicker.prototype.set_today = function(){
             this.get_today().click();
-     }
+     };
      
    dpicker.prototype.get_real_day = function(){
         var now = new Date();
@@ -74,6 +74,7 @@ define(['jquery','jqueryui'], function($){
             return false;
         }
 
+        var bk, d, t, n;
         for(var i = 0; i< bookings.length; i++){
             bk = bookings[i];
             d = bk['day'];
@@ -127,12 +128,12 @@ define(['jquery','jqueryui'], function($){
         var dpicker = this;
 
         if ( dpicker.bookings[day] == null ){
-            dpicker.bookings[day] = new Array();
+            dpicker.bookings[day] = [];
         }
 
         dpicker.bookings[day].push(time + " " + labname);
         
-    }
+    };
     
     dpicker.prototype.delete_booking = function(day,time){
         var dpicker = this;
@@ -141,7 +142,7 @@ define(['jquery','jqueryui'], function($){
             //var pos = dpicker.bookings[day].indexOf(time);
             
             var pos = -1 ;
-            for ( i=0; i< dpicker.bookings[day].length; i++){
+            for (var i=0; i< dpicker.bookings[day].length; i++){
                 item = dpicker.bookings[day][i];
                 if ( item.substr(0,5) == time ){
                     pos = i;
@@ -158,14 +159,14 @@ define(['jquery','jqueryui'], function($){
             }
             
         }
-    }
+    };
     
     dpicker.prototype.refresh = function(){
         
         var dpicker = this;
   
         dpicker.elem.datepicker("refresh");
-    }
+    };
     
     dpicker.prototype.on_date_change_setup = function(data){
         
@@ -192,7 +193,7 @@ define(['jquery','jqueryui'], function($){
                 tpickr.clear_past();
             }
                      
-            busy_slots_url = e.data.urlbase+'/get_booked_slots.php?'+
+            var busy_slots_url = e.data.urlbase+'/get_booked_slots.php?'+
                 'id='+e.data.course_id+'&labid='+e.data.lab_id+'&date='+$(this).val();
             
             tpickr.clear_busy_interv();

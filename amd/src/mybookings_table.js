@@ -24,6 +24,7 @@ define(['jquery','jqueryui'], function($){
     
         this.log('Populating');
 
+        var bk;
         for (var i=0; i < data.bookings.length ; i++ ){
             bk = data.bookings[i];
             
@@ -44,7 +45,7 @@ define(['jquery','jqueryui'], function($){
     
     table.prototype.append_item = function (row){
          this.elem.find('tbody').append(row);
-    }
+    };
     
     table.prototype.create_row = function(day,labname,starttime,bookid) {
         var line = $('<tr>' +
@@ -59,7 +60,7 @@ define(['jquery','jqueryui'], function($){
         line.find('a').on('click', { mybookings: this, timepicker: this.timepicker, datepicker: this.datepicker, bookid: bookid }, this.on_delete_item );
         
         return line;
-    }
+    };
     
     table.prototype.update = function(day,labname,starttime,bookid){
         var line = this.create_row(day,labname,starttime,bookid);
@@ -67,7 +68,7 @@ define(['jquery','jqueryui'], function($){
         this.add_sorted(day, starttime, line);
         
         this.update_visibility();
-    }
+    };
     
     table.prototype.add_sorted = function(day, starttime, line){
         
@@ -97,7 +98,7 @@ define(['jquery','jqueryui'], function($){
             
         });
         
-    }
+    };
     
     table.prototype.update_visibility = function(){
         
@@ -129,14 +130,16 @@ define(['jquery','jqueryui'], function($){
         }
 
         // Add pages
-        count = Math.ceil( $('#mybookings tbody tr').length / 10 );
+        var count = Math.ceil( $('#mybookings tbody tr').length / 10 );
 
-        for (i = 1; i <= count; i++) {
+        var item;
+        for (var i = 1; i <= count; i++) {
             item = $('<li class="page-item"><a class="page-link">'+i+'</a></li>');
             $("ul.pagination li.page-item").last().prev().after(item);
         } 
 
         // Update links
+        var items, old, cur, page, total, first, last;
         $('.pagination .page-item').click(function(e){
             e.preventDefault();
 
@@ -176,7 +179,7 @@ define(['jquery','jqueryui'], function($){
                 last = total; 
             }
 
-            for(i=first; i <= last; i++){
+            for(var i=first; i <= last; i++){
                 $('#mybookings tbody tr:nth-child('+i+')').show();
             }
 

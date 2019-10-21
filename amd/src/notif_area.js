@@ -29,7 +29,7 @@ define(['jquery','jqueryui'], function($){
     };
     
     notif.prototype.get_error_msg = function(){
-       return $('#submit-error').html()
+       return $('#submit-error').html();
     };
 
     notif.prototype.has_errors = function(){

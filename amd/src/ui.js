@@ -12,7 +12,8 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
             //console.log("Loading UI");
             
             var form = new booking_form({controllerspath: controllerspath,course_id: course_id, debug: debug });
-            var mybookings = new mybookings_table({controllerspath: controllerspath, course_id: course_id, debug: debug, datepicker: form.datepicker, timepicker: form.timepicker });
+            var mybookings = new mybookings_table({controllerspath: controllerspath, course_id: course_id, debug: debug,
+                datepicker: form.datepicker, timepicker: form.timepicker });
             
             form.attach(mybookings);
     
