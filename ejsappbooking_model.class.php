@@ -19,7 +19,7 @@ class ejsappbooking_model
     
     public function __construct($id, $n){
           
-            global $DB, $USER, $CFG, $PAGE;   
+            global $DB, $USER, $CFG, $PAGE, $OUTPUT;
           
             if ($id) {
                 $this->cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
@@ -123,11 +123,10 @@ class ejsappbooking_model
                 unset($remlabs[$key]);
             }
             */
-            if ( $ejsappcm->uservisible){
+            if ( $ejsappcm->uservisible) {
                 $item = new stdClass();
-                  $item->id = $remlab->id;
-                  $item->name = $remlab->name;
-                
+                $item->id = $remlab->id;
+                $item->name = $remlab->name;
                 array_push($this->remlabs, $item);
             }
         }
@@ -342,10 +341,11 @@ class ejsappbooking_model
             SELECT starttime
             FROM {ejsappbooking_remlab_access} 
             WHERE username = ? AND ejsappid = ? 
-            AND starttime >= " . $this->get_sql_str_to_date_query() . "
-            AND starttime <=  " . $this->get_sql_str_to_date_query() . "
+            AND starttime >= ?
+            AND starttime <=  ?
             ORDER BY starttime ASC", 
-            array($USER->username, $labid, $sdate->format('Y-m-d H:i:s'), $edate->format('Y-m-d H:i:s')));
+            array($USER->username, $labid, $sdate->format('Y-m-d H:i:s'), $edate->format('Y-m-d H:i:s'),
+                $this->get_sql_str_to_date_query(), $this->get_sql_str_to_date_query()));
         
          $list = [];
         
@@ -392,11 +392,11 @@ class ejsappbooking_model
         $weekaccesses = $DB->get_records_sql("
             SELECT starttime FROM {ejsappbooking_remlab_access} 
             WHERE  username = ? AND ejsappid = ? 
-            AND starttime >= " . $this->get_sql_str_to_date_query() . "
-            AND starttime <= " . $this->get_sql_str_to_date_query() . "
+            AND starttime >= ?
+            AND starttime <= ?
             ORDER BY starttime ASC", 
             array($USER->username,$labid,$week_start->format('Y-m-d H:i:s'),
-                  $week_end->format('Y-m-d H:i:s'))
+                  $week_end->format('Y-m-d H:i:s'), $this->get_sql_str_to_date_query(), $this->get_sql_str_to_date_query())
         );
         
         return $weekaccesses;
@@ -411,9 +411,9 @@ class ejsappbooking_model
             SELECT starttime 
             FROM {ejsappbooking_remlab_access} 
             WHERE username = ? AND ejsappid = ? 
-            AND starttime >= " . $this->get_sql_str_to_date_query() . "
+            AND starttime >= ?
             ORDER BY starttime ASC", 
-            array($USER->username, $labid, $start->format('Y-m-d H:i:s')));
+            array($USER->username, $labid, $start->format('Y-m-d H:i:s'), $this->get_sql_str_to_date_query()));
         
         return $useraccess;
     }
@@ -434,12 +434,12 @@ class ejsappbooking_model
             FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id 
             INNER JOIN {block_remlab_manager_exp2prc} c ON a.practiceid = c.practiceid  
             WHERE a.ejsappid = c.ejsappid AND a.username = ? 
-            AND a.starttime >= " . $this->get_sql_str_to_date_query() . "
+            AND a.starttime >= ?
             ORDER BY a.starttime",
-            array( $USER->username, $sdate->format('Y-m-d H:i:s') ));
+            array( $USER->username, $sdate->format('Y-m-d H:i:s'), $this->get_sql_str_to_date_query()));
         
         return $bookings;
         
     }
-    
+
 }
