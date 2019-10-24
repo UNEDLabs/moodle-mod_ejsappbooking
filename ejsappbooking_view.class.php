@@ -10,9 +10,9 @@ class ejsappbooking_view {
         if ( $remlabs == null ){
             $this->body = $this->generate_nolabs_warning();
         } else  {
-            $this->body = $this->generate_intro($intro) .
+            $this->body = $this->generate_intro($intro) . html_writer::start_div('container-fluid') .
                 $this->generate_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url) .
-                $this->generate_bookings_table();
+                $this->generate_bookings_table() . html_writer::end_div();
         }
     }
     
@@ -61,8 +61,8 @@ class ejsappbooking_view {
     function generate_intro($intro) {
         global $OUTPUT;
         return
-            html_writer::start_div('row') .
-                html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-1')) .
+            html_writer::start_div('row justify-content-center') .
+                html_writer::start_tag('div', array('class' => 'col-md-8')) .
                     $OUTPUT->box($intro, 'generalbox mod_introbox', 'ejsappbookingintro') .
                 html_writer::end_tag('div') .
             html_writer::end_div();
@@ -70,8 +70,8 @@ class ejsappbooking_view {
     
     function generate_nolabs_warning() {
         return
-            html_writer::start_div('row') .
-                html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-2')) .
+            html_writer::start_div('row justify-content-center') .
+                html_writer::start_tag('div', array('class' => 'col-md-8')) .
                     get_string('no_remlabs', 'ejsappbooking') .
                 html_writer::end_tag('div') .
             html_writer::end_div();
@@ -80,65 +80,78 @@ class ejsappbooking_view {
     function generate_booking_form($id, $remlabs, $practices, $tz, $tz_edit_url) {
         global $OUTPUT;
 
+        return
+
         // Header
 
-        return
             html_writer::start_div('row') .
-                html_writer::start_tag('div', array('class' => 'col-md-8 offset-md-2')) .
+                html_writer::start_tag('div', array('class' => 'col-md-7 offset-md-1')) .
                     $OUTPUT->heading(get_string('newreservation', 'ejsappbooking')) .
                 html_writer::end_tag('div') .
             html_writer::end_div() .
         
-        // Form      
-      
-            html_writer::start_tag('form', array('id' => 'bookingform', 'method' => 'get',
+        // Form
+
+            html_writer::start_tag('form', array('class' => 'row justify-content-center', 'id' => 'bookingform', 'method' => 'get',
                 'action' => new moodle_url("/mod/ejsappbooking/controllers/add_booking.php", array('id' => $id)))) .
 
-                // First row: lab and practice select
+                // Left column: lab select, date picker and timezone display
 
-                html_writer::start_div('row selectores') .
-                    html_writer::start_div('col-md-3 offset-md-2') .
+                html_writer::start_div('col-md-4 mr-md-4') .
+                    html_writer::start_div('row selectores') .
                         get_string('rem_lab_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>' .
                         $this->generate_lab_select($remlabs) .
                     html_writer::end_div() .
 
-                    html_writer::start_div('col-md-3') .
+                    html_writer::start_div('row') .
+                        html_writer::start_div('col-md-12') .
+                            html_writer::start_div('row') .
+                                '<p><span class="fa fa-calendar"></span> &nbsp;' .
+                                get_string('date-select', 'ejsappbooking') . ':</p>' .
+                            html_writer::end_div() .
+                            html_writer::start_div('row') .
+                                html_writer::div("", "col-md-12", array("id" => "datepicker")) .
+                            html_writer::end_div() .
+                            html_writer::start_div('row') .
+                                '<p>' . $tz . '&nbsp; ' . "<a href='$tz_edit_url' target='_blank' 
+                                title='".get_string('time_zone_help', 'ejsappbooking').
+                                "'>"."<span class='fa fa-cog'></span></a></p>" .
+                            html_writer::end_div() .
+                        html_writer::end_div() .
+                    html_writer::end_div() .
+                html_writer::end_div() .
+
+                // Right column: practice select, time picker, notif area and submit button
+
+                html_writer::start_div('col-md-4 ml-md-4') .
+                    html_writer::start_div('row selectores') .
                         get_string('rem_prac_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>' .
                         $this->generate_practice_select($practices) .
                     html_writer::end_div() .
-                html_writer::end_div() .  /* row end */
 
-                // Second row: date and time pickers
-
-               html_writer::start_div('row') .
-
-                    // Left column: datepicker and timezone display
-
-                    html_writer::start_div('col-md-3 offset-md-2') .
-                        '<span class="ui-icon ui-icon-calendar"></span> &nbsp;' .
-                           get_string('date-select', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>' .
-                        $OUTPUT->container('<div id="datepicker"></div>') . '<p>' . $tz . '&nbsp; '.
-                            "<a href='$tz_edit_url' target='_blank' 
-                            title='".get_string('time_zone_help', 'ejsappbooking').
-                            "'>"."<span class='ui-icon ui-icon-gear'></span></a></p></br>" .
-                    html_writer::end_div() . // column  end
-
-                    // Right column: timepicker, notif area and submit button
-
-                    html_writer::start_div('col-md-3') .
-                        '<span class="ui-icon ui-icon-clock"></span>&nbsp;' .
-                        get_string('time-select', 'ejsappbooking') . ':' .
-                        $this->generate_time_picker() .
-                        $this->generate_notif_area() .
-                        // submit button
-                        html_writer::start_div("", array("id" => "submitwrap")) .
-                            html_writer::tag("button", get_string('book', 'ejsappbooking'),
-                                array("id" => "booking_btn", "name" => "bookingbutton",
-                                    "class" => "btn btn-secondary", "value" => "1", "type" => "submit")) .
-                        html_writer::end_div().
-                    html_writer::end_div() . // end column
-
-               html_writer::end_div() . /* row end */
+                    html_writer::start_div('row') .
+                        html_writer::start_div('col-md-12') .
+                            html_writer::start_div('row') .
+                                '<p><span class="fa fa-clock-o"></span>&nbsp;' .
+                                get_string('time-select', 'ejsappbooking') . ':</p>' .
+                            html_writer::end_div() .
+                            html_writer::start_div('row') .
+                                $this->generate_time_picker() .
+                            html_writer::end_div() .
+                            html_writer::start_div('row') .
+                                $this->generate_notif_area() .
+                            html_writer::end_div() .
+                            // submit button
+                            html_writer::start_div('row') .
+                                html_writer::start_div("", array("id" => "submitwrap")) .
+                                    html_writer::tag("button", get_string('book', 'ejsappbooking'),
+                                        array("id" => "booking_btn", "name" => "bookingbutton",
+                                            "class" => "btn btn-secondary", "value" => "1", "type" => "submit")) .
+                                html_writer::end_div().
+                            html_writer::end_div().
+                        html_writer::end_div() .
+                    html_writer::end_div() .
+                html_writer::end_div() .
 
             html_writer::end_tag("form");
     }
@@ -282,7 +295,7 @@ class ejsappbooking_view {
 
         return
             html_writer::start_div('row') .
-                html_writer::start_div('col-md-7 offset-md-2') .
+                html_writer::start_div('col-md-6 offset-md-1') .
                     $OUTPUT->heading(get_string('mybookings', 'ejsappbooking')) .
                 html_writer::end_div() .
 
@@ -294,8 +307,8 @@ class ejsappbooking_view {
                 html_writer::end_div() .
             html_writer::end_div() . /* row end */
 
-            html_writer::start_div('row') .
-                html_writer::start_div('col-md-6 offset-md-2') .
+            html_writer::start_div('row justify-content-center') .
+                html_writer::start_div('col-md-6') .
                     '<p id="mybookings_notif" >'. get_string('mybookings_empty','ejsappbooking') . '</p>' .
                     '<table id="mybookings" class="table table-hover table-responsive-sm" style="display: none">
                         <thead><tr>
