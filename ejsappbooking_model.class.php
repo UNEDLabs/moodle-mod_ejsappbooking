@@ -17,57 +17,51 @@ class ejsappbooking_model
     private $multilang;
     private $remlabs;
     
-    public function __construct($id, $n){
-          
-            global $DB, $USER, $CFG, $PAGE, $OUTPUT;
-          
-            if ($id) {
-                $this->cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
-    
-                $this->course = $DB->get_record('course', array('id' => $this->cm->course), '*', MUST_EXIST);
-                $this->ejsappbooking = $DB->get_record('ejsappbooking', array('id' => $this->cm->instance), '*', MUST_EXIST);
-            } else if ($n) {
-                $this->ejsappbooking = $DB->get_record('ejsappbooking', array('id' => $n), '*', MUST_EXIST);
-                $this->course = $DB->get_record('course', array('id' => $this->ejsappbooking->course), '*', MUST_EXIST);
-                $this->cm = get_coursemodule_from_instance('ejsappbooking', 
-                        $this->ejsappbooking->id, $this->course->id, false, MUST_EXIST);
-            } else {
-                print_error('You must specify a course_module ID or an instance ID');
-            }
-            
-            require_login($this->course, true, $this->cm);
-            profile_load_data($USER); // user profile load
-    
-            $this->context = context_module::instance($this->cm->id);
-            //global $PAGE;
-        
-            //$PAGE->set_context($context);
-            $this->multilang = new filter_multilang($this->context, array('filter_multilang_force_old' => 0));
-          
-            //$PAGE->set_context($context);   
+    public function __construct($id, $n) {
+        global $DB, $USER, $CFG, $PAGE, $OUTPUT;
 
-            if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
-                add_to_log($course->id, 'ejsappbooking', 'view', "view.php?id={$this->cm->id}", $this->ejsappbooking->name, $this->cm->id);
-            } else {
-                $event = \mod_ejsappbooking\event\ejsappbooking_viewed::create(array(
-                    'objectid' => $this->ejsappbooking->id,
-                    'context' => $this->context
-                ));
-                $event->add_record_snapshot('course_modules', $this->cm);
-                $event->add_record_snapshot('course', $this->course);
-                $event->add_record_snapshot('ejsappbooking', $this->ejsappbooking);
-                $event->trigger();
-            }
-          
-          if ($CFG->version < 2016090100) {
-                $PAGE->set_button($OUTPUT->update_module_button($cm->id, 'ejsappbooking'));
-            }
+        if ($id) {
+            $this->cm = get_coursemodule_from_id('ejsappbooking', $id, 0, false, MUST_EXIST);
 
-            //TOFIX
-            // Check if the user has the capability to view the page - used when an assignment is set to hidden.
-            require_capability('mod/ejsappbooking:view', $this->context); 
-          
-       }
+            $this->course = $DB->get_record('course', array('id' => $this->cm->course), '*', MUST_EXIST);
+            $this->ejsappbooking = $DB->get_record('ejsappbooking', array('id' => $this->cm->instance), '*', MUST_EXIST);
+        } else if ($n) {
+            $this->ejsappbooking = $DB->get_record('ejsappbooking', array('id' => $n), '*', MUST_EXIST);
+            $this->course = $DB->get_record('course', array('id' => $this->ejsappbooking->course), '*', MUST_EXIST);
+            $this->cm = get_coursemodule_from_instance('ejsappbooking',
+                    $this->ejsappbooking->id, $this->course->id, false, MUST_EXIST);
+        } else {
+            print_error('You must specify a course_module ID or an instance ID');
+        }
+
+        require_login($this->course, true, $this->cm);
+
+        $this->context = context_module::instance($this->cm->id);
+
+        $PAGE->set_context($this->context);
+        $PAGE->set_cm($this->cm, $this->course, $this->ejsappbooking); // Set's up global $COURSE.
+        $this->multilang = new filter_multilang($this->context, array('filter_multilang_force_old' => 0));
+
+        if ($CFG->version < 2013111899) { // Moodle 2.6 or inferior.
+            add_to_log($this->course->id, 'ejsappbooking', 'view', "view.php?id={$this->cm->id}", $this->ejsappbooking->name, $this->cm->id);
+        } else {
+            $event = \mod_ejsappbooking\event\ejsappbooking_viewed::create(array(
+                'objectid' => $this->ejsappbooking->id,
+                'context' => $this->context
+            ));
+            $event->add_record_snapshot('course_modules', $this->cm);
+            $event->add_record_snapshot('course', $this->course);
+            $event->add_record_snapshot('ejsappbooking', $this->ejsappbooking);
+            $event->trigger();
+        }
+
+        if ($CFG->version < 2016090100) {
+            $PAGE->set_button($OUTPUT->update_module_button($this->cm->id, 'ejsappbooking'));
+        }
+
+        // Check if the user has the capability to view the page - used when an assignment is set to hidden.
+        require_capability('mod/ejsappbooking:view', $this->context);
+    }
     
     public function get_mod_url (){
           return '/mod/ejsappbooking/view.php' . http_build_query(array('id' => $this->cm->id));
@@ -81,8 +75,7 @@ class ejsappbooking_model
           return format_string($this->course->fullname);
       }
     
-    public function get_mod_intro(){
-     
+    public function get_mod_intro() {
           $intro = ""; 
 
           if ( isset($this->ejsappbooking->intro) && ($this->ejsappbooking->intro != null) ){
@@ -90,24 +83,12 @@ class ejsappbooking_model
           }
           
           return $intro;
-      }
+    }
     
-    public function get_remlabs(){
+    public function get_remlabs() {
           // Get the remote laboratories in which the user is authorized to make bookings.
-        global $DB,$USER;
-        
-        /*
-        if ( !$this->remlabs ){
-            
-            $this->remlabs = $DB->get_records_sql("
-                SELECT DISTINCT (a.id), a.name 
-                FROM {ejsapp} a INNER JOIN {ejsappbooking_usersaccess} b ON a.id = b.ejsappid 
-                WHERE b.userid = ? AND a.course = ? AND a.is_rem_lab = 1 AND b.allowremaccess = 1",
-                array($USER->id, $this->course->id)
-            );
-        }
-        */
-        
+        global $DB;
+
         $query = 
             $DB->get_records('ejsapp', array('course' => $this->course->id, 'is_rem_lab' => 1));
         
@@ -118,23 +99,18 @@ class ejsappbooking_model
             $ejsappcm = get_coursemodule_from_instance('ejsapp', $remlab->id, $this->course->id, false, MUST_EXIST);
             $modinfo = get_fast_modinfo($this->course);
             $ejsappcm = $modinfo->get_cm($ejsappcm->id);
-            /*
-            if (!$ejsappcm->uservisible) {
-                unset($remlabs[$key]);
-            }
-            */
-            if ( $ejsappcm->uservisible) {
+            if ($ejsappcm->uservisible) {
                 $item = new stdClass();
-                $item->id = $remlab->id;
+                $item->lid = $remlab->id;
                 $item->name = $remlab->name;
                 array_push($this->remlabs, $item);
             }
         }
         
         return $this->remlabs;
-      }
+    }
           
-    public function get_practices($labid){
+    public function get_practices($labid) {
         global $DB;
     
         // Select practices.
@@ -144,9 +120,9 @@ class ejsappbooking_model
              WHERE ejsappid = ? ", array($labid));
 
         return  $practices;
-      }
+    }
     
-    public function get_user_timezone_str(){
+    public function get_user_timezone_str() {
           global $USER;
           
           if ( $USER->timezone == '99' ){
@@ -156,9 +132,9 @@ class ejsappbooking_model
           }
           
           return $tz_str;
-      }
+    }
     
-    public function get_user_timezone(){
+    public function get_user_timezone() {
             global $USER;
           
             if( $USER->timezone == '99'){
@@ -166,31 +142,29 @@ class ejsappbooking_model
             } else {
                 return new DateTimeZone($USER->timezone);
             }
-      }
+    }
     
-    public function get_default_timezone(){
+    public function get_default_timezone() {
             return new DateTimeZone(date_default_timezone_get()); // server tz
-      }
+    }
     
-    public function get_timezone_edit_url(){
+    public function get_timezone_edit_url() {
             global $CFG, $USER;
         
            $tz_edit_url = $CFG->wwwroot . "/user/edit.php?id=".$USER->id."&returnto=profile"; 
            // $tz_edit_url = $CFG->wwwroot . "/user/editadvanced.php?id=".$USER->id; // ."#id_email"
             return $tz_edit_url;
-      }
+    }
     
-    public function get_current_server_time(){
+    public function get_current_server_time() {
          return new DateTime('NOW', $this->get_default_timezone());
-        
-      }
+    }
     
-    public function translate($str){
+    public function translate($str) {
         return $this->multilang->filter($str);
     }        
     
-    public function get_lab_conf($labid){
-        
+    public function get_lab_conf($labid) {
         global $DB;
         
         $practiceintro = $DB->get_field('block_remlab_manager_exp2prc', 'practiceintro', array('ejsappid' => $labid));
@@ -198,10 +172,9 @@ class ejsappbooking_model
         $labconf = $DB->get_record('block_remlab_manager_conf', array('practiceintro' => $practiceintro));
 
         return $labconf;
-
     }
         
-    public function save_booking($labid, $practid, $starttime, $endtime){
+    public function save_booking($labid, $practid, $starttime, $endtime) {
         global $USER,$DB;
         
         $bk = new stdClass();
@@ -218,7 +191,7 @@ class ejsappbooking_model
         return $bookid;
     }
     
-    public function create_event($labid, $practid, $starttime, $endtime, $slot_size){
+    public function create_event($labid, $practid, $starttime, $endtime, $slot_size) {
         global $DB, $USER;
         
         // Booking information - Event.
@@ -238,8 +211,8 @@ class ejsappbooking_model
             $event->userid = $USER->id;
             $event->eventtype = 'user';                
             $event->timestart = make_timestamp($inittime->format('Y'), $inittime->format('m'),
-                $inittime->format('d'), $inittime->format('H'));
-            $event->timeduration = $slot_size ;     
+                $inittime->format('d'), $inittime->format('H'), $inittime->format('i'));
+            $event->timeduration = $slot_size*60;
             $event->description = $event->description . get_string('plant', 'ejsappbooking') .
                 ': ' . $this->multilang->filter($lab->name) . '. ' . $prac->practiceintro . '<br>';
             $event->description = $event->description . get_string('date', 'ejsappbooking') .
@@ -251,7 +224,7 @@ class ejsappbooking_model
         calendar_event::create($event);
     }
     
-    public function send_message($labid, $practid, $starttime, $endtime){
+    public function send_message($labid, $practid, $starttime, $endtime) {
         global $DB, $USER, $CFG;
 
         // Check message delivery.
@@ -277,10 +250,9 @@ class ejsappbooking_model
         $format = FORMAT_HTML;
         $cuser = $DB->get_record('user', array('id' => 2));
         @message_post_message($cuser, $USER, $msgbody, $format);
-
     }
     
-    public function booking_exists($labid, $practid, $date){
+    public function booking_exists($labid, $practid, $date) {
         global $DB;
         
         $server_tz = $this->get_default_timezone();
@@ -297,7 +269,7 @@ class ejsappbooking_model
         return ($query != null );
     }
     
-    public function delete_booking($bookid){ // Check and delete booking
+    public function delete_booking($bookid) { // Check and delete booking
         global $DB, $USER;
         
         $record = $DB->get_record('ejsappbooking_remlab_access', array('id' => $bookid));
@@ -327,10 +299,9 @@ class ejsappbooking_model
                 return -2; // error deleting
             }
         }
-        
     }
     
-    public function get_sql_str_to_date_query(){
+    public function get_sql_str_to_date_query() {
         global $CFG;
         
         if ( $CFG->dbtype == 'pgsql'){
@@ -342,7 +313,7 @@ class ejsappbooking_model
         return null;
     }
     
-    public function get_day_bookings($labid, $date){
+    public function get_day_bookings($labid, $date) {
         global $USER, $DB;
         
         $user_tz = $this->get_user_timezone();
@@ -378,7 +349,7 @@ class ejsappbooking_model
         return $list;
     }
     
-    public function get_week_bookings($labid,$sdate){ // Determine user´s bookings of the week.
+    public function get_week_bookings($labid,$sdate) { // Determine user´s bookings of the week.
         global $USER, $DB;
         
         $user_tz = $this->get_user_timezone();
@@ -420,7 +391,7 @@ class ejsappbooking_model
         return $weekaccesses;
     }
     
-    public function get_total_bookings($labid){ // Retrieving user´s bookings at the DB.
+    public function get_total_bookings($labid) { // Retrieving user´s bookings at the DB.
         global $USER, $DB;
         
         $start = $this->get_current_server_time();
@@ -436,15 +407,13 @@ class ejsappbooking_model
         return $useraccess;
     }
     
-    public function get_slot_size($slotsduration){
-        
+    public function get_slot_size($slotsduration) {
         $durations = array( "0" => 60, "1"=>30, "2"=>15, "3"=>5, "4"=>2 );
         
         return $durations[$slotsduration];
     }
 
-    public function get_current_user_active_bookings($sdate){
-        
+    public function get_current_user_active_bookings($sdate) {
         global $USER, $DB;
         
         $bookings = $DB->get_records_sql("
@@ -457,7 +426,6 @@ class ejsappbooking_model
             array( $USER->username, $sdate->format('Y-m-d H:i:s'), $this->get_sql_str_to_date_query()));
         
         return $bookings;
-        
     }
 
 }

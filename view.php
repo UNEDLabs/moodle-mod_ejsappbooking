@@ -33,7 +33,6 @@
 
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
-
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
 
@@ -46,8 +45,10 @@ require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
 $id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
 $n = optional_param('n', 0, PARAM_INT); // ...ejsappbooking instance ID - it should be named as the first character of the module.
 
-$model = new ejsappbooking_model($id, $n);
+$CFG->cachejs = false;
+$PAGE->set_cacheable(false);
 
+$model = new ejsappbooking_model($id, $n);
 
 $view = new ejsappbooking_view(
    $id, $model->get_mod_url(), $model->get_mod_name(), $model->get_course_name(),
