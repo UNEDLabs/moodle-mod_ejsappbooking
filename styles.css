@@ -75,7 +75,7 @@ div.alert{
 
 .path-mod-ejsappbooking #datepicker,
 .path-mod-ejsappbooking #timepicker {
-    padding: 1em 0;
+    padding: 0 0 1em 0;
     width: 100%;
 }
 

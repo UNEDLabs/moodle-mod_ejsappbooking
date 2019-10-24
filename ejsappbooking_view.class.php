@@ -97,7 +97,7 @@ class ejsappbooking_view {
 
                 // Left column: lab select, date picker and timezone display
 
-                html_writer::start_div('col-md-4 mr-md-4') .
+                html_writer::start_div('col-xl-4 mr-xl-4 col-lg-5 mr-lg-2') .
                     html_writer::start_div('row selectores') .
                         get_string('rem_lab_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>' .
                         $this->generate_lab_select($remlabs) .
@@ -123,7 +123,7 @@ class ejsappbooking_view {
 
                 // Right column: practice select, time picker, notif area and submit button
 
-                html_writer::start_div('col-md-4 ml-md-4') .
+                html_writer::start_div('col-xl-4 ml-xl-4 col-lg-5 mr-lg-2') .
                     html_writer::start_div('row selectores') .
                         get_string('rem_prac_selection', 'ejsappbooking') . ':&nbsp;&nbsp;'.'<br>' .
                         $this->generate_practice_select($practices) .
