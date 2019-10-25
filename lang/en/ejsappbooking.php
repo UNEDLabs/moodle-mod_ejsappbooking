@@ -116,7 +116,7 @@ $string['plant-active'] = 'This plant is available';
 $string['submit-missing-field'] = 'Some required field is empty';
 $string['submit-error'] = 'Please, check error messages before completing your booking.';
 $string['submit-success'] = 'Your booking has been saved';
-$string['submit-error-exists'] = 'This record already exists';
+$string['submit-error-exists'] = 'There already exists a booking for this date and time';
 $string['delete-confirmation'] = 'Are you sure to delete this item?';
 
 // Capabilities.

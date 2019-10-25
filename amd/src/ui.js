@@ -1,4 +1,4 @@
-define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table.js'], 
+define(['jquery', 'jqueryui','mod_ejsappbooking/booking_form','mod_ejsappbooking/mybookings_table'],
        function($, ui, booking_form, mybookings_table) {
             
     var course_id = getSearchParam('id');
@@ -11,7 +11,7 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
 
             //console.log("Loading UI");
             
-            var form = new booking_form({controllerspath: controllerspath,course_id: course_id, debug: debug });
+            var form = new booking_form({controllerspath: controllerspath, course_id: course_id, debug: debug });
             var mybookings = new mybookings_table({controllerspath: controllerspath, course_id: course_id, debug: debug,
                 datepicker: form.datepicker, timepicker: form.timepicker });
             
@@ -44,50 +44,11 @@ define(['jquery', 'jqueryui','amd/src/booking_form.js','amd/src/mybookings_table
              });
             
         } // end amd.init
+
     }; // end return
 });
 
-function to_date_map(bookings) {
-    
-    var dates_times = [];  //create asociative array
-    
-    if (( bookings != null ) && (bookings.length > 0)){
-        
-        for(var i = 0; i< bookings.length; i++){
-            bk = bookings[i];
-            d = bk['day'];
-            t = bk['time'];
-            
-            if ( dates_times[d] == null ){
-                dates_times[d] = new Array();
-            }
-            /*
-            if ( dates_times[d] == null ){
-                dates_times[d] =  t ;
-                
-            } else {
-                dates_times[d] = dates_times[d] + " &#013;&#10; " + t ; 
-            }
-            
-            */
-            
-            dates_times[d].push(t);
-        }
-    }
-    
-    return dates_times;
-};
-
-function setSearchParam(param, newval) {
-    var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
-    var query = (window.location.search).replace(regex, "$1").replace(/&$/, '');
-    var newsearch = (query.length > 2 ? query + "&" : "?") + (newval ? param + "=" + newval : '');
-    window.location = window.location.pathname + newsearch;
-};
-
 function getSearchParam(param) {
-    
-    // param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
     var regex = new RegExp( "[\\?&]"+param+"=([^&#]*)" );
     var results = regex.exec(window.location.search);
     
@@ -96,4 +57,4 @@ function getSearchParam(param) {
     } else {
         return results[1];
     }
-};
+}

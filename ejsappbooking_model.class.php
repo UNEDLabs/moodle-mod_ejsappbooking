@@ -314,7 +314,7 @@ class ejsappbooking_model
     }
     
     public function get_day_bookings($labid, $date) {
-        global $USER, $DB;
+        global $DB;
         
         $user_tz = $this->get_user_timezone();
         $server_tz = $this->get_default_timezone();
@@ -329,11 +329,11 @@ class ejsappbooking_model
         $dayaccesses = $DB->get_records_sql("
             SELECT starttime
             FROM {ejsappbooking_remlab_access} 
-            WHERE username = ? AND ejsappid = ? 
+            WHERE ejsappid = ? 
             AND starttime >= ?
             AND starttime <=  ?
             ORDER BY starttime ASC", 
-            array($USER->username, $labid, $sdate->format('Y-m-d H:i:s'), $edate->format('Y-m-d H:i:s'),
+            array($labid, $sdate->format('Y-m-d H:i:s'), $edate->format('Y-m-d H:i:s'),
                 $this->get_sql_str_to_date_query(), $this->get_sql_str_to_date_query()));
         
          $list = [];

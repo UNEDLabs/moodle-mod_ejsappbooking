@@ -13,9 +13,6 @@ var tpicker = function timePicker(debug){
     
     this.hcells().on('click', { tpicker: this }, this.on_hour_click );
     this.pick_default_hour();
-    
-    // update timepicker past our every minute
-    
 };
   
 tpicker.prototype.log = function(msg){
@@ -234,9 +231,7 @@ tpicker.prototype.on_hour_click = function(e){
     var tpicker = e.data.tpicker;
 
     tpicker.log('hour click <EVENT>');
-    
-    var txt = $(this).text();
-    
+
     tpicker.unselect_hour();
     tpicker.select_hour($(this));
     
@@ -397,14 +392,20 @@ tpicker.prototype.disable_past_interv = function(){
     tpicker.log('Disabling previous intervals: 0-' + i );
     
     intervs.each(function(){
-        
+
         if ( $(this).next() != null ){
             end = parseInt(($(this).next().text()).substring(1));
+            if (isNaN(end)) {
+                end = 60;
+            }
         } else {
             end = 60;
         }
-        
-        if (  end <= i ){
+
+        if (end === 60) {
+            $(this).addClass('interv');
+            $(this).on();
+        } else if (  end <= i  ){
             $(this).addClass('interv-past disabled');
             $(this).off();
         } else { // current time, stop checking past
@@ -414,7 +415,8 @@ tpicker.prototype.disable_past_interv = function(){
     });
 };    
 
-tpicker.prototype.next_free_interv = function(){
+tpicker.prototype.next_free_interv = function(scroll) {
+    scroll = typeof scroll !== 'undefined' ? scroll : true;
     var tpicker = this;
     var current = this.get_current_interv_item();
     var pos = this.icells().index(current);
@@ -426,22 +428,22 @@ tpicker.prototype.next_free_interv = function(){
         tpicker.log('Interval picker not found');
         return;
     }
-    
-    if ( pos < 0 ) {
-        tpicker.log('No interval selected');
+
+    if ( pos < 0 || pos == this.icells().length - 1) {
+        if (pos < 0) tpicker.log('No interval selected');
         current = this.icells().first();
         pos = 0;
     }
     
-    if (current.hasClass('disabled')){
+    if (current.hasClass('disabled')) {
         this.unselect_interval();
     }
     
     var next = this.icells().filter(':not(.disabled)').first();
     
-    if ( next.length > 0 ) {
+    if ( next.length > 0) {
         this.select_interval(next);
-        this.scrollTo(next);
+        if (scroll) this.scrollTo(next);
     }
 };
     

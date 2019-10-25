@@ -42,8 +42,8 @@ require_once(dirname(__FILE__) . '/ejsappbooking_view.class.php');
 require_once($CFG->dirroot . '/filter/multilang/filter.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');  // userprofile
 
-$id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
-$n = optional_param('n', 0, PARAM_INT); // ...ejsappbooking instance ID - it should be named as the first character of the module.
+$id = optional_param('id', 0, PARAM_INT);   // We need course_module ID, or
+$n = optional_param('n', 0, PARAM_INT);     // ejsappbooking instance ID
 
 $CFG->cachejs = false;
 $PAGE->set_cacheable(false);

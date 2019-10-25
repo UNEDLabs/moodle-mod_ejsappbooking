@@ -8,7 +8,7 @@ require_once(dirname(dirname(__FILE__)) . '/ejsappbooking_view_json.class.php');
 
 global $DB, $CFG, $USER, $PAGE, $OUTPUT;
 
-$id = optional_param('id', 0, PARAM_INT); // We need course_module ID, or...
+$id = optional_param('id', 0, PARAM_INT);
 
 $controller = new get_booked_slots_controller($id);
 $controller->dispatch();

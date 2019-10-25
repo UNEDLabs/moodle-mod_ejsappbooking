@@ -1,5 +1,5 @@
-define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.js', 'amd/src/date_picker.js',
-    'amd/src/time_picker.js','amd/src/notif_area.js'],
+define(['jquery', 'jqueryui', 'mod_ejsappbooking/lab_select', 'mod_ejsappbooking/practice_select',
+        'mod_ejsappbooking/date_picker', 'mod_ejsappbooking/time_picker','mod_ejsappbooking/notif_area'],
     function($, ui, lab_select, practice_select, date_picker, time_picker, notif_area){
 
     var form = function (data) {
@@ -29,7 +29,14 @@ define(['jquery', 'jqueryui', 'amd/src/lab_select.js', 'amd/src/practice_select.
         this.labsel.first(); //pracsel.first();
             
         this.datepicker.set_today();
-        
+
+        var dpicker = this.datepicker;
+        var labid = this.labsel.get_lab();
+        var tpicker = this.timepicker;
+        var doit = setInterval(function() {
+            dpicker.update({ urlbase: data.controllerspath, course_id: data.course_id,
+                lab_id: labid, timepicker: tpicker});
+            }, 15000);
     };
     
     form.prototype.log = function(msg){

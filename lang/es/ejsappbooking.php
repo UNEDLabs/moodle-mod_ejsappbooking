@@ -114,7 +114,7 @@ $string['plant-active'] = 'La planta está disponible';
 $string['submit-missing-field'] = 'Algún campo necesario está vacío';
 $string['submit-error'] = 'Por favor, compruebe los mensajes de error antes de completar su reserva.';
 $string['submit-success'] = 'Su reserva se ha guardada';
-$string['submit-error-exists'] = 'Esta reserva ya existe';
+$string['submit-error-exists'] = 'Ya existe una reserva para esta fecha y hora';
 $string['delete-confirmation'] = '¿Seguro que quiere eliminar este elemento?';
     
 // Capabilities.
