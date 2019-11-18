@@ -283,8 +283,9 @@ class ejsappbooking_model
             $name = get_string('book_message', 'ejsappbooking') . ' ' . $lab->name .
                 '. ' . $prac->practiceintro;
             $inittime = DateTime::createFromFormat('Y-m-d H:i:s', $record->starttime, $this->get_user_timezone());
+            //$inittime = DateTime::createFromFormat('Y-m-d H:i:s', "2019-11-18 22:15:00", $this->get_user_timezone());
             $time = make_timestamp($inittime->format('Y'), $inittime->format('m'),
-                $inittime->format('d'), $inittime->format('H'));
+                $inittime->format('d'), $inittime->format('H'), $inittime->format('i'));
             $event = $DB->get_record_sql('SELECT * FROM {event} WHERE userid = ? AND name = ? AND timestart = ?',
                 array($USER->id, $name, $time));
             // Delete calendar´s event.

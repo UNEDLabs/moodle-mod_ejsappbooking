@@ -187,11 +187,10 @@ define(['jquery','jqueryui'], function($){
 
         $.getJSON(busy_slots_url, function( data ){
             dpicker.log( 'GET ' + busy_slots_url);
-
-            if (data['busy-slots'].length  == 0 ) {
+            if (data['busy-slots'].length  === 0 ) {
                 tpickr.clear_busy_interv();
                 dpicker.log('No busy slots this day');
-            } else if ( tpickr.is_interval_picker_init()) {
+            } else if (tpickr.is_interval_picker_init()) {
                 tpickr.set_busy(data['busy-slots']);
                 tpickr.disable_busy_interv();
                 tpickr.next_free_interv(scroll);

@@ -145,6 +145,7 @@ tpicker.prototype.clear_interv = function(){
 };
     
 tpicker.prototype.clear_busy_interv = function(){
+    this.busy_slots = null;
     this.icells().removeClass('interv-busy');
     this.icells().not('.interv-past').removeClass('disabled').on('click', { tpicker: this }, this.on_interv_click );
 };
@@ -355,7 +356,6 @@ tpicker.prototype.disable_busy_interv = function( ){
         if ( time_picker.busy_slots.includes(time) ) { // busy, disable
             time_picker.log('Disabling ' + time);
             time_picker.set_busy_interv($(this));
-            
         } 
         /*
         else {
