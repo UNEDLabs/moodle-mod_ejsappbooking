@@ -45,6 +45,7 @@ $string['ejsappbookingname_help'] = 'Name to be displayed for the booking system
 $string['ejsappbooking'] = 'EJSAppBooking';
 $string['pluginadministration'] = 'EJSAppBooking administration';
 $string['pluginname'] = 'EJSAppBooking';
+$string['noejsapps'] = 'There are no EJSApp Booking System activities in this course';
 
 $string['manage_access_but'] = 'Manage users access';
 
