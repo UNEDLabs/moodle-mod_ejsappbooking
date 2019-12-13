@@ -93,8 +93,6 @@ define(['jquery', 'jqueryui', 'mod_ejsappbooking/lab_select', 'mod_ejsappbooking
                 booking_form.log('ERROR: Missing field on submiting form');
                 return;
             }
-            
-            // TODO: If time has changed update timepicker
 
             var submit_url = base_url +"&labid="+labid+"&practid="+practid + "&date="+date+"&time="+time;
             
