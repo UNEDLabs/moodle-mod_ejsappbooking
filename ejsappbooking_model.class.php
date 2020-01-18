@@ -422,9 +422,9 @@ class ejsappbooking_model
             FROM {ejsappbooking_remlab_access} a INNER JOIN {ejsapp} b ON a.ejsappid = b.id 
             INNER JOIN {block_remlab_manager_exp2prc} c ON a.practiceid = c.practiceid  
             WHERE a.ejsappid = c.ejsappid AND a.username = ? 
-            AND a.endtime < ?
+            AND a.endtime > ?
             ORDER BY a.starttime",
-            array($USER->username, $sdate->format('Y-m-d H:i:s')));
+            array($USER->username, $sdate->format('Y-m-d H:i:s'), $this->get_sql_str_to_date_query()));
         
         return $bookings;
     }
