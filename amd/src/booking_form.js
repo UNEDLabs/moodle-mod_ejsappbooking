@@ -126,7 +126,6 @@ define(['jquery', 'jqueryui', 'mod_ejsappbooking/lab_select', 'mod_ejsappbooking
                         //mark current interval busy
                         booking_form.timepicker.add_busy(time);
                         booking_form.timepicker.update_busy_interv();
-                        
                     } else { 
                         notif_area.display_msg(data.exitMsg, 'alert-danger');      
                     }

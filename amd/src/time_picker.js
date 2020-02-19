@@ -171,7 +171,6 @@ tpicker.prototype.unselect_hour = function(){
 };
     
 tpicker.prototype.set_past_hour = function(item){
-        
     item.addClass('hour-past disabled');
     item.off();
 };
@@ -342,7 +341,7 @@ tpicker.prototype.set_busy_interv = function (item){
 tpicker.prototype.disable_busy_interv = function( ){
     var time_picker = this;
     
-    if ( (time_picker.busy_slots == null) || (time_picker.busy_slots.length == 0 )){ 
+    if ((time_picker.busy_slots == null) || (time_picker.busy_slots.length == 0)){
         time_picker.log('No busy slots found');
         return; 
     } else {
@@ -353,7 +352,7 @@ tpicker.prototype.disable_busy_interv = function( ){
 
         time = time_picker.get_current_hour() + $(this).text();
         
-        if ( time_picker.busy_slots.includes(time) ) { // busy, disable
+        if (time_picker.busy_slots.includes(time)) { // busy, disable
             time_picker.log('Disabling ' + time);
             time_picker.set_busy_interv($(this));
         } 

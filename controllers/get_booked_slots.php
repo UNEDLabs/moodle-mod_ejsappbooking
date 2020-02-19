@@ -23,23 +23,20 @@ class get_booked_slots_controller
         $labid = optional_param('labid', 0, PARAM_INT); // Selected laboratory.
         $selectDay = optional_param('date', 0, PARAM_RAW); 
         
-        $bookings = $this->do(array('labid'=>$labid, 'selectDay' =>$selectDay));
+        $bookings = $this->doit(array('labid'=>$labid, 'selectDay' =>$selectDay));
         $view = new ejsappbooking_json_view();
         $view->render($bookings);
-
     }
     
-    public function do($params){
-        
+    public function doit($params){
         $labid=$params['labid'];
         $selectDay=$params['selectDay'];
         
         $sdate=DateTime::createFromFormat('Y-m-d H:i:s',  $selectDay . ' 00:00:00', 
             $this->model->get_default_timezone());
         
-        $data['busy-slots'] = $this->model->get_day_bookings($labid, $sdate);
+        $data['busy-slots'] = $this->model->get_day_bookings($labid, $sdate, true);
         
         return $data;
-        
     }
 }
