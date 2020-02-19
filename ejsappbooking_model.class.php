@@ -385,7 +385,6 @@ class ejsappbooking_model
         return $list;
     }
 
-    // TODO: Check when activity has ONE single condition
     private function check_nested_conditions($conditions, $slottime, $not, $info, $op) {
         ($op == '|') ? $available = false : $available = true;
         for ($i = 0; $i < count($conditions); $i++) {
