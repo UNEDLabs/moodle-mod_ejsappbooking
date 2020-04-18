@@ -121,7 +121,6 @@ class ejsappbooking_model
             "SELECT id, ejsappid, practiceid, practiceintro 
              FROM {block_remlab_manager_exp2prc} 
              WHERE ejsappid = ? ", array($labid));
-        $practices->practiceintro = $this->translate($practices->practiceintro);
 
         return $practices;
     }
