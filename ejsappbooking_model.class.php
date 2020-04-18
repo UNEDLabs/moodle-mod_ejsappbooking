@@ -105,7 +105,7 @@ class ejsappbooking_model
             if ($ejsappcm->uservisible) {
                 $item = new stdClass();
                 $item->lid = $remlab->id;
-                $item->name = $remlab->name;
+                $item->name = $this->translate($remlab->name);
                 array_push($this->remlabs, $item);
             }
         }
@@ -121,8 +121,9 @@ class ejsappbooking_model
             "SELECT id, ejsappid, practiceid, practiceintro 
              FROM {block_remlab_manager_exp2prc} 
              WHERE ejsappid = ? ", array($labid));
+        $practices->practiceintro = $this->translate($practices->practiceintro);
 
-        return  $practices;
+        return $practices;
     }
     
     public function get_user_timezone_str() {
