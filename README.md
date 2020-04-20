@@ -7,7 +7,7 @@
 This plugin lets you add a booking system to handle the conections to the remote laboratories developed using EJS
 (either in Java or Javasscript) and added to your Moodle course using the ejsapp plugin.
 
-This plugin will not receive further updates. For more updated versions, contact the authors and/or Nebulous Systems at https://www.nebsyst.com or at https://irs.nebsyst.com.
+This plugin will not receive further updates. For more updated versions, contact the authors and/or Nebulous Systems at https://www.nebsyst.com, https://irs.nebsyst.com or contact@nebsyst.com.
 
 ## 2. License
 
